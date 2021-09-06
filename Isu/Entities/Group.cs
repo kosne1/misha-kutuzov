@@ -6,7 +6,7 @@ namespace Isu.Entities
 {
     public class Group
     {
-        private const int MaxStudentsNumber = 25; // максимальное число студентов в группе
+        private const int MaxStudentsNumber = 25;
 
         public Group(string name)
         {
@@ -18,7 +18,6 @@ namespace Isu.Entities
 
         public List<Student> Students { get; }
         public string Name { get; }
-
         public int Course { get; }
 
         public void AddStudent(Student student)
