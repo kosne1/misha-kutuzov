@@ -1,5 +1,3 @@
-using System;
-using System.Runtime.ConstrainedExecution;
 using Isu.Entities;
 using Isu.Services;
 using Isu.Tools;
@@ -23,7 +21,7 @@ namespace Isu.Tests
             Group group = _isuService.AddGroup("M3200");
             Student student = _isuService.AddStudent(group, "Misha");
             
-            Assert.Contains(student, group.ListOfStudents);
+            Assert.Contains(student, group.Students);
             Assert.AreEqual(student.GroupName, group.Name);
         }
 
@@ -32,9 +30,9 @@ namespace Isu.Tests
         {
             Assert.Catch<IsuException>(() =>
             {
-                var group = _isuService.AddGroup("M3200");
+                Group group = _isuService.AddGroup("M3200");
 
-                for (int i = 0; i < 20; i++)
+                for (int i = 0; i < 50; i++)
                     _isuService.AddStudent(group, "Misha");
             });
         }
@@ -44,17 +42,17 @@ namespace Isu.Tests
         {
             Assert.Catch<IsuException>(() =>
             {
-                var group = _isuService.AddGroup("Y322222");
+                Group group = _isuService.AddGroup("Y322222");
             });
         }
 
         [Test]
         public void TransferStudentToAnotherGroup_GroupChanged()
         {
-            var group = _isuService.AddGroup("M3200");
-            var newGroup = _isuService.AddGroup("M3201");
+            Group group = _isuService.AddGroup("M3200");
+            Group newGroup = _isuService.AddGroup("M3201");
 
-            var student = _isuService.AddStudent(group, "Misha");
+            Student student = _isuService.AddStudent(group, "Misha");
             _isuService.ChangeStudentGroup(student, newGroup);
             
             Assert.AreEqual(newGroup.Name, student.GroupName);

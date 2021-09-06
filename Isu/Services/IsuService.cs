@@ -6,7 +6,7 @@ namespace Isu.Services
 {
     public class IsuService : IIsuService
     {
-        private List<Group> _isuGroups;
+        private readonly List<Group> _isuGroups;
         private int _studentsCounter;
 
         public IsuService()
@@ -41,7 +41,7 @@ namespace Isu.Services
 
         public List<Student> FindStudents(string groupName)
         {
-            return (from isuGroup in _isuGroups where isuGroup.Name.Equals(groupName) select isuGroup.ListOfStudents)
+            return (from isuGroup in _isuGroups where isuGroup.Name.Equals(groupName) select isuGroup.Students)
                 .FirstOrDefault();
         }
 
@@ -49,9 +49,11 @@ namespace Isu.Services
         {
             var students = new List<Student>();
 
-            foreach (var isuGroup in _isuGroups.Where(isuGroup => isuGroup.Course == courseNumber.Number))
+            var foundGroups = _isuGroups.Where(isuGroup => isuGroup.Course == courseNumber.Number);
+
+            foreach (Group isuGroup in foundGroups)
             {
-                students.AddRange(isuGroup.ListOfStudents);
+                students.AddRange(isuGroup.Students);
             }
 
             return students;
@@ -71,9 +73,9 @@ namespace Isu.Services
         {
             newGroup.AddStudent(student);
 
-            foreach (var isuGroup in _isuGroups.Where(isuGroup => isuGroup.Name == student.GroupName))
+            foreach (Group isuGroup in _isuGroups.Where(isuGroup => isuGroup.Name == student.GroupName))
             {
-                isuGroup.ListOfStudents.Remove(student);
+                isuGroup.Students.Remove(student);
             }
 
             student.GroupName = newGroup.Name;

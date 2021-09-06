@@ -2,6 +2,11 @@
 {
     public class CourseNumber
     {
-        public int Number { get; set; }
+        public CourseNumber(int number)
+        {
+            Number = number;
+        }
+
+        public int Number { get; }
     }
 }
