@@ -1,6 +1,4 @@
-﻿using Shops.Tools;
-
-namespace Shops.Models
+﻿namespace Shops.Models
 {
     public class ProductProperties
     {

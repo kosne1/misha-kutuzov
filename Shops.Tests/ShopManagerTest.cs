@@ -1,9 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using Shops.Entities;
 using Shops.Service;
-using Shops.Tools;
 
 namespace Shops.Tests
 {

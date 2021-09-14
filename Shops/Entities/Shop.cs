@@ -9,17 +9,17 @@ namespace Shops.Entities
     {
         private int _id;
         private string _address;
-        private string _name;
 
         public Shop(string name, int id, string address)
         {
-            _name = name;
+            Name = name;
             _id = id;
             _address = address;
             Products = new Dictionary<Product, ProductProperties>();
         }
 
         public Dictionary<Product, ProductProperties> Products { get; }
+        public string Name { get; }
 
         public void AddProduct(Product product, int amount, int price)
         {
@@ -41,10 +41,10 @@ namespace Shops.Entities
         {
             ProductProperties found = GetProductInfo(product);
 
-            if (found == null) throw new ShopException($"There is no {product.Name} in {_name} for {person.Name}");
+            if (found == null) throw new ShopException($"There is no {product.Name} in {Name} for {person.Name}");
 
             if (amountToBuy > found.Amount)
-                throw new ShopException($"There is not enough {product.Name} in {_name} for {person.Name}");
+                throw new ShopException($"There is not enough {product.Name} in {Name} for {person.Name}");
 
             int totalCost = found.Price * amountToBuy;
             if (person.CanBuyProduct(totalCost))
@@ -54,7 +54,7 @@ namespace Shops.Entities
             }
             else
             {
-                throw new ShopException($"{person.Name} can't afford {product.Name} in {_name}");
+                throw new ShopException($"{person.Name} can't afford {product.Name} in {Name}");
             }
         }
 
@@ -62,7 +62,7 @@ namespace Shops.Entities
         {
             ProductProperties found = GetProductInfo(product);
 
-            if (found == null) throw new ShopException($"There is no {product.Name} in {_name}");
+            if (found == null) throw new ShopException($"There is no {product.Name} in {Name}");
             found.Price = newPrice;
         }
 

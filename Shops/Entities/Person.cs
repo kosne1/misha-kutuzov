@@ -1,12 +1,9 @@
-﻿using Shops.Tools;
-
-namespace Shops.Entities
+﻿namespace Shops.Entities
 {
     public class Person
     {
         public Person(string name, int balance)
         {
-            if (!IsBalanceValid(balance)) throw new ShopException($"Couldn't create {name} with negative balance");
             Balance = balance;
             Name = name;
         }
@@ -22,11 +19,6 @@ namespace Shops.Entities
         public bool CanBuyProduct(int cost)
         {
             return Balance > cost;
-        }
-
-        private static bool IsBalanceValid(int balance)
-        {
-            return balance >= 0;
         }
     }
 }
