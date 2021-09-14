@@ -14,19 +14,17 @@ namespace Shops.Entities
         public string Name { get; }
         public int Balance { get; private set; }
 
-        public bool CanBuyProduct(int cost)
-        {
-            if (cost > Balance) return false;
-            Buy(cost);
-            return true;
-        }
-
-        private void Buy(int cost)
+        public void Buy(int cost)
         {
             Balance -= cost;
         }
 
-        private bool IsBalanceValid(int balance)
+        public bool CanBuyProduct(int cost)
+        {
+            return Balance > cost;
+        }
+
+        private static bool IsBalanceValid(int balance)
         {
             return balance >= 0;
         }

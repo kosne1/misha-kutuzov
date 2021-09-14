@@ -2,20 +2,13 @@
 {
     public class Product
     {
-        public Product(string name)
+        public Product(string name, int id)
         {
             Name = name;
-        }
-
-        public Product(string name, int amount, int price)
-        {
-            Name = name;
-            Amount = amount;
-            Price = price;
+            Id = id;
         }
 
         public string Name { get; }
-        public int Amount { get; set; }
-        public int Price { get; set; }
+        public int Id { get; }
     }
 }

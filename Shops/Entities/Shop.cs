@@ -1,98 +1,76 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using Shops.Models;
 using Shops.Tools;
 
 namespace Shops.Entities
 {
     public class Shop
     {
-        private readonly string _name;
         private int _id;
         private string _address;
+        private string _name;
 
         public Shop(string name, int id, string address)
         {
             _name = name;
             _id = id;
             _address = address;
-            Products = new List<Product>();
+            Products = new Dictionary<Product, ProductProperties>();
         }
 
-        public List<Product> Products { get; }
+        public Dictionary<Product, ProductProperties> Products { get; }
 
-        public void AddProducts(Product[] products, int[] amountsToAdd, int[] prices)
+        public void AddProduct(Product product, int amount, int price)
         {
-            for (int i = 0; i < products.Length; i++)
+            ProductProperties found = GetProductInfo(product);
+
+            if (found != null)
             {
-                Product found = FindProduct(products[i]);
-                if (found != null)
-                {
-                    found.Amount += amountsToAdd[i];
-                    found.Price = prices[i];
-                }
-                else
-                {
-                    Products.Add(new Product(products[i].Name, amountsToAdd[i], prices[i]));
-                }
+                found.Amount += amount;
+                found.Price = price;
+            }
+            else
+            {
+                var productProperties = new ProductProperties(amount, price);
+                Products.Add(product, productProperties);
             }
         }
 
         public void Buy(Person person, Product product, int amountToBuy)
         {
-            Product found = FindProduct(product);
-            if (found != null)
+            ProductProperties found = GetProductInfo(product);
+
+            if (found == null) throw new ShopException($"There is no {product.Name} in {_name} for {person.Name}");
+
+            if (amountToBuy > found.Amount)
+                throw new ShopException($"There is not enough {product.Name} in {_name} for {person.Name}");
+
+            int totalCost = found.Price * amountToBuy;
+            if (person.CanBuyProduct(totalCost))
             {
-                if (amountToBuy > found.Amount)
-                {
-                    throw new ShopException($"In shop {_name} there is not enough {product.Name} for {person.Name}");
-                }
-                else
-                {
-                    int totalCost = amountToBuy * found.Price;
-                    if (person.CanBuyProduct(totalCost))
-                    {
-                        found.Amount -= amountToBuy;
-                    }
-                    else
-                    {
-                        throw new ShopException(
-                            $"{person.Name} can't afford to buy {product.Name} due to lack of balance");
-                    }
-                }
+                person.Buy(totalCost);
+                found.Amount -= amountToBuy;
             }
             else
             {
-                throw new ShopException($"In shop {_name} there is no {product.Name} for {person.Name}");
+                throw new ShopException($"{person.Name} can't afford {product.Name} in {_name}");
             }
         }
 
         public void ChangePrice(Product product, int newPrice)
         {
-            Product found = FindProduct(product);
-            if (found != null)
-            {
-                if (newPrice < 0)
-                {
-                    throw new ShopException($"Can't setup price for {found.Name} below zero");
-                }
-                else
-                {
-                    found.Price = newPrice;
-                }
-            }
-            else
-            {
-                throw new ShopException($"In shop {_name} there is no {product.Name}");
-            }
+            ProductProperties found = GetProductInfo(product);
+
+            if (found == null) throw new ShopException($"There is no {product.Name} in {_name}");
+            found.Price = newPrice;
         }
 
-        public Product GetProductInfo(Product product)
+        public ProductProperties GetProductInfo(Product product)
         {
-            return FindProduct(product);
-        }
-
-        private Product FindProduct(Product product)
-        {
-            return Products.Find(found => found.Name == product.Name);
+            return Products.Where(e => e.Key.Id == product.Id)
+                .Select(p => p.Value)
+                .FirstOrDefault();
         }
     }
 }
