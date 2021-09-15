@@ -25,6 +25,15 @@ namespace Shops
                     case "Add Products":
                         userInterface.AddProducts();
                         break;
+                    case "Change Price":
+                        userInterface.ChangePrice();
+                        break;
+                    case "Buy Products":
+                        userInterface.BuyProduct();
+                        break;
+                    case "Get Shop Info":
+                        userInterface.GetShopInfo();
+                        break;
                     case "Quit":
                         return;
                 }

@@ -1,105 +1,110 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using Shops.Entities;
 using Shops.Service;
+using Shops.Tools;
 using Spectre.Console;
 
 namespace Shops.UI
 {
     public class UserInterface
     {
-        private ShopManager _shopManager;
-        private List<Person> _persons;
+        private readonly ShopManager _shopManager;
+        private readonly List<Person> _persons;
+        private readonly ConsoleService _consoleService;
 
         public UserInterface()
         {
             _shopManager = new ShopManager();
             _persons = new List<Person>();
+            _consoleService = new ConsoleService();
         }
 
         public string GetAction()
         {
             AnsiConsole.Clear();
-            string action = AnsiConsole.Prompt(
-                new SelectionPrompt<string>()
-                    .Title("Welcome to [green]shop manager[/]!")
-                    .PageSize(10)
-                    .MoreChoicesText("[grey](Move up and down to reveal more Actions)[/]")
-                    .AddChoices(new[] { "Add Person", "Create Shop", "Register Product", "Add Products", "Quit", }));
-
+            string action = _consoleService.AskForAction();
             return action;
         }
 
         public void AddPerson()
         {
-            string name = AnsiConsole.Ask<string>("What's [green]name[/]?");
-            int balance = AnsiConsole.Prompt(
-                new TextPrompt<int>("What's the [green]balance[/]?")
-                    .Validate(age =>
-                    {
-                        return age switch
-                        {
-                            < 0 => ValidationResult.Error("[red]Balance can't be negative[/]"),
-                            _ => ValidationResult.Success(),
-                        };
-                    }));
-
+            string name = _consoleService.AskForString("Name");
+            int balance = _consoleService.AskForValidInt("Balance");
             _persons.Add(new Person(name, balance));
         }
 
         public void CreateShop()
         {
-            string name = AnsiConsole.Ask<string>("What's [green]name[/]?");
-            string address = AnsiConsole.Ask<string>("What's [green]address[/]?");
+            string name = _consoleService.AskForString("Name");
+            string address = _consoleService.AskForString("Address");
             _shopManager.Create(name, address);
         }
 
         public void RegisterProduct()
         {
-            string name = AnsiConsole.Ask<string>("What's [green]name[/]?");
+            string name = _consoleService.AskForString("Name");
             _shopManager.RegisterProduct(name);
         }
 
         public void AddProducts()
         {
-            while (true)
+            Shop chosenShop = _consoleService.AskForShop(_shopManager);
+            Product chosenProduct = _consoleService.AskForProduct(_shopManager);
+            int amount = _consoleService.AskForValidInt("Amount");
+            int price = _consoleService.AskForValidInt("Price");
+
+            chosenShop?.AddProduct(chosenProduct, amount, price);
+
+            if (_consoleService.AskToRepeat())
             {
-                string shop = AnsiConsole.Prompt(new SelectionPrompt<string>().Title("Choose [green]shop[/]!")
-                    .PageSize(10)
-                    .MoreChoicesText("[grey](Move up and down to reveal more shops)[/]")
-                    .AddChoices(_shopManager.Shops.Select(s => s.Name)));
+                AddProducts();
+            }
+        }
 
-                string product = AnsiConsole.Prompt(new SelectionPrompt<string>().Title("Choose [green]product[/]!")
-                    .PageSize(10)
-                    .MoreChoicesText("[grey](Move up and down to reveal more products)[/]")
-                    .AddChoices(_shopManager.Products.Select(p => p.Name)));
+        public void ChangePrice()
+        {
+            Shop chosenShop = _consoleService.AskForShop(_shopManager);
+            Product chosenProduct = _consoleService.AskForProduct(_shopManager);
+            int newPrice = _consoleService.AskForValidInt("New Price");
 
-                int amount = AnsiConsole.Prompt(new TextPrompt<int>("What's the [green]amount[/]?").Validate(amount =>
-                {
-                    return amount switch
-                    {
-                        < 0 => ValidationResult.Error("[red]Amount can't be negative[/]"),
-                        _ => ValidationResult.Success(),
-                    };
-                }));
-                int price = AnsiConsole.Prompt(new TextPrompt<int>("What's the [green]price[/]?").Validate(price =>
-                {
-                    return price switch
-                    {
-                        < 0 => ValidationResult.Error("[red]Price can't be negative[/]"),
-                        _ => ValidationResult.Success(),
-                    };
-                }));
+            chosenShop?.ChangePrice(chosenProduct, newPrice);
 
-                Shop chosenShop = _shopManager.Shops.Find(s => s.Name == shop);
-                Product chosenProduct = _shopManager.Products.Find(p => p.Name == product);
-                chosenShop.AddProduct(chosenProduct, amount, price);
-                if (AnsiConsole.Confirm("Add another product?"))
-                {
-                    continue;
-                }
+            if (_consoleService.AskToRepeat())
+            {
+                ChangePrice();
+            }
+        }
 
-                break;
+        public void BuyProduct()
+        {
+            Shop chosenShop = _consoleService.AskForShop(_shopManager);
+            Person chosenPerson = _consoleService.AskForPerson(_persons);
+            Product chosenProduct = _consoleService.AskForProduct(_shopManager);
+            int amountToBuy = _consoleService.AskForValidInt("Amount to Buy");
+
+            try
+            {
+                chosenShop?.Buy(chosenPerson, chosenProduct, amountToBuy);
+            }
+            catch (ShopException e)
+            {
+                AnsiConsole.Markup(e.Message);
+            }
+
+            if (_consoleService.AskToRepeat())
+            {
+                BuyProduct();
+            }
+        }
+
+        public void GetShopInfo()
+        {
+            Shop chosenShop = _consoleService.AskForShop(_shopManager);
+            _consoleService.PrintShopInfo(chosenShop);
+
+            if (_consoleService.AskToRepeat())
+            {
+                GetShopInfo();
             }
         }
     }

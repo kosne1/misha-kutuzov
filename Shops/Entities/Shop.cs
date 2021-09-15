@@ -8,18 +8,18 @@ namespace Shops.Entities
     public class Shop
     {
         private int _id;
-        private string _address;
 
         public Shop(string name, int id, string address)
         {
             Name = name;
             _id = id;
-            _address = address;
+            Address = address;
             Products = new Dictionary<Product, ProductProperties>();
         }
 
         public Dictionary<Product, ProductProperties> Products { get; }
         public string Name { get; }
+        public string Address { get; }
 
         public void AddProduct(Product product, int amount, int price)
         {
