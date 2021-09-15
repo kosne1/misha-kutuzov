@@ -88,7 +88,7 @@ namespace Shops.UI
             }
             catch (ShopException e)
             {
-                AnsiConsole.Markup(e.Message);
+                _consoleService.PrintException(e);
             }
 
             if (_consoleService.AskToRepeat())

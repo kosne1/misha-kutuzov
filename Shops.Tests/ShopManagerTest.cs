@@ -53,11 +53,5 @@ namespace Shops.Tests
 
             Assert.Contains(snickers, shop.Products.Keys);
         }
-
-        [Test]
-        public void AddProductFindCheapestShop_FoundShop()
-        {
-            
-        }
     }
 }

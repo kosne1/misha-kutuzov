@@ -3,6 +3,7 @@ using System.Linq;
 using Shops.Entities;
 using Shops.Models;
 using Shops.Service;
+using Shops.Tools;
 using Spectre.Console;
 
 namespace Shops.UI
@@ -44,6 +45,11 @@ namespace Shops.UI
         public bool AskToRepeat()
         {
             return AnsiConsole.Confirm("Repeat operation?");
+        }
+
+        public void PrintException(ShopException e)
+        {
+            AnsiConsole.MarkupLine(e.Message);
         }
 
         public Shop AskForShop(ShopManager shopManager)
