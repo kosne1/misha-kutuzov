@@ -2,17 +2,16 @@
 using Shops.Entities;
 using Shops.Service;
 using Shops.Tools;
-using Spectre.Console;
 
-namespace Shops.UI
+namespace Shops.UI.Entities
 {
-    public class UserInterface
+    public class ShopSystem
     {
         private readonly ShopManager _shopManager;
         private readonly List<Person> _persons;
         private readonly ConsoleService _consoleService;
 
-        public UserInterface()
+        public ShopSystem()
         {
             _shopManager = new ShopManager();
             _persons = new List<Person>();
@@ -21,7 +20,6 @@ namespace Shops.UI
 
         public string GetAction()
         {
-            AnsiConsole.Clear();
             string action = _consoleService.AskForAction();
             return action;
         }
@@ -29,7 +27,7 @@ namespace Shops.UI
         public void AddPerson()
         {
             string name = _consoleService.AskForString("Name");
-            int balance = _consoleService.AskForValidInt("Balance");
+            int balance = _consoleService.AskForInt("Balance");
             _persons.Add(new Person(name, balance));
         }
 
@@ -50,8 +48,8 @@ namespace Shops.UI
         {
             Shop chosenShop = _consoleService.AskForShop(_shopManager);
             Product chosenProduct = _consoleService.AskForProduct(_shopManager);
-            int amount = _consoleService.AskForValidInt("Amount");
-            int price = _consoleService.AskForValidInt("Price");
+            int amount = _consoleService.AskForInt("Amount");
+            int price = _consoleService.AskForInt("Price");
 
             chosenShop?.AddProduct(chosenProduct, amount, price);
 
@@ -65,7 +63,7 @@ namespace Shops.UI
         {
             Shop chosenShop = _consoleService.AskForShop(_shopManager);
             Product chosenProduct = _consoleService.AskForProduct(_shopManager);
-            int newPrice = _consoleService.AskForValidInt("New Price");
+            int newPrice = _consoleService.AskForInt("New Price");
 
             chosenShop?.ChangePrice(chosenProduct, newPrice);
 
@@ -80,7 +78,7 @@ namespace Shops.UI
             Shop chosenShop = _consoleService.AskForShop(_shopManager);
             Person chosenPerson = _consoleService.AskForPerson(_persons);
             Product chosenProduct = _consoleService.AskForProduct(_shopManager);
-            int amountToBuy = _consoleService.AskForValidInt("Amount to Buy");
+            int amountToBuy = _consoleService.AskForInt("Amount to Buy");
 
             try
             {
@@ -97,14 +95,34 @@ namespace Shops.UI
             }
         }
 
-        public void GetShopInfo()
+        public void ShowShopInfo()
         {
             Shop chosenShop = _consoleService.AskForShop(_shopManager);
             _consoleService.PrintShopInfo(chosenShop);
 
             if (_consoleService.AskToRepeat())
             {
-                GetShopInfo();
+                ShowShopInfo();
+            }
+        }
+
+        public void ShowPersonsInfo()
+        {
+            _consoleService.PrintPersonsInfo(_persons);
+
+            if (_consoleService.AskToContinue())
+            {
+                ShowPersonsInfo();
+            }
+        }
+
+        public void ShowRegisteredProducts()
+        {
+            _consoleService.PrintRegisteredProducts(_shopManager.Products);
+
+            if (_consoleService.AskToContinue())
+            {
+                ShowRegisteredProducts();
             }
         }
     }

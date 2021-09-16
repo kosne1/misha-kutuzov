@@ -1,4 +1,4 @@
-﻿using Shops.UI;
+﻿using Shops.UI.Entities;
 
 namespace Shops
 {
@@ -6,33 +6,36 @@ namespace Shops
     {
         private static void Main()
         {
-            var userInterface = new UserInterface();
+            var shopSystem = new ShopSystem();
 
             while (true)
             {
-                string action = userInterface.GetAction();
+                string action = shopSystem.GetAction();
                 switch (action)
                 {
                     case "Add Person":
-                        userInterface.AddPerson();
+                        shopSystem.AddPerson();
                         break;
                     case "Create Shop":
-                        userInterface.CreateShop();
+                        shopSystem.CreateShop();
                         break;
                     case "Register Product":
-                        userInterface.RegisterProduct();
+                        shopSystem.RegisterProduct();
                         break;
                     case "Add Products":
-                        userInterface.AddProducts();
+                        shopSystem.AddProducts();
                         break;
                     case "Change Price":
-                        userInterface.ChangePrice();
+                        shopSystem.ChangePrice();
                         break;
                     case "Buy Products":
-                        userInterface.BuyProduct();
+                        shopSystem.BuyProduct();
                         break;
-                    case "Get Shop Info":
-                        userInterface.GetShopInfo();
+                    case "Show Shop Info":
+                        shopSystem.ShowShopInfo();
+                        break;
+                    case "Show Persons Info":
+                        shopSystem.ShowPersonsInfo();
                         break;
                     case "Quit":
                         return;

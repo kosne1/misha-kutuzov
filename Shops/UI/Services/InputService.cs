@@ -1,21 +1,19 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Shops.Entities;
-using Shops.Models;
 using Shops.Service;
-using Shops.Tools;
 using Spectre.Console;
 
-namespace Shops.UI
+namespace Shops.UI.Services
 {
-    public class ConsoleService
+    public class InputService
     {
-        public string AskForString(string value)
+        public string GetString(string value)
         {
             return AnsiConsole.Ask<string>($"What's [green]{value}[/]?");
         }
 
-        public int AskForValidInt(string value)
+        public int GetInt(string value)
         {
             return AnsiConsole.Prompt(new TextPrompt<int>($"What's the [green]{value}[/]?").Validate(requested =>
             {
@@ -27,8 +25,9 @@ namespace Shops.UI
             }));
         }
 
-        public string AskForAction()
+        public string GetAction()
         {
+            AnsiConsole.Clear();
             return AnsiConsole.Prompt(
                 new SelectionPrompt<string>()
                     .Title("[green]Shop manager[/] v1.0")
@@ -37,64 +36,43 @@ namespace Shops.UI
                     .AddChoices(new[]
                     {
                         "Add Person", "Create Shop", "Register Product", "Add Products", "Buy Products",
-                        "Get Shop Info", "Change Price",
+                        "Change Price", "Show Shop Info", "Show Persons Info", "Show Registered Products",
                         "Quit",
                     }));
         }
 
-        public bool AskToRepeat()
+        public bool GetConfirm()
         {
             return AnsiConsole.Confirm("Repeat operation?");
         }
 
-        public void PrintException(ShopException e)
+        public bool GetContinue()
         {
-            AnsiConsole.MarkupLine(e.Message);
+            return AnsiConsole.Confirm("Continue?");
         }
 
-        public Shop AskForShop(ShopManager shopManager)
+        public string GetShopName(ShopManager shopManager)
         {
-            string shopName = AnsiConsole.Prompt(new SelectionPrompt<string>().Title($"Choose [green]shop[/]!")
+            return AnsiConsole.Prompt(new SelectionPrompt<string>().Title($"Choose [green]shop[/]!")
                 .PageSize(10)
                 .MoreChoicesText($"[grey](Move up and down to reveal more shops)[/]")
                 .AddChoices(shopManager.Shops.Select(arg => arg.Name)));
-
-            return shopManager.Shops.Find(s => s.Name == shopName);
         }
 
-        public Product AskForProduct(ShopManager shopManager)
+        public string GetProductName(ShopManager shopManager)
         {
-            string productName = AnsiConsole.Prompt(new SelectionPrompt<string>().Title($"Choose [green]product[/]!")
+            return AnsiConsole.Prompt(new SelectionPrompt<string>().Title($"Choose [green]product[/]!")
                 .PageSize(10)
                 .MoreChoicesText($"[grey](Move up and down to reveal more products)[/]")
                 .AddChoices(shopManager.Products.Select(arg => arg.Name)));
-
-            return shopManager.Products.Find(p => p.Name == productName);
         }
 
-        public Person AskForPerson(List<Person> persons)
+        public string GetPersonName(List<Person> persons)
         {
-            string personName = AnsiConsole.Prompt(new SelectionPrompt<string>().Title($"Choose [green]person[/]!")
+            return AnsiConsole.Prompt(new SelectionPrompt<string>().Title($"Choose [green]person[/]!")
                 .PageSize(10)
                 .MoreChoicesText($"[grey](Move up and down to reveal more persons)[/]")
                 .AddChoices(persons.Select(arg => arg.Name)));
-
-            return persons.Find(p => p.Name == personName);
-        }
-
-        public void PrintShopInfo(Shop shop)
-        {
-            if (shop.Products.Count == 0)
-            {
-                AnsiConsole.MarkupLine("There are no Products");
-            }
-
-            foreach ((Product product, ProductProperties productProperties) in shop.Products)
-            {
-                AnsiConsole.Markup(product.Name);
-                AnsiConsole.Markup(" Amount: " + productProperties.Amount);
-                AnsiConsole.Markup(" Price: " + productProperties.Price + "\n");
-            }
         }
     }
 }
