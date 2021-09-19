@@ -7,123 +7,168 @@ namespace Shops.UI.Entities
 {
     public class ShopSystem
     {
-        private readonly ShopManager _shopManager;
-        private readonly List<Person> _persons;
-        private readonly ConsoleService _consoleService;
+        private uint _shopId = 1;
+        private uint _productId = 1;
 
-        public ShopSystem()
+        public bool MakeAction(ConsoleService consoleService, ShopManager shopManager, List<Person> persons)
         {
-            _shopManager = new ShopManager();
-            _persons = new List<Person>();
-            _consoleService = new ConsoleService();
-        }
+            string action = consoleService.AskForAction();
 
-        public string GetAction()
-        {
-            string action = _consoleService.AskForAction();
-            return action;
-        }
+            /*
+             * false - no quit
+             * true - quit
+            */
 
-        public void AddPerson()
-        {
-            string name = _consoleService.AskForString("Name");
-            int balance = _consoleService.AskForInt("Balance");
-            _persons.Add(new Person(name, balance));
-        }
-
-        public void CreateShop()
-        {
-            string name = _consoleService.AskForString("Name");
-            string address = _consoleService.AskForString("Address");
-            _shopManager.Create(name, address);
-        }
-
-        public void RegisterProduct()
-        {
-            string name = _consoleService.AskForString("Name");
-            _shopManager.RegisterProduct(name);
-        }
-
-        public void AddProducts()
-        {
-            Shop chosenShop = _consoleService.AskForShop(_shopManager);
-            Product chosenProduct = _consoleService.AskForProduct(_shopManager);
-            int amount = _consoleService.AskForInt("Amount");
-            int price = _consoleService.AskForInt("Price");
-
-            chosenShop?.AddProduct(chosenProduct, amount, price);
-
-            if (_consoleService.AskToRepeat())
+            switch (action)
             {
-                AddProducts();
+                case "Add Person":
+                    AddPerson(consoleService, persons);
+                    return false;
+                case "Create Shop":
+                    CreateShop(consoleService, shopManager);
+                    return false;
+                case "Register Product":
+                    RegisterProduct(consoleService, shopManager);
+                    return false;
+                case "Add Products":
+                    AddProducts(consoleService, shopManager);
+                    return false;
+                case "Change Price":
+                    ChangePrice(consoleService, shopManager);
+                    return false;
+                case "Buy Products":
+                    BuyProduct(consoleService, shopManager, persons);
+                    return false;
+                case "Show Shop Info":
+                    ShowShopInfo(consoleService, shopManager);
+                    return false;
+                case "Show Persons Info":
+                    ShowPersonsInfo(consoleService, persons);
+                    return false;
+                case "Show Registered Products":
+                    ShowRegisteredProducts(consoleService, shopManager);
+                    return false;
+                case "Quit":
+                    return true;
+                default:
+                    consoleService.PrintWrongChoice(action);
+                    return false;
             }
         }
 
-        public void ChangePrice()
+        public void AddPerson(ConsoleService consoleService, List<Person> persons)
         {
-            Shop chosenShop = _consoleService.AskForShop(_shopManager);
-            Product chosenProduct = _consoleService.AskForProduct(_shopManager);
-            int newPrice = _consoleService.AskForInt("New Price");
+            string name = consoleService.AskForString("Name");
+            uint balance = consoleService.AskForUInt("Balance");
+            consoleService.Clear();
+            persons.Add(new Person(name, balance));
+        }
 
-            chosenShop?.ChangePrice(chosenProduct, newPrice);
+        public void CreateShop(ConsoleService consoleService, ShopManager shopManager)
+        {
+            string name = consoleService.AskForString("Name");
+            string address = consoleService.AskForString("Address");
+            consoleService.Clear();
+            shopManager.Create(new Shop(name, _shopId++, address));
+        }
 
-            if (_consoleService.AskToRepeat())
+        public void RegisterProduct(ConsoleService consoleService, ShopManager shopManager)
+        {
+            string name = consoleService.AskForString("Name");
+            consoleService.Clear();
+            shopManager.RegisterProduct(new Product(name, _productId++));
+        }
+
+        public void AddProducts(ConsoleService consoleService, ShopManager shopManager)
+        {
+            while (true)
             {
-                ChangePrice();
+                Shop chosenShop = consoleService.AskForShop(shopManager);
+                Product chosenProduct = consoleService.AskForProduct(shopManager);
+                uint amount = consoleService.AskForUInt("Amount");
+                uint price = consoleService.AskForUInt("Price");
+
+                chosenShop?.AddProduct(chosenProduct, amount, price);
+
+                if (consoleService.AskToRepeat())
+                {
+                    continue;
+                }
+
+                break;
             }
         }
 
-        public void BuyProduct()
+        public void ChangePrice(ConsoleService consoleService, ShopManager shopManager)
         {
-            Shop chosenShop = _consoleService.AskForShop(_shopManager);
-            Person chosenPerson = _consoleService.AskForPerson(_persons);
-            Product chosenProduct = _consoleService.AskForProduct(_shopManager);
-            int amountToBuy = _consoleService.AskForInt("Amount to Buy");
+            while (true)
+            {
+                Shop chosenShop = consoleService.AskForShop(shopManager);
+                Product chosenProduct = consoleService.AskForProduct(shopManager);
+                uint newPrice = consoleService.AskForUInt("New Price");
 
-            try
-            {
-                chosenShop?.Buy(chosenPerson, chosenProduct, amountToBuy);
-            }
-            catch (ShopException e)
-            {
-                _consoleService.PrintException(e);
-            }
+                chosenShop?.ChangePrice(chosenProduct, newPrice);
 
-            if (_consoleService.AskToRepeat())
-            {
-                BuyProduct();
+                if (consoleService.AskToRepeat())
+                {
+                    continue;
+                }
+
+                break;
             }
         }
 
-        public void ShowShopInfo()
+        public void BuyProduct(ConsoleService consoleService, ShopManager shopManager, List<Person> persons)
         {
-            Shop chosenShop = _consoleService.AskForShop(_shopManager);
-            _consoleService.PrintShopInfo(chosenShop);
-
-            if (_consoleService.AskToRepeat())
+            while (true)
             {
-                ShowShopInfo();
+                Shop chosenShop = consoleService.AskForShop(shopManager);
+                Person chosenPerson = consoleService.AskForPerson(persons);
+                Product chosenProduct = consoleService.AskForProduct(shopManager);
+                uint amountToBuy = consoleService.AskForUInt("Amount to Buy");
+
+                try
+                {
+                    chosenShop?.Buy(chosenPerson, chosenProduct, amountToBuy);
+                }
+                catch (ShopException e)
+                {
+                    consoleService.PrintException(e);
+                }
+
+                if (consoleService.AskToRepeat())
+                {
+                    continue;
+                }
+
+                break;
             }
         }
 
-        public void ShowPersonsInfo()
+        public void ShowShopInfo(ConsoleService consoleService, ShopManager shopManager)
         {
-            _consoleService.PrintPersonsInfo(_persons);
-
-            if (_consoleService.AskToContinue())
+            while (true)
             {
-                ShowPersonsInfo();
+                Shop chosenShop = consoleService.AskForShop(shopManager);
+                consoleService.PrintShopInfo(chosenShop);
+
+                if (consoleService.AskToRepeat())
+                {
+                    continue;
+                }
+
+                break;
             }
         }
 
-        public void ShowRegisteredProducts()
+        public void ShowPersonsInfo(ConsoleService consoleService, List<Person> persons)
         {
-            _consoleService.PrintRegisteredProducts(_shopManager.Products);
+            consoleService.PrintPersonsInfo(persons.AsReadOnly());
+        }
 
-            if (_consoleService.AskToContinue())
-            {
-                ShowRegisteredProducts();
-            }
+        public void ShowRegisteredProducts(ConsoleService consoleService, ShopManager shopManager)
+        {
+            consoleService.PrintRegisteredProducts(shopManager.Products().AsReadOnly());
         }
     }
 }

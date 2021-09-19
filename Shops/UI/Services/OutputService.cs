@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections.ObjectModel;
+using System.Threading;
 using Shops.Entities;
 using Shops.Models;
 using Shops.Tools;
@@ -13,14 +14,25 @@ namespace Shops.UI.Services
             AnsiConsole.MarkupLine(e.Message);
         }
 
+        public void Clear()
+        {
+            AnsiConsole.Clear();
+        }
+
+        public void PrintWrongChoice(string action)
+        {
+            AnsiConsole.MarkupLine($"There is no such option as {action}. Try again");
+            Thread.Sleep(5000);
+        }
+
         public void PrintShopInfo(Shop shop)
         {
-            if (shop.Products.Count == 0)
+            if (shop.Products().Count == 0)
             {
                 PrintIfNothing("Shops");
             }
 
-            foreach ((Product product, ProductProperties productProperties) in shop.Products)
+            foreach ((Product product, ProductProperties productProperties) in shop.Products())
             {
                 AnsiConsole.Markup(product.Name);
                 AnsiConsole.Markup(" Amount: " + productProperties.Amount);
@@ -28,7 +40,7 @@ namespace Shops.UI.Services
             }
         }
 
-        public void PrintPersonsInfo(List<Person> persons)
+        public void PrintPersonsInfo(ReadOnlyCollection<Person> persons)
         {
             if (persons.Count == 0)
             {
@@ -42,7 +54,7 @@ namespace Shops.UI.Services
             }
         }
 
-        public void PrintProducts(List<Product> products)
+        public void PrintProducts(ReadOnlyCollection<Product> products)
         {
             if (products.Count == 0)
             {
@@ -57,7 +69,7 @@ namespace Shops.UI.Services
 
         private void PrintIfNothing(string value)
         {
-            AnsiConsole.MarkupLine($"There are no {value} in system");
+            AnsiConsole.MarkupLine($"There are no {value} in system yet");
         }
     }
 }

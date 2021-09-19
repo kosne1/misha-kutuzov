@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using Shops.Entities;
 using Shops.Service;
+using Shops.Tools;
 
 namespace Shops.Tests
 {
@@ -15,12 +16,15 @@ namespace Shops.Tests
         }
 
         [Test]
-        [TestCase(500, 500, 10, 30)]
-        public void CreateShopAddProducts_BuyProducts(int moneyBefore, int amountToAdd, int priceToAdd, int amountToBuy)
+        [TestCase(500, 500, 10, 30, 1, 1)]
+        public void CreateShopAddProducts_BuyProducts(uint moneyBefore, uint amountToAdd, uint priceToAdd,
+            uint amountToBuy, uint shopId, uint productId)
         {
             var person = new Person("Misha", moneyBefore);
-            Shop shop = _shopManager.Create("Diksi", "Optikov street");
-            Product snickers = _shopManager.RegisterProduct("Snickers");
+            var shop = new Shop("Diksi", shopId, "Optikov street");
+            _shopManager.Create(shop);
+            var snickers = new Product("Snickers", productId);
+            _shopManager.RegisterProduct(snickers);
 
             shop.AddProduct(snickers, amountToAdd, priceToAdd);
             shop.Buy(person, snickers, amountToBuy);
@@ -30,11 +34,14 @@ namespace Shops.Tests
         }
 
         [Test]
-        [TestCase(500, 45, 35)]
-        public void SetupPriceChangePrice_PriceChanged(int amountToAdd, int priceToAdd, int newPrice)
+        [TestCase(500, 45, 35, 6, 9)]
+        public void SetupPriceChangePrice_PriceChanged(uint amountToAdd, uint priceToAdd, uint newPrice, uint shopId,
+            uint productId)
         {
-            Shop shop = _shopManager.Create("Diksi", "Optikov street");
-            Product snickers = _shopManager.RegisterProduct("Snickers");
+            var shop = new Shop("Diksi", shopId, "Optikov street");
+            _shopManager.Create(shop);
+            var snickers = new Product("Snickers", productId);
+            _shopManager.RegisterProduct(snickers);
 
             shop.AddProduct(snickers, amountToAdd, priceToAdd);
             shop.ChangePrice(snickers, newPrice);
@@ -43,15 +50,38 @@ namespace Shops.Tests
         }
 
         [Test]
-        [TestCase(500, 45)]
-        public void AddProductsToShop_CanBuyProducts(int amountToAdd, int priceToAdd)
+        [TestCase(500, 45, 1, 1)]
+        public void AddProductsToShop_CanBuyProducts(uint amountToAdd, uint priceToAdd, uint shopId, uint productId)
         {
-            Shop shop = _shopManager.Create("Diksi", "Optikov street");
-            Product snickers = _shopManager.RegisterProduct("Snickers");
+            var shop = new Shop("Diksi", shopId, "Optikov street");
+            _shopManager.Create(shop);
+            var snickers = new Product("Snickers", productId);
+            _shopManager.RegisterProduct(snickers);
 
             shop.AddProduct(snickers, amountToAdd, priceToAdd);
 
-            Assert.Contains(snickers, shop.Products.Keys);
+            Assert.Contains(snickers, shop.Products().Keys);
+        }
+
+        [Test]
+        [TestCase(500, 45, 1, 1, 2)]
+        public void AddProductsToShopFindNotExistingProduct_ThrowException(uint amountToAdd, uint priceToAdd,
+            uint shopId, uint product1Id, uint product2Id)
+        {
+            Assert.Catch<ShopException>(() =>
+                {
+                    var shop = new Shop("Diksi", shopId, "Optikov street");
+                    _shopManager.Create(shop);
+                    var snickers = new Product("Snickers", product1Id);
+                    _shopManager.RegisterProduct(snickers);
+                    var mars = new Product("Mars", product2Id);
+                    _shopManager.RegisterProduct(mars);
+
+                    shop.AddProduct(snickers, amountToAdd, priceToAdd);
+
+                    shop.GetProductInfo(snickers);
+                }
+            );
         }
     }
 }

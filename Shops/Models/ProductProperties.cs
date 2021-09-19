@@ -2,13 +2,13 @@
 {
     public class ProductProperties
     {
-        public ProductProperties(int amount, int price)
+        public ProductProperties(uint amount, uint price)
         {
             Amount = amount;
             Price = price;
         }
 
-        public int Amount { get; set; }
-        public int Price { get; set; }
+        public uint Amount { get; set; }
+        public uint Price { get; set; }
     }
 }

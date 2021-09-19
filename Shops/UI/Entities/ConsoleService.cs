@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using Shops.Entities;
 using Shops.Service;
 using Shops.Tools;
@@ -22,9 +23,9 @@ namespace Shops.UI.Entities
             return _inputService.GetString(value);
         }
 
-        public int AskForInt(string value)
+        public uint AskForUInt(string value)
         {
-            return _inputService.GetInt(value);
+            return _inputService.GetUInt(value);
         }
 
         public string AskForAction()
@@ -37,9 +38,9 @@ namespace Shops.UI.Entities
             return _inputService.GetConfirm();
         }
 
-        public bool AskToContinue()
+        public void Clear()
         {
-            return _inputService.GetContinue();
+            _outputService.Clear();
         }
 
         public void PrintException(ShopException e)
@@ -51,14 +52,14 @@ namespace Shops.UI.Entities
         {
             string shopName = _inputService.GetShopName(shopManager);
 
-            return shopManager.Shops.Find(s => s.Name == shopName);
+            return shopManager.Shops().Find(s => s.Name() == shopName);
         }
 
         public Product AskForProduct(ShopManager shopManager)
         {
             string productName = _inputService.GetProductName(shopManager);
 
-            return shopManager.Products.Find(p => p.Name == productName);
+            return shopManager.Products().Find(p => p.Name == productName);
         }
 
         public Person AskForPerson(List<Person> persons)
@@ -73,14 +74,19 @@ namespace Shops.UI.Entities
             _outputService.PrintShopInfo(shop);
         }
 
-        public void PrintPersonsInfo(List<Person> persons)
+        public void PrintPersonsInfo(ReadOnlyCollection<Person> persons)
         {
             _outputService.PrintPersonsInfo(persons);
         }
 
-        public void PrintRegisteredProducts(List<Product> products)
+        public void PrintRegisteredProducts(ReadOnlyCollection<Product> products)
         {
             _outputService.PrintProducts(products);
+        }
+
+        public void PrintWrongChoice(string action)
+        {
+            _outputService.PrintWrongChoice(action);
         }
     }
 }

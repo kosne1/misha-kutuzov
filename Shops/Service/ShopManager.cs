@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Shops.Entities;
 using Shops.Tools;
 
@@ -7,40 +7,42 @@ namespace Shops.Service
 {
     public class ShopManager
     {
-        private int _shopId = 1;
-        private int _productId = 1;
+        private readonly List<Shop> _shops;
+        private readonly List<Product> _products;
 
         public ShopManager()
         {
-            Shops = new List<Shop>();
-            Products = new List<Product>();
+            _shops = new List<Shop>();
+            _products = new List<Product>();
         }
 
-        public List<Shop> Shops { get; }
-        public List<Product> Products { get; }
-
-        public Shop Create(string name, string address)
+        public void Create(Shop shop)
         {
-            var shop = new Shop(name, _shopId++, address);
-            Shops.Add(shop);
-            return shop;
+            _shops.Add(shop);
         }
 
-        public Product RegisterProduct(string name)
+        public void RegisterProduct(Product product)
         {
-            var newProduct = new Product(name, _productId++);
+            if (IsProductRegistered(product.Name))
+                throw new ShopException($"Product {product.Name} is already registered!");
 
-            foreach (Product product in Products)
-            {
-                if (string.Equals(product.Name, newProduct.Name, StringComparison.CurrentCultureIgnoreCase))
-                {
-                    throw new ShopException(
-                        $"Product {newProduct.Name} is already registered as {product.Name} with {product.Id} ID");
-                }
-            }
+            _products.Add(product);
+        }
 
-            Products.Add(newProduct);
-            return newProduct;
+        public List<Product> Products()
+        {
+            return _products;
+        }
+
+        public List<Shop> Shops()
+        {
+            return _shops;
+        }
+
+        private bool IsProductRegistered(string name)
+        {
+            Product foundProduct = _products.FirstOrDefault(p => p.Name == name);
+            return foundProduct != null;
         }
     }
 }
