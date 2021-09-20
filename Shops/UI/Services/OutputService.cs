@@ -1,5 +1,4 @@
 ﻿using System.Collections.ObjectModel;
-using System.Threading;
 using Shops.Entities;
 using Shops.Models;
 using Shops.Tools;
@@ -34,7 +33,7 @@ namespace Shops.UI.Services
             }
         }
 
-        public void PrintPersonsInfo(ReadOnlyCollection<Person> persons)
+        public void PrintPersons(ReadOnlyCollection<Person> persons)
         {
             if (persons.Count == 0)
             {
@@ -48,7 +47,7 @@ namespace Shops.UI.Services
             }
         }
 
-        public void PrintProducts(ReadOnlyCollection<Product> products)
+        public void PrintRegisteredProducts(ReadOnlyCollection<Product> products)
         {
             if (products.Count == 0)
             {

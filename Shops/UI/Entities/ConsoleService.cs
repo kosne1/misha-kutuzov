@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using Shops.Entities;
 using Shops.Service;
-using Shops.Tools;
 using Shops.UI.Services;
 
 namespace Shops.UI.Entities
@@ -18,70 +16,125 @@ namespace Shops.UI.Entities
             _outputService = new OutputService();
         }
 
-        public string AskForString(string value)
+        public void Run(ShopSystem shopSystem, ShopManager shopManager, List<Person> persons)
         {
-            return _inputService.GetString(value);
+            while (true)
+            {
+                bool shouldQuit = MakeAction(shopSystem, shopManager, persons);
+                if (shouldQuit)
+                    return;
+            }
         }
 
-        public uint AskForUInt(string value)
+        private bool MakeAction(ShopSystem shopSystem, ShopManager shopManager, List<Person> persons)
         {
-            return _inputService.GetUInt(value);
+            string action = _inputService.GetAction();
+
+            switch (action)
+            {
+                case "Add Person":
+                    (string personName, uint balance) = GetPersonInfo();
+                    shopSystem.AddPerson(personName, balance, persons);
+                    break;
+                case "Create Shop":
+                    (string shopName, string address) = GetShopInfo();
+                    shopSystem.CreateShop(shopName, address, shopManager);
+                    break;
+                case "Register Product":
+                    string productName = GetProductInfo();
+                    shopSystem.RegisterProduct(productName, shopManager);
+                    break;
+                case "Add Products":
+                    shopSystem.AddProducts(GetShop(shopManager), GetProduct(shopManager), GetAmount(), GetPrice());
+                    break;
+                case "Change Price":
+                    shopSystem.ChangePrice(GetShop(shopManager), GetProduct(shopManager), GetNewPrice());
+                    break;
+                case "Buy Products":
+                    shopSystem.BuyProduct(GetShop(shopManager), GetPerson(persons), GetProduct(shopManager), GetAmount());
+                    break;
+                case "Show Shop Info":
+                    ShowShopInfo(GetShop(shopManager));
+                    break;
+                case "Show Persons":
+                    ShowPersons(persons);
+                    break;
+                case "Show Registered Products":
+                    ShowRegisteredProducts(shopManager);
+                    break;
+                case "Quit":
+                    return true;
+            }
+
+            return false;
         }
 
-        public string AskForAction()
+        private (string, uint) GetPersonInfo()
         {
-            return _inputService.GetAction();
+            string name = _inputService.GetString("Name");
+            uint balance = _inputService.GetUInt("Balance");
+            return (name, balance);
         }
 
-        public bool AskToRepeat()
+        private (string, string) GetShopInfo()
         {
-            return _inputService.GetConfirm();
+            string name = _inputService.GetString("Name");
+            string address = _inputService.GetString("Address");
+            return (name, address);
         }
 
-        public void Clear()
+        private string GetProductInfo()
         {
-            _outputService.Clear();
+            string name = _inputService.GetString("Name");
+            return name;
         }
 
-        public void PrintException(ShopException e)
+        private uint GetNewPrice()
         {
-            _outputService.PrintException(e);
+            uint newPrice = _inputService.GetUInt("New Price");
+            return newPrice;
         }
 
-        public Shop AskForShop(ShopManager shopManager)
+        private uint GetPrice()
         {
-            string shopName = _inputService.GetShopName(shopManager);
-
-            return shopManager.Shops.Find(s => s.Name == shopName);
+            uint price = _inputService.GetUInt("Price");
+            return price;
         }
 
-        public Product AskForProduct(ShopManager shopManager)
+        private uint GetAmount()
         {
-            string productName = _inputService.GetProductName(shopManager);
-
-            return shopManager.Products.Find(p => p.Name == productName);
+            uint amount = _inputService.GetUInt("Amount");
+            return amount;
         }
 
-        public Person AskForPerson(List<Person> persons)
+        private Shop GetShop(ShopManager shopManager)
         {
-            string personName = _inputService.GetPersonName(persons);
-
-            return persons.Find(p => p.Name == personName);
+            return shopManager.Shops.Find(s => s.Id == _inputService.GetShopId(shopManager));
         }
 
-        public void PrintShopInfo(Shop shop)
+        private Product GetProduct(ShopManager shopManager)
+        {
+            return shopManager.Products.Find(s => s.Id == _inputService.GetProductId(shopManager));
+        }
+
+        private Person GetPerson(List<Person> persons)
+        {
+            return persons.Find(s => s.Name == _inputService.GetPersonName(persons));
+        }
+
+        private void ShowPersons(List<Person> persons)
+        {
+            _outputService.PrintPersons(persons.AsReadOnly());
+        }
+
+        private void ShowRegisteredProducts(ShopManager shopManager)
+        {
+            _outputService.PrintRegisteredProducts(shopManager.Products.AsReadOnly());
+        }
+
+        private void ShowShopInfo(Shop shop)
         {
             _outputService.PrintShopInfo(shop);
-        }
-
-        public void PrintPersonsInfo(ReadOnlyCollection<Person> persons)
-        {
-            _outputService.PrintPersonsInfo(persons);
-        }
-
-        public void PrintRegisteredProducts(ReadOnlyCollection<Product> products)
-        {
-            _outputService.PrintProducts(products);
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Shops.Entities;
 using Shops.Service;
@@ -22,7 +23,7 @@ namespace Shops.UI.Services
         {
             return AnsiConsole.Prompt(
                 new SelectionPrompt<string>()
-                    .Title("[green]Shop manager[/] v2.0")
+                    .Title("[green]Shop manager[/] v3.0")
                     .PageSize(10)
                     .MoreChoicesText("[grey](Move up and down to reveal more Actions)[/]")
                     .AddChoices(
@@ -33,7 +34,7 @@ namespace Shops.UI.Services
                         "Buy Products",
                         "Change Price",
                         "Show Shop Info",
-                        "Show Persons Info",
+                        "Show Persons",
                         "Show Registered Products",
                         "Quit"));
         }
@@ -43,20 +44,22 @@ namespace Shops.UI.Services
             return AnsiConsole.Confirm("Repeat operation?");
         }
 
-        public string GetShopName(ShopManager shopManager)
+        public uint GetShopId(ShopManager shopManager)
         {
-            return AnsiConsole.Prompt(new SelectionPrompt<string>().Title($"Choose [green]shop[/]!")
+            string shopInfo = AnsiConsole.Prompt(new SelectionPrompt<string>().Title($"Choose [green]shop[/]!")
                 .PageSize(10)
                 .MoreChoicesText($"[grey](Move up and down to reveal more shops)[/]")
-                .AddChoices(shopManager.Shops.Select(arg => arg.Name)));
+                .AddChoices(shopManager.Shops.Select(arg => arg.Id + " " + arg.Name)));
+            return Convert.ToUInt32(shopInfo.Split(' ')[0]);
         }
 
-        public string GetProductName(ShopManager shopManager)
+        public uint GetProductId(ShopManager shopManager)
         {
-            return AnsiConsole.Prompt(new SelectionPrompt<string>().Title($"Choose [green]product[/]!")
+            string productInfo = AnsiConsole.Prompt(new SelectionPrompt<string>().Title($"Choose [green]product[/]!")
                 .PageSize(10)
                 .MoreChoicesText($"[grey](Move up and down to reveal more products)[/]")
-                .AddChoices(shopManager.Products.Select(arg => arg.Name)));
+                .AddChoices(shopManager.Products.Select(arg => arg.Id + " " + arg.Name)));
+            return Convert.ToUInt32(productInfo.Split(' ')[0]);
         }
 
         public string GetPersonName(List<Person> persons)

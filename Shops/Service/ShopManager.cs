@@ -14,7 +14,7 @@ namespace Shops.Service
         public List<Product> Products { get; }
         public List<Shop> Shops { get; }
 
-        public void Create(Shop shop)
+        public void RegisterShop(Shop shop)
         {
             Shops.Add(shop);
         }

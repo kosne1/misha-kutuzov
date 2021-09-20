@@ -7,34 +7,34 @@ namespace Shops.Entities
 {
     public class Shop
     {
-        private readonly uint _id;
         private readonly string _address;
 
         public Shop(string name, uint id, string address)
         {
             Name = name;
-            _id = id;
+            Id = id;
             _address = address;
             Products = new Dictionary<Product, ProductProperties>();
         }
 
         public Dictionary<Product, ProductProperties> Products { get; }
         public string Name { get; }
+        public uint Id { get; }
 
         public void AddProduct(Product product, uint amount, uint price)
         {
-            try
-            {
-                ProductProperties foundProductInfo = GetProductInfo(product);
+            ProductProperties foundProductInfo =
+                Products.FirstOrDefault(p => p.Key.Id == product.Id).Value;
 
-                foundProductInfo.Amount += amount;
-                foundProductInfo.Price = price;
-            }
-            catch (ShopException e)
+            if (foundProductInfo == null)
             {
-                string eMessage = e.Message;
                 var productProperties = new ProductProperties(amount, price);
                 Products.Add(product, productProperties);
+            }
+            else
+            {
+                foundProductInfo.Amount += amount;
+                foundProductInfo.Price = price;
             }
         }
 
