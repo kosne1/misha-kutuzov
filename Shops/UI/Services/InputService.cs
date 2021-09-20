@@ -48,7 +48,7 @@ namespace Shops.UI.Services
             return AnsiConsole.Prompt(new SelectionPrompt<string>().Title($"Choose [green]shop[/]!")
                 .PageSize(10)
                 .MoreChoicesText($"[grey](Move up and down to reveal more shops)[/]")
-                .AddChoices(shopManager.Shops().Select(arg => arg.Name())));
+                .AddChoices(shopManager.Shops.Select(arg => arg.Name)));
         }
 
         public string GetProductName(ShopManager shopManager)
@@ -56,7 +56,7 @@ namespace Shops.UI.Services
             return AnsiConsole.Prompt(new SelectionPrompt<string>().Title($"Choose [green]product[/]!")
                 .PageSize(10)
                 .MoreChoicesText($"[grey](Move up and down to reveal more products)[/]")
-                .AddChoices(shopManager.Products().Select(arg => arg.Name)));
+                .AddChoices(shopManager.Products.Select(arg => arg.Name)));
         }
 
         public string GetPersonName(List<Person> persons)

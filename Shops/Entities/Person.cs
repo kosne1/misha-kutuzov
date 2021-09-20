@@ -16,12 +16,12 @@ namespace Shops.Entities
 
         public void Buy(uint cost)
         {
-            if (!CanAfford(cost))
+            if (!CanBuy(cost))
                 throw new ShopException($"{Name} can't afford to buy products for {cost}. His balance is {Balance}");
             Balance -= cost;
         }
 
-        private bool CanAfford(uint cost)
+        private bool CanBuy(uint cost)
         {
             return Balance >= cost;
         }

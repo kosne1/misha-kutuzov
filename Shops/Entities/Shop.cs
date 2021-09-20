@@ -9,52 +9,41 @@ namespace Shops.Entities
     {
         private readonly uint _id;
         private readonly string _address;
-        private readonly Dictionary<Product, ProductProperties> _products;
-        private readonly string _name;
 
         public Shop(string name, uint id, string address)
         {
-            _name = name;
+            Name = name;
             _id = id;
             _address = address;
-            _products = new Dictionary<Product, ProductProperties>();
+            Products = new Dictionary<Product, ProductProperties>();
         }
 
-        public string Name()
-        {
-            return _name;
-        }
-
-        public Dictionary<Product, ProductProperties> Products()
-        {
-            return _products;
-        }
+        public Dictionary<Product, ProductProperties> Products { get; }
+        public string Name { get; }
 
         public void AddProduct(Product product, uint amount, uint price)
         {
-            ProductProperties foundProductInfo = GetProductProperties(product);
-
-            if (foundProductInfo != null)
+            try
             {
+                ProductProperties foundProductInfo = GetProductInfo(product);
+
                 foundProductInfo.Amount += amount;
                 foundProductInfo.Price = price;
             }
-            else
+            catch (ShopException e)
             {
+                string eMessage = e.Message;
                 var productProperties = new ProductProperties(amount, price);
-                _products.Add(product, productProperties);
+                Products.Add(product, productProperties);
             }
         }
 
         public void Buy(Person person, Product product, uint amountToBuy)
         {
-            ProductProperties foundProductInfo = GetProductProperties(product);
-
-            if (foundProductInfo == null)
-                throw new ShopException($"There is no {product.Name} in {_name} for {person.Name}");
+            ProductProperties foundProductInfo = GetProductInfo(product);
 
             if (amountToBuy > foundProductInfo.Amount)
-                throw new ShopException($"There is not enough {product.Name} in {_name} for {person.Name}");
+                throw new ShopException($"There is not enough {product.Name} in {Name} for {person.Name}");
 
             uint totalCost = foundProductInfo.Price * amountToBuy;
             person.Buy(totalCost);
@@ -63,25 +52,19 @@ namespace Shops.Entities
 
         public void ChangePrice(Product product, uint newPrice)
         {
-            ProductProperties foundProductInfo = GetProductProperties(product);
-
-            if (foundProductInfo == null) throw new ShopException($"There is no {product.Name} in {_name}");
+            ProductProperties foundProductInfo = GetProductInfo(product);
 
             foundProductInfo.Price = newPrice;
         }
 
         public ProductProperties GetProductInfo(Product product)
         {
-            ProductProperties foundProductInfo = GetProductProperties(product);
+            ProductProperties foundProductInfo =
+                Products.FirstOrDefault(p => p.Key.Id == product.Id).Value;
 
-            if (foundProductInfo == null) throw new ShopException($"There is no {product.Name} in {_name}");
+            if (foundProductInfo == null) throw new ShopException($"There is no {product.Name} in {Name}");
 
             return foundProductInfo;
-        }
-
-        private ProductProperties GetProductProperties(Product product)
-        {
-            return _products.FirstOrDefault(p => p.Key.Id == product.Id).Value;
         }
     }
 }

@@ -52,14 +52,14 @@ namespace Shops.UI.Entities
         {
             string shopName = _inputService.GetShopName(shopManager);
 
-            return shopManager.Shops().Find(s => s.Name() == shopName);
+            return shopManager.Shops.Find(s => s.Name == shopName);
         }
 
         public Product AskForProduct(ShopManager shopManager)
         {
             string productName = _inputService.GetProductName(shopManager);
 
-            return shopManager.Products().Find(p => p.Name == productName);
+            return shopManager.Products.Find(p => p.Name == productName);
         }
 
         public Person AskForPerson(List<Person> persons)
@@ -82,11 +82,6 @@ namespace Shops.UI.Entities
         public void PrintRegisteredProducts(ReadOnlyCollection<Product> products)
         {
             _outputService.PrintProducts(products);
-        }
-
-        public void PrintWrongChoice(string action)
-        {
-            _outputService.PrintWrongChoice(action);
         }
     }
 }

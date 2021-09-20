@@ -13,12 +13,6 @@ namespace Shops
             var consoleService = new ConsoleService();
             var shopManager = new ShopManager();
             var persons = new List<Person>();
-
-            while (true)
-            {
-                if (shopSystem.MakeAction(consoleService, shopManager, persons))
-                    break;
-            }
         }
     }
 }

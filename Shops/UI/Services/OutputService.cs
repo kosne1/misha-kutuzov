@@ -19,20 +19,14 @@ namespace Shops.UI.Services
             AnsiConsole.Clear();
         }
 
-        public void PrintWrongChoice(string action)
-        {
-            AnsiConsole.MarkupLine($"There is no such option as {action}. Try again");
-            Thread.Sleep(5000);
-        }
-
         public void PrintShopInfo(Shop shop)
         {
-            if (shop.Products().Count == 0)
+            if (shop.Products.Count == 0)
             {
                 PrintIfNothing("Shops");
             }
 
-            foreach ((Product product, ProductProperties productProperties) in shop.Products())
+            foreach ((Product product, ProductProperties productProperties) in shop.Products)
             {
                 AnsiConsole.Markup(product.Name);
                 AnsiConsole.Markup(" Amount: " + productProperties.Amount);
