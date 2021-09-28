@@ -1,8 +1,8 @@
-﻿namespace Isu.Entities
+﻿namespace IsuExtra.Entities
 {
-    public class CourseNumber
+    public class Classroom
     {
-        public CourseNumber(int number)
+        public Classroom(int number)
         {
             Number = number;
         }

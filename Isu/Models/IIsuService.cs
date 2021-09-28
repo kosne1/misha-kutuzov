@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Isu.Entities;
 
-namespace Isu.Services
+namespace Isu.Models
 {
     public interface IIsuService
     {
@@ -11,10 +11,10 @@ namespace Isu.Services
         Student GetStudent(int id);
         Student FindStudent(string name);
         List<Student> FindStudents(string groupName);
-        List<Student> FindStudents(CourseNumber courseNumber);
+        List<Student> FindStudents(int courseNumber);
 
         Group FindGroup(string groupName);
-        List<Group> FindGroups(CourseNumber courseNumber);
+        List<Group> FindGroups(int courseNumber);
 
         void ChangeStudentGroup(Student student, Group newGroup);
     }

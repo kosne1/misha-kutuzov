@@ -1,18 +1,18 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Isu.Entities;
+using Isu.Models;
 
 namespace Isu.Services
 {
     public class IsuService : IIsuService
     {
         private readonly List<Group> _isuGroups;
-        private int _studentsCounter;
+        private int _studentsCounter = 1;
 
         public IsuService()
         {
             _isuGroups = new List<Group>();
-            _studentsCounter = 1;
         }
 
         public Group AddGroup(string name)
@@ -24,7 +24,13 @@ namespace Isu.Services
 
         public Student AddStudent(Group group, string name)
         {
-            var student = new Student(name, _studentsCounter++, group.Name);
+            var student = new Student(name, _studentsCounter++);
+            group.AddStudent(student);
+            return student;
+        }
+
+        public Student AddStudent(Group group, Student student)
+        {
             group.AddStudent(student);
             return student;
         }
@@ -45,11 +51,11 @@ namespace Isu.Services
                 .FirstOrDefault();
         }
 
-        public List<Student> FindStudents(CourseNumber courseNumber)
+        public List<Student> FindStudents(int courseNumber)
         {
             var students = new List<Student>();
 
-            var foundGroups = _isuGroups.Where(isuGroup => isuGroup.Course == courseNumber.Number);
+            IEnumerable<Group> foundGroups = _isuGroups.Where(isuGroup => isuGroup.Course == courseNumber);
 
             foreach (Group isuGroup in foundGroups)
             {
@@ -64,21 +70,21 @@ namespace Isu.Services
             return _isuGroups.FirstOrDefault(isuGroup => isuGroup.Name == groupName);
         }
 
-        public List<Group> FindGroups(CourseNumber courseNumber)
+        public List<Group> FindGroups(int courseNumber)
         {
-            return _isuGroups.Where(isuGroup => isuGroup.Course == courseNumber.Number).ToList();
+            return _isuGroups.Where(isuGroup => isuGroup.Course == courseNumber).ToList();
         }
 
         public void ChangeStudentGroup(Student student, Group newGroup)
         {
-            newGroup.AddStudent(student);
-
-            foreach (Group isuGroup in _isuGroups.Where(isuGroup => isuGroup.Name == student.GroupName))
+            foreach (Group isuGroup in from isuGroup in _isuGroups
+                let foundStudent = isuGroup.Students.Find(s => s.Id == student.Id)
+                where foundStudent != null
+                select isuGroup)
             {
-                isuGroup.Students.Remove(student);
+                isuGroup.RemoveStudent(student);
+                AddStudent(newGroup, student);
             }
-
-            student.GroupName = newGroup.Name;
         }
     }
 }
