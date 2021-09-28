@@ -1,0 +1,64 @@
+﻿@startuml
+
+class IsuService{
+MegaFaculty[] megaFaculties
+}
+
+class MegaFaculty {
+Group[] groups
+ElectiveModule[] electiveModules
+}
+
+class ElectiveModule {
+Stream[] streams
+}
+
+class Group{
+Student[] students
++ String name
++ Int Course
+- Int maxStudentNumber
+}
+
+class Student{
++ String name
++ Int id
++ String GroupName
+}
+
+class Stream{
+Lesson[] lessons
+}
+
+class Lesson{
++ Auditory auditory
++ Professor professor
++ DateTime beginTime
++ DateTime endTime
+}
+
+class Building{
+Auditory auditory
+}
+
+class Auditory{
++ Int id
+}
+
+class Professor{
++ String name
++ Int id
+}
+
+IsuService <-- MegaFaculty
+MegaFaculty <-- ElectiveModule
+MegaFaculty <-- Group
+Group <-- Student
+
+ElectiveModule <-- Stream
+Stream <-- Lesson
+Lesson <-- Auditory
+Lesson <-- Professor
+Building <-- Auditory
+
+@enduml
