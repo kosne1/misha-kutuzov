@@ -1,4 +1,4 @@
-﻿namespace IsuExtra.Entities
+﻿namespace Isu.Entities
 {
     public class Classroom
     {

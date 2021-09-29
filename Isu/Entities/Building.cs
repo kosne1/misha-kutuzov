@@ -1,18 +1,16 @@
 ﻿using System.Collections.Generic;
 
-namespace IsuExtra.Entities
+namespace Isu.Entities
 {
     public class Building
     {
-        public Building(string address, int numberOfClassrooms)
+        public Building(int numberOfClassrooms)
         {
-            Address = address;
             Classrooms = new List<Classroom>();
             for (int i = 1; i <= numberOfClassrooms; i++)
                 Classrooms.Add(new Classroom(i));
         }
 
-        public string Address { get; }
         public List<Classroom> Classrooms { get; }
 
         public Classroom GetClassroom(int number)
