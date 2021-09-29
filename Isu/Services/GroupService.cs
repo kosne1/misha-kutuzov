@@ -5,26 +5,26 @@ using Isu.Models;
 
 namespace Isu.Services
 {
-    public class IsuService : IIsuService
+    public class GroupService : IGroupService
     {
-        private readonly List<Group> _isuGroups;
-        private int _studentsCounter = 1;
+        private readonly List<Group> _groups;
+        private int _studentsIds = 1;
 
-        public IsuService()
+        public GroupService()
         {
-            _isuGroups = new List<Group>();
+            _groups = new List<Group>();
         }
 
         public Group AddGroup(string name)
         {
             var group = new Group(name);
-            _isuGroups.Add(group);
+            _groups.Add(group);
             return group;
         }
 
         public Student AddStudent(Group group, string name)
         {
-            var student = new Student(name, _studentsCounter++);
+            var student = new Student(name, _studentsIds++);
             group.AddStudent(student);
             return student;
         }
@@ -37,17 +37,17 @@ namespace Isu.Services
 
         public Student GetStudent(int id)
         {
-            return _isuGroups.Select(isuGroup => isuGroup.FindStudent(id)).FirstOrDefault(found => found != null);
+            return _groups.Select(isuGroup => isuGroup.FindStudent(id)).FirstOrDefault(found => found != null);
         }
 
         public Student FindStudent(string name)
         {
-            return _isuGroups.Select(isuGroup => isuGroup.FindStudent(name)).FirstOrDefault(found => found != null);
+            return _groups.Select(isuGroup => isuGroup.FindStudent(name)).FirstOrDefault(found => found != null);
         }
 
         public List<Student> FindStudents(string groupName)
         {
-            return (from isuGroup in _isuGroups where isuGroup.Name.Equals(groupName) select isuGroup.Students)
+            return (from isuGroup in _groups where isuGroup.Name.Equals(groupName) select isuGroup.Students)
                 .FirstOrDefault();
         }
 
@@ -55,7 +55,7 @@ namespace Isu.Services
         {
             var students = new List<Student>();
 
-            IEnumerable<Group> foundGroups = _isuGroups.Where(isuGroup => isuGroup.Course == courseNumber);
+            IEnumerable<Group> foundGroups = _groups.Where(isuGroup => isuGroup.Course == courseNumber);
 
             foreach (Group isuGroup in foundGroups)
             {
@@ -67,17 +67,17 @@ namespace Isu.Services
 
         public Group FindGroup(string groupName)
         {
-            return _isuGroups.FirstOrDefault(isuGroup => isuGroup.Name == groupName);
+            return _groups.FirstOrDefault(isuGroup => isuGroup.Name == groupName);
         }
 
         public List<Group> FindGroups(int courseNumber)
         {
-            return _isuGroups.Where(isuGroup => isuGroup.Course == courseNumber).ToList();
+            return _groups.Where(isuGroup => isuGroup.Course == courseNumber).ToList();
         }
 
         public void ChangeStudentGroup(Student student, Group newGroup)
         {
-            foreach (Group isuGroup in from isuGroup in _isuGroups
+            foreach (Group isuGroup in from isuGroup in _groups
                 let foundStudent = isuGroup.Students.Find(s => s.Id == student.Id)
                 where foundStudent != null
                 select isuGroup)

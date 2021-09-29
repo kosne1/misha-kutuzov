@@ -1,6 +1,6 @@
-﻿using IsuExtra.Entities;
+﻿using Isu.Entities;
 
-namespace IsuExtra.Models
+namespace Isu.Models
 {
     public class Address
     {

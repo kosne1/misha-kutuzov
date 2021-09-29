@@ -1,6 +1,7 @@
 ﻿using System;
-using IsuExtra.Entities;
-using IsuExtra.Models;
+using Isu.Entities;
+using Isu.Lessons;
+using Isu.Models;
 
 namespace IsuExtra.Lessons
 {

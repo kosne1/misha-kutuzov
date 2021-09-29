@@ -1,6 +1,6 @@
 ﻿using Isu.Models;
 
-namespace IsuExtra.Entities
+namespace Isu.Entities
 {
     public class Teacher : Person
     {

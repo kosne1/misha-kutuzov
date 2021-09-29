@@ -1,8 +1,8 @@
 ﻿using System;
-using IsuExtra.Entities;
-using IsuExtra.Models;
+using Isu.Entities;
+using Isu.Models;
 
-namespace IsuExtra.Lessons
+namespace Isu.Lessons
 {
     public abstract class Lesson
     {

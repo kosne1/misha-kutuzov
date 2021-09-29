@@ -1,16 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using Isu.Services;
 
-namespace Isu.Entities
+namespace IsuExtra.Entities
 {
     public class EducationalProgram
     {
         public EducationalProgram(string name)
         {
-            Groups = new List<Group>();
+            GroupService = new GroupService();
             Name = name;
         }
 
-        public List<Group> Groups { get; }
+        public GroupService GroupService { get; }
         public string Name { get; }
     }
 }

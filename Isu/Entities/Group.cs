@@ -14,11 +14,13 @@ namespace Isu.Entities
             Name = name;
             Course = name[2];
             Students = new List<Student>();
+            Schedule = new Schedule();
         }
 
         public List<Student> Students { get; }
         public string Name { get; }
         public int Course { get; }
+        public Schedule Schedule { get; }
 
         public void AddStudent(Student student)
         {

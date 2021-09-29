@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Isu.Lessons;
 using IsuExtra.Lessons;
 
 namespace IsuExtra.Entities

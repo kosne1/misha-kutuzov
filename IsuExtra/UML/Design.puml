@@ -4,6 +4,18 @@ class IsuService{
 + MegaFaculty[] megaFaculties
 }
 
+class GroupService{
++ Group[] groups
+}
+
+class ElectiveModuleService{
++ Stream[] streams
+}
+
+class Schedule{
++ Lesson[] lessons
+}
+
 class MegaFaculty {
 + EducationalProgram[] educationalPrograms
 + ElectiveModule[] electiveModules
@@ -11,12 +23,12 @@ class MegaFaculty {
 }
 
 class EducationalProgram {
-+ Group[] groups
++ GroupService groupService
 + String name
 }
 
 class ElectiveModule {
-+ Stream[] streams
++ ElectiveModuleService[] electiveModuleService
 }
 
 class Group{
@@ -64,10 +76,14 @@ Auditory auditory
 IsuService <-- MegaFaculty
 MegaFaculty <-- ElectiveModule
 MegaFaculty <-- EducationalProgram
-EducationalProgram <-- Group
+EducationalProgram <-- GroupService
+GroupService <-- Group
 Group <-- Student
+Group <-- Schedule
+Schedule <-- Lesson
 
-ElectiveModule <-- Stream
+ElectiveModule <-- ElectiveModuleService
+ElectiveModuleService <-- Stream
 Stream <-- Lesson
 Lesson <-- Address
 Lesson <-- Teacher

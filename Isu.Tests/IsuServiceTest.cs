@@ -8,19 +8,19 @@ namespace Isu.Tests
 {
     public class Tests
     {
-        private IIsuService _isuService;
+        private IGroupService _groupService;
 
         [SetUp]
         public void Setup()
         {
-            _isuService = new IsuService();
+            _groupService = new GroupService();
         }
 
         [Test]
         public void AddStudentToGroup_StudentHasGroupAndGroupContainsStudent()
         {
-            Group group = _isuService.AddGroup("M3200");
-            Student student = _isuService.AddStudent(group, "Misha");
+            Group group = _groupService.AddGroup("M3200");
+            Student student = _groupService.AddStudent(group, "Misha");
 
             Assert.Contains(student, group.Students);
         }
@@ -30,21 +30,21 @@ namespace Isu.Tests
         {
             Assert.Catch<IsuException>(() =>
             {
-                Group group = _isuService.AddGroup("M3200");
+                Group group = _groupService.AddGroup("M3200");
 
                 for (int i = 0; i < 50; i++)
-                    _isuService.AddStudent(group, "Misha");
+                    _groupService.AddStudent(group, "Misha");
             });
         }
 
         [Test]
         public void TransferStudentToAnotherGroup_GroupChanged()
         {
-            Group group = _isuService.AddGroup("M3200");
-            Group newGroup = _isuService.AddGroup("M3201");
+            Group group = _groupService.AddGroup("M3200");
+            Group newGroup = _groupService.AddGroup("M3201");
 
-            Student student = _isuService.AddStudent(group, "Misha");
-            _isuService.ChangeStudentGroup(student, newGroup);
+            Student student = _groupService.AddStudent(group, "Misha");
+            _groupService.ChangeStudentGroup(student, newGroup);
 
             Assert.Contains(student, newGroup.Students);
         }
