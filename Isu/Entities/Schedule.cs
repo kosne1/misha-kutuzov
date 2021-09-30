@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Isu.Lessons;
 
 namespace Isu.Entities
 {
@@ -11,5 +10,10 @@ namespace Isu.Entities
         }
 
         public List<Lesson> Lessons { get; }
+
+        public void AddLesson(Lesson lesson)
+        {
+            Lessons.Add(lesson);
+        }
     }
 }

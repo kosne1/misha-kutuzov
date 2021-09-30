@@ -1,12 +1,10 @@
 ﻿using System;
-using Isu.Entities;
-using Isu.Models;
 
-namespace Isu.Lessons
+namespace Isu.Entities
 {
-    public abstract class Lesson
+    public class Lesson
     {
-        protected Lesson(string name, Teacher teacher, Address address, DateTime beginTime)
+        public Lesson(string name, Teacher teacher, string address, DateTime beginTime)
         {
             Name = name;
             Teacher = teacher;
@@ -19,9 +17,8 @@ namespace Isu.Lessons
         }
 
         public string Name { get; }
-        public string LessonType { get; set; }
         public Teacher Teacher { get; }
-        public Address Address { get; }
+        public string Address { get; }
         public DateTime BeginTime { get; }
         public DateTime EndTime { get; }
     }

@@ -1,11 +1,16 @@
-﻿using System.Collections.Generic;
-using Isu.Lessons;
-using IsuExtra.Lessons;
+﻿using Isu.Entities;
 
 namespace IsuExtra.Entities
 {
     public class Stream
     {
-        public List<Lesson> Lessons { get; }
+        public Stream(Lesson lesson)
+        {
+            Lesson = lesson;
+            Group = new Group(lesson.Name);
+        }
+
+        public Lesson Lesson { get; }
+        public Group Group { get; }
     }
 }

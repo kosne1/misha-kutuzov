@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Isu.Tools;
 
@@ -12,7 +13,7 @@ namespace Isu.Entities
         {
             if (IsNameValid(name)) throw new IsuException("Group name can't be empty!");
             Name = name;
-            Course = name[2];
+            Course = (int)char.GetNumericValue(name[2]);
             Students = new List<Student>();
             Schedule = new Schedule();
         }

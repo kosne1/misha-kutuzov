@@ -86,5 +86,10 @@ namespace Isu.Services
                 AddStudent(newGroup, student);
             }
         }
+
+        public void AddLessonToGroupSchedule(Group group, Lesson lesson)
+        {
+            group.Schedule.AddLesson(lesson);
+        }
     }
 }

@@ -1,76 +1,39 @@
 ﻿@startuml
 
 class IsuService{
-+ MegaFaculty[] megaFaculties
 }
 
 class GroupService{
-+ Group[] groups
 }
 
 class ElectiveModuleService{
-+ Stream[] streams
 }
 
 class Schedule{
-+ Lesson[] lessons
 }
 
 class MegaFaculty {
-+ EducationalProgram[] educationalPrograms
-+ ElectiveModule[] electiveModules
-+ String name
 }
 
 class EducationalProgram {
-+ GroupService groupService
-+ String name
 }
 
 class ElectiveModule {
-+ ElectiveModuleService[] electiveModuleService
 }
 
 class Group{
-Student[] students
-+ String name
-+ Int Course
-- Int maxStudentNumber
 }
 
 class Student{
-+ String name
-+ Int id
 }
 
 class Stream{
-+ Lesson[] lessons
 }
 
 class Lesson{
-+ Address address
-+ Teacher professor
-+ DateTime beginTime
-+ DateTime endTime
-}
-
-class Building{
-+ String address
-+ Classroom[] auditory
-}
-
-class Classroom{
-+ Int number
 }
 
 class Teacher{
-+ String name
-+ Int id
-}
-
-class Address{
-Building building
-Auditory auditory
 }
 
 IsuService <-- MegaFaculty
@@ -85,8 +48,5 @@ Schedule <-- Lesson
 ElectiveModule <-- ElectiveModuleService
 ElectiveModuleService <-- Stream
 Stream <-- Lesson
-Lesson <-- Address
 Lesson <-- Teacher
-Building <-- Classroom
-Address <-- Building
 @enduml
