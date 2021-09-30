@@ -1,5 +1,4 @@
-﻿using System;
-using Isu.Models;
+﻿using Isu.Models;
 
 namespace Isu.Entities
 {

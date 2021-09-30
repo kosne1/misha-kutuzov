@@ -5,20 +5,21 @@ namespace IsuExtra.Entities
 {
     public class MegaFaculty
     {
+        private readonly List<EducationalProgram> _educationalPrograms;
         public MegaFaculty(string name)
         {
-            EducationalPrograms = new List<EducationalProgram>();
+            _educationalPrograms = new List<EducationalProgram>();
             EducationService = new EducationService();
             Name = name;
         }
 
-        public List<EducationalProgram> EducationalPrograms { get; }
+        public IReadOnlyCollection<EducationalProgram> EducationalPrograms => _educationalPrograms;
         public EducationService EducationService { get; }
         public string Name { get; }
 
         public EducationalProgram AddEducationalProgram(EducationalProgram educationalProgram)
         {
-            EducationalPrograms.Add(educationalProgram);
+            _educationalPrograms.Add(educationalProgram);
             return educationalProgram;
         }
     }

@@ -10,16 +10,11 @@ namespace Isu.Entities
             Teacher = teacher;
             Address = address;
             BeginTime = beginTime;
-
-            EndTime = beginTime;
-            EndTime.AddHours(1);
-            EndTime.AddMinutes(30);
         }
 
         public string Name { get; }
         public Teacher Teacher { get; }
         public string Address { get; }
         public DateTime BeginTime { get; }
-        public DateTime EndTime { get; }
     }
 }

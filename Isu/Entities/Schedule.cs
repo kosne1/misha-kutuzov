@@ -4,16 +4,17 @@ namespace Isu.Entities
 {
     public class Schedule
     {
+        private readonly List<Lesson> _lessons;
         public Schedule()
         {
-            Lessons = new List<Lesson>();
+            _lessons = new List<Lesson>();
         }
 
-        public List<Lesson> Lessons { get; }
+        public IReadOnlyCollection<Lesson> Lessons => _lessons;
 
         public void AddLesson(Lesson lesson)
         {
-            Lessons.Add(lesson);
+            _lessons.Add(lesson);
         }
     }
 }

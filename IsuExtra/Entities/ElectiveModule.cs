@@ -5,19 +5,20 @@ namespace IsuExtra.Entities
 {
     public class ElectiveModule
     {
+        private readonly List<Stream> _streams;
         public ElectiveModule(string name)
         {
-            Streams = new List<Stream>();
+            _streams = new List<Stream>();
             Name = name;
         }
 
-        public List<Stream> Streams { get; }
+        public IReadOnlyCollection<Stream> Streams => _streams;
         public string Name { get; }
 
         public Stream AddStream(Lesson lesson)
         {
             var stream = new Stream(lesson);
-            Streams.Add(stream);
+            _streams.Add(stream);
             return stream;
         }
     }

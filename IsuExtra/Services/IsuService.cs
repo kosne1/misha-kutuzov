@@ -7,17 +7,19 @@ namespace IsuExtra.Services
 {
     public class IsuService
     {
+        private List<MegaFaculty> _megaFaculties;
+
         public IsuService()
         {
-            MegaFaculties = new List<MegaFaculty>();
+            _megaFaculties = new List<MegaFaculty>();
         }
 
-        public List<MegaFaculty> MegaFaculties { get; }
+        public IReadOnlyCollection<MegaFaculty> MegaFaculties => _megaFaculties;
 
         public MegaFaculty AddMegaFaculty(string name)
         {
             var megaFaculty = new MegaFaculty(name);
-            MegaFaculties.Add(megaFaculty);
+            _megaFaculties.Add(megaFaculty);
             return megaFaculty;
         }
 
@@ -43,6 +45,23 @@ namespace IsuExtra.Services
                 from student in stream.Group.Students
                 where courseStudents.Contains(student)
                 select stream).ToList();
+        }
+
+        public List<Student> GetStudentsFromElectiveModule(ElectiveModule electiveModule)
+        {
+            return electiveModule.Streams.SelectMany(stream => stream.Group.Students).ToList();
+        }
+
+        public List<Student> GetStudentsFreeFromElectiveModules(Group group)
+        {
+            var busyStudents = new List<Student>();
+            foreach (List<Student> found in MegaFaculties.Select(megaFaculty =>
+                GetStudentsFromElectiveModule(megaFaculty.EducationService.ElectiveModule)))
+            {
+                busyStudents.AddRange(found);
+            }
+
+            return group.Students.Where(student => !busyStudents.Contains(student)).ToList();
         }
     }
 }

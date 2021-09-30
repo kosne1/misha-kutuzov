@@ -47,8 +47,8 @@ namespace Isu.Services
 
         public List<Student> FindStudents(string groupName)
         {
-            return (from isuGroup in _groups where isuGroup.Name.Equals(groupName) select isuGroup.Students)
-                .FirstOrDefault();
+            return (from isuGroup in _groups where isuGroup.Name.Equals(groupName) select isuGroup.Students).First()
+                .ToList();
         }
 
         public List<Student> FindStudents(int courseNumber)
@@ -77,14 +77,16 @@ namespace Isu.Services
 
         public void ChangeStudentGroup(Student student, Group newGroup)
         {
-            foreach (Group isuGroup in from isuGroup in _groups
-                let foundStudent = isuGroup.Students.Find(s => s.Id == student.Id)
-                where foundStudent != null
-                select isuGroup)
+            foreach (Group isuGroup in _groups)
             {
-                isuGroup.RemoveStudent(student);
-                AddStudent(newGroup, student);
+                foreach (Student isuStudent in isuGroup.Students.ToList()
+                    .Where(isuStudent => student.Id == isuStudent.Id))
+                {
+                    isuGroup.RemoveStudent(isuStudent);
+                }
             }
+
+            newGroup.AddStudent(student);
         }
 
         public void AddLessonToGroupSchedule(Group group, Lesson lesson)

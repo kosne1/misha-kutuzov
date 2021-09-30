@@ -7,30 +7,32 @@ namespace IsuExtra.Services
 {
     public class EducationService
     {
+        private readonly List<Teacher> _teachers;
+        private readonly List<Lesson> _lessons;
         private int _teachersId = 1;
 
         public EducationService()
         {
-            Teachers = new List<Teacher>();
-            Lessons = new List<Lesson>();
+            _teachers = new List<Teacher>();
+            _lessons = new List<Lesson>();
         }
 
-        public List<Teacher> Teachers { get; }
-        public List<Lesson> Lessons { get; }
+        public IReadOnlyCollection<Teacher> Teachers => _teachers;
+        public IReadOnlyCollection<Lesson> Lessons => _lessons;
 
         public ElectiveModule ElectiveModule { get; private set; }
 
         public Teacher AddTeacher(string name)
         {
             var teacher = new Teacher(name, _teachersId++);
-            Teachers.Add(teacher);
+            _teachers.Add(teacher);
             return teacher;
         }
 
         public Lesson AddLesson(string name, Teacher teacher, string address, DateTime beginTime)
         {
             var lesson = new Lesson(name, teacher, address, beginTime);
-            Lessons.Add(lesson);
+            _lessons.Add(lesson);
             return lesson;
         }
 

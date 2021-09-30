@@ -1,3 +1,4 @@
+using System.Linq;
 using Isu.Entities;
 using Isu.Models;
 using Isu.Services;
@@ -22,7 +23,7 @@ namespace Isu.Tests
             Group group = _groupService.AddGroup("M3200");
             Student student = _groupService.AddStudent(group, "Misha");
 
-            Assert.Contains(student, group.Students);
+            Assert.Contains(student, group.Students.ToList());
         }
 
         [Test]
@@ -46,7 +47,7 @@ namespace Isu.Tests
             Student student = _groupService.AddStudent(group, "Misha");
             _groupService.ChangeStudentGroup(student, newGroup);
 
-            Assert.Contains(student, newGroup.Students);
+            Assert.Contains(student, newGroup.Students.ToList());
         }
     }
 }
