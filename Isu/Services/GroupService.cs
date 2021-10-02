@@ -79,7 +79,7 @@ namespace Isu.Services
         {
             foreach (Group isuGroup in _groups)
             {
-                foreach (Student isuGroupStudent in isuGroup.Students)
+                foreach (Student isuGroupStudent in isuGroup.Students.ToList())
                 {
                     if (isuGroupStudent.Id == student.Id)
                     {
