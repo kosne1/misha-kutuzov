@@ -3,7 +3,7 @@ using Isu.Entities;
 
 namespace Isu.Models
 {
-    public interface IGroupService
+    public interface IIsuService
     {
         Group AddGroup(string name);
         Student AddStudent(Group group, string name);

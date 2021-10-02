@@ -5,7 +5,7 @@ using Isu.Models;
 
 namespace Isu.Services
 {
-    public class GroupService : IGroupService
+    public class GroupService : IIsuService
     {
         private readonly List<Group> _groups;
         private int _studentsIds = 1;
@@ -79,19 +79,21 @@ namespace Isu.Services
         {
             foreach (Group isuGroup in _groups)
             {
-                foreach (Student isuStudent in isuGroup.Students.ToList()
-                    .Where(isuStudent => student.Id == isuStudent.Id))
+                foreach (Student isuGroupStudent in isuGroup.Students)
                 {
-                    isuGroup.RemoveStudent(isuStudent);
+                    if (isuGroupStudent.Id == student.Id)
+                    {
+                        RemoveStudent(isuGroup, isuGroupStudent);
+                    }
                 }
             }
 
             newGroup.AddStudent(student);
         }
 
-        public void AddLessonToGroupSchedule(Group group, Lesson lesson)
+        public void RemoveStudent(Group group, Student student)
         {
-            group.Schedule.AddLesson(lesson);
+            group.RemoveStudent(student);
         }
     }
 }

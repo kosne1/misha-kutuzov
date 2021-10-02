@@ -15,13 +15,11 @@ namespace Isu.Entities
             Name = name;
             Course = (int)char.GetNumericValue(name[2]);
             _students = new List<Student>();
-            Schedule = new Schedule();
         }
 
         public IReadOnlyCollection<Student> Students => _students;
         public string Name { get; }
         public int Course { get; }
-        public Schedule Schedule { get; }
 
         public void AddStudent(Student student)
         {

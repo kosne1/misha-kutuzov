@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Isu.Entities;
+using Isu.Services;
 using IsuExtra.Entities;
 using IsuExtra.Services;
 using NUnit.Framework;
@@ -11,11 +12,15 @@ namespace IsuExtra.Tests
     public class IsuExtraTest
     {
         private IsuService _isuService;
+        private EducationService _educationService;
+        private GroupService _groupService;
 
         [SetUp]
         public void Setup()
         {
             _isuService = new IsuService();
+            _educationService = new EducationService();
+            _groupService = new GroupService();
         }
 
         [Test]
@@ -23,9 +28,9 @@ namespace IsuExtra.Tests
         {
             MegaFaculty ktu = _isuService.AddMegaFaculty("MEGAFACULTY OF COMPUTER TECHNOLOGY AND MANAGEMENT");
 
-            ElectiveModule cyberSecurityBasics = ktu.EducationService.AddElectiveModule("Cyber Security Basics");
+            ElectiveModule cyberSecurityBasics = _educationService.AddElectiveModule(ktu, "Cyber Security Basics");
 
-            Assert.AreEqual(cyberSecurityBasics, ktu.EducationService.ElectiveModule);
+            Assert.AreEqual(cyberSecurityBasics, ktu.ElectiveModule);
         }
 
         [Test]
@@ -35,23 +40,23 @@ namespace IsuExtra.Tests
             MegaFaculty ktu = _isuService.AddMegaFaculty("MEGAFACULTY OF COMPUTER TECHNOLOGY AND MANAGEMENT");
 
             EducationalProgram informationSystems =
-                _isuService.AddEducationalProgram(tint, "Programming and Internet technologies");
+                _educationService.AddEducationalProgram(tint, "Programming and Internet technologies");
             EducationalProgram cyberSecurityOfSystems =
-                _isuService.AddEducationalProgram(ktu, "Cyber Security of Systems");
+                _educationService.AddEducationalProgram(ktu, "Cyber Security of Systems");
 
-            Teacher alex = ktu.EducationService.AddTeacher("Alex Rubanov");
+            Teacher alex = _educationService.AddTeacher("Alex Rubanov");
 
-            ElectiveModule cyberSecurityBasics = ktu.EducationService.AddElectiveModule("Cyber Security Basics");
-            
+            ElectiveModule cyberSecurityBasics = _educationService.AddElectiveModule(ktu, "Cyber Security Basics");
+
             Lesson cyberSecurityBasicsLecture =
-                ktu.EducationService.AddLesson("MOD", alex, "Kronva", new DateTime(2021, 10, 1, 10, 0, 0));
+                _educationService.AddLesson("MOD", alex, "Kronva", new DateTime(2021, 10, 1, 10, 0, 0));
 
-            Stream cyberSecurityBasicsStream = cyberSecurityBasics.AddStream(cyberSecurityBasicsLecture);
+            Stream cyberSecurityBasicsStream =
+                _educationService.AddStream(cyberSecurityBasics, cyberSecurityBasicsLecture);
+            Group m3200 = _groupService.AddGroup("M3200");
+            Student mishaKutuzov = _groupService.AddStudent(m3200, "Mikhail Kutuzov");
 
-            Group m3200 = informationSystems.GroupService.AddGroup("M3200");
-            Student mishaKutuzov = informationSystems.GroupService.AddStudent(m3200, "Mikhail Kutuzov");
-
-            cyberSecurityBasicsStream.Group.AddStudent(mishaKutuzov);
+            _groupService.AddStudent(cyberSecurityBasicsStream.Group, mishaKutuzov);
 
             Assert.Contains(mishaKutuzov, cyberSecurityBasicsStream.Group.Students.ToList());
         }
@@ -63,24 +68,27 @@ namespace IsuExtra.Tests
             MegaFaculty ktu = _isuService.AddMegaFaculty("MEGAFACULTY OF COMPUTER TECHNOLOGY AND MANAGEMENT");
 
             EducationalProgram informationSystems =
-                _isuService.AddEducationalProgram(tint, "Programming and Internet technologies");
+                _educationService.AddEducationalProgram(tint, "Programming and Internet technologies");
             EducationalProgram cyberSecurityOfSystems =
-                _isuService.AddEducationalProgram(ktu, "Cyber Security of Systems");
+                _educationService.AddEducationalProgram(ktu, "Cyber Security of Systems");
 
-            Teacher alex = ktu.EducationService.AddTeacher("Alex Rubanov");
+            Teacher alex = _educationService.AddTeacher("Alex Rubanov");
 
-            ElectiveModule cyberSecurityBasics = ktu.EducationService.AddElectiveModule("Cyber Security Basics");
+            ElectiveModule cyberSecurityBasics = _educationService.AddElectiveModule(ktu, "Cyber Security Basics");
 
             Lesson cyberSecurityBasicsLecture =
-                ktu.EducationService.AddLesson("MOD", alex, "Kronva", new DateTime(2021, 10, 1, 10, 0, 0));
+                _educationService.AddLesson("MOD", alex, "Kronva", new DateTime(2021, 10, 1, 10, 0, 0));
 
-            Stream cyberSecurityBasicsStream = cyberSecurityBasics.AddStream(cyberSecurityBasicsLecture);
+            Stream cyberSecurityBasicsStream =
+                _educationService.AddStream(cyberSecurityBasics, cyberSecurityBasicsLecture);
 
-            Group m3200 = informationSystems.GroupService.AddGroup("M3200");
-            Student mishaKutuzov = informationSystems.GroupService.AddStudent(m3200, "Mikhail Kutuzov");
+            Group m3200 = _groupService.AddGroup("M3200");
+            Student mishaKutuzov = _groupService.AddStudent(m3200, "Mikhail Kutuzov");
 
-            cyberSecurityBasicsStream.Group.AddStudent(mishaKutuzov);
-            cyberSecurityBasicsStream.Group.RemoveStudent(mishaKutuzov);
+            Schedule m3200Schedule = _educationService.AddSchedule();
+
+            _educationService.AddStudentToStream(m3200Schedule, cyberSecurityBasicsStream, mishaKutuzov);
+            _groupService.RemoveStudent(cyberSecurityBasicsStream.Group, mishaKutuzov);
 
             Assert.AreEqual(0, cyberSecurityBasicsStream.Group.Students.Count);
         }
@@ -92,40 +100,44 @@ namespace IsuExtra.Tests
             MegaFaculty ktu = _isuService.AddMegaFaculty("MEGAFACULTY OF COMPUTER TECHNOLOGY AND MANAGEMENT");
 
             EducationalProgram informationSystems =
-                _isuService.AddEducationalProgram(tint, "Programming and Internet technologies");
+                _educationService.AddEducationalProgram(tint, "Programming and Internet technologies");
             EducationalProgram cyberSecurityOfSystems =
-                _isuService.AddEducationalProgram(ktu, "Cyber Security Of Systems");
+                _educationService.AddEducationalProgram(ktu, "Cyber Security Of Systems");
 
-            Teacher fredi = tint.EducationService.AddTeacher("Fredi Kats");
-            Teacher alex = ktu.EducationService.AddTeacher("Alex Rubanov");
+            Teacher fredi = _educationService.AddTeacher("Fredi Kats");
+            Teacher alex = _educationService.AddTeacher("Alex Rubanov");
 
-            ElectiveModule functionalAnalysis = tint.EducationService.AddElectiveModule("Functional Analysis");
-            ElectiveModule cyberSecurityBasics = ktu.EducationService.AddElectiveModule("Cyber Security Basics");
+            ElectiveModule functionalAnalysis = _educationService.AddElectiveModule(tint, "Functional Analysis");
+            ElectiveModule cyberSecurityBasics = _educationService.AddElectiveModule(ktu, "Cyber Security Basics");
 
-            Lesson oop = tint.EducationService.AddLesson("OOP", fredi, "Kronva", new DateTime(2021, 9, 30, 10, 0, 0));
+            Lesson oop = _educationService.AddLesson("OOP", fredi, "Kronva", new DateTime(2021, 9, 30, 10, 0, 0));
             Lesson cyberSecurityBasicsLecture =
-                ktu.EducationService.AddLesson("MOD", alex, "Kronva", new DateTime(2021, 10, 1, 10, 0, 0));
+                _educationService.AddLesson("MOD", alex, "Kronva", new DateTime(2021, 10, 1, 10, 0, 0));
 
-            Stream cyberSecurityBasicsStream = cyberSecurityBasics.AddStream(cyberSecurityBasicsLecture);
-            Stream functionalAnalysisStream = functionalAnalysis.AddStream(oop);
+            Stream cyberSecurityBasicsStream =
+                _educationService.AddStream(cyberSecurityBasics, cyberSecurityBasicsLecture);
+            Stream functionalAnalysisStream = _educationService.AddStream(functionalAnalysis, oop);
 
-            Group m3200 = informationSystems.GroupService.AddGroup("M3200");
-            Student mishaKutuzov = informationSystems.GroupService.AddStudent(m3200, "Mikhail Kutuzov");
-            Student valeraShevchenko = informationSystems.GroupService.AddStudent(m3200, "Valera Shevchenko");
-            Student Bibletoon = informationSystems.GroupService.AddStudent(m3200, "Bibletoon");
+            Group m3200 = _groupService.AddGroup("M3200");
+            Student mishaKutuzov = _groupService.AddStudent(m3200, "Mikhail Kutuzov");
+            Student valeraShevchenko = _groupService.AddStudent(m3200, "Valera Shevchenko");
+            Student Bibletoon = _groupService.AddStudent(m3200, "Bibletoon");
 
-            Group m3410 = informationSystems.GroupService.AddGroup("M3410");
-            Student ktuStudent1 = cyberSecurityOfSystems.GroupService.AddStudent(m3410, "Loh 1");
-            Student ktuStudent2 = cyberSecurityOfSystems.GroupService.AddStudent(m3410, "Loh 2");
-            Student ktuStudent3 = cyberSecurityOfSystems.GroupService.AddStudent(m3410, "Loh 3");
+            Group m3410 = _groupService.AddGroup("M3410");
+            Student ktuStudent1 = _groupService.AddStudent(m3410, "Loh 1");
+            Student ktuStudent2 = _groupService.AddStudent(m3410, "Loh 2");
+            Student ktuStudent3 = _groupService.AddStudent(m3410, "Loh 3");
 
-            cyberSecurityBasicsStream.Group.AddStudent(mishaKutuzov);
-            cyberSecurityBasicsStream.Group.AddStudent(valeraShevchenko);
-            cyberSecurityBasicsStream.Group.AddStudent(Bibletoon);
+            _groupService.AddStudent(cyberSecurityBasicsStream.Group, mishaKutuzov);
+            _groupService.AddStudent(cyberSecurityBasicsStream.Group, valeraShevchenko);
+            _groupService.AddStudent(cyberSecurityBasicsStream.Group, Bibletoon);
 
-            functionalAnalysisStream.Group.AddStudent(ktuStudent1);
-            functionalAnalysisStream.Group.AddStudent(ktuStudent2);
-            functionalAnalysisStream.Group.AddStudent(ktuStudent3);
+            _groupService.AddStudent(functionalAnalysisStream.Group, ktuStudent1);
+            _groupService.AddStudent(functionalAnalysisStream.Group, ktuStudent2);
+            _groupService.AddStudent(functionalAnalysisStream.Group, ktuStudent3);
+
+            _isuService.AddGroupToEducationalProgram(informationSystems, m3200);
+            _isuService.AddGroupToEducationalProgram(cyberSecurityOfSystems, m3410);
 
             List<Stream> streams2Course = _isuService.FindStreamsByCourseNumber(2);
             Student maybeMisha = null;
@@ -144,25 +156,26 @@ namespace IsuExtra.Tests
             MegaFaculty ktu = _isuService.AddMegaFaculty("MEGAFACULTY OF COMPUTER TECHNOLOGY AND MANAGEMENT");
 
             EducationalProgram informationSystems =
-                _isuService.AddEducationalProgram(tint, "Programming and Internet technologies");
+                _educationService.AddEducationalProgram(tint, "Programming and Internet technologies");
 
-            Teacher alex = ktu.EducationService.AddTeacher("Alex Rubanov");
+            Teacher alex = _educationService.AddTeacher("Alex Rubanov");
 
-            ElectiveModule cyberSecurityBasics = ktu.EducationService.AddElectiveModule("Cyber Security Basics");
+            ElectiveModule cyberSecurityBasics = _educationService.AddElectiveModule(ktu, "Cyber Security Basics");
 
             Lesson cyberSecurityBasicsLecture =
-                ktu.EducationService.AddLesson("MOD", alex, "Kronva", new DateTime(2021, 10, 1, 10, 0, 0));
+                _educationService.AddLesson("MOD", alex, "Kronva", new DateTime(2021, 10, 1, 10, 0, 0));
 
-            Stream cyberSecurityBasicsStream = cyberSecurityBasics.AddStream(cyberSecurityBasicsLecture);
+            Stream cyberSecurityBasicsStream =
+                _educationService.AddStream(cyberSecurityBasics, cyberSecurityBasicsLecture);
 
-            Group m3200 = informationSystems.GroupService.AddGroup("M3200");
-            Student mishaKutuzov = informationSystems.GroupService.AddStudent(m3200, "Mikhail Kutuzov");
-            Student valeraShevchenko = informationSystems.GroupService.AddStudent(m3200, "Valera Shevchenko");
-            Student Bibletoon = informationSystems.GroupService.AddStudent(m3200, "Bibletoon");
+            Group m3200 = _groupService.AddGroup("M3200");
+            Student mishaKutuzov = _groupService.AddStudent(m3200, "Mikhail Kutuzov");
+            Student valeraShevchenko = _groupService.AddStudent(m3200, "Valera Shevchenko");
+            Student Bibletoon = _groupService.AddStudent(m3200, "Bibletoon");
 
-            cyberSecurityBasicsStream.AddStudent(m3200, mishaKutuzov);
-            cyberSecurityBasicsStream.AddStudent(m3200, valeraShevchenko);
-            cyberSecurityBasicsStream.AddStudent(m3200, Bibletoon);
+            _groupService.AddStudent(cyberSecurityBasicsStream.Group, mishaKutuzov);
+            _groupService.AddStudent(cyberSecurityBasicsStream.Group, valeraShevchenko);
+            _groupService.AddStudent(cyberSecurityBasicsStream.Group, Bibletoon);
 
             List<Student> studentsFromCyberSecurity = _isuService.GetStudentsFromElectiveModule(cyberSecurityBasics);
 
@@ -176,30 +189,31 @@ namespace IsuExtra.Tests
             MegaFaculty ktu = _isuService.AddMegaFaculty("MEGAFACULTY OF COMPUTER TECHNOLOGY AND MANAGEMENT");
 
             EducationalProgram informationSystems =
-                _isuService.AddEducationalProgram(tint, "Programming and Internet technologies");
+                _educationService.AddEducationalProgram(tint, "Programming and Internet technologies");
             EducationalProgram cyberSecurityOfSystems =
-                _isuService.AddEducationalProgram(ktu, "Cyber Security Of Systems");
+                _educationService.AddEducationalProgram(ktu, "Cyber Security Of Systems");
 
-            Teacher fredi = tint.EducationService.AddTeacher("Fredi Kats");
-            Teacher alex = ktu.EducationService.AddTeacher("Alex Rubanov");
+            Teacher fredi = _educationService.AddTeacher("Fredi Kats");
+            Teacher alex = _educationService.AddTeacher("Alex Rubanov");
 
-            ElectiveModule functionalAnalysis = tint.EducationService.AddElectiveModule("Functional Analysis");
-            ElectiveModule cyberSecurityBasics = ktu.EducationService.AddElectiveModule("Cyber Security Basics");
+            ElectiveModule functionalAnalysis = _educationService.AddElectiveModule(tint, "Functional Analysis");
+            ElectiveModule cyberSecurityBasics = _educationService.AddElectiveModule(ktu, "Cyber Security Basics");
 
-            Lesson oop = tint.EducationService.AddLesson("OOP", fredi, "Kronva", new DateTime(2021, 9, 30, 10, 0, 0));
+            Lesson oop = _educationService.AddLesson("OOP", fredi, "Kronva", new DateTime(2021, 9, 30, 10, 0, 0));
             Lesson cyberSecurityBasicsLecture =
-                ktu.EducationService.AddLesson("MOD", alex, "Kronva", new DateTime(2021, 10, 1, 10, 0, 0));
+                _educationService.AddLesson("MOD", alex, "Kronva", new DateTime(2021, 10, 1, 10, 0, 0));
 
-            Stream cyberSecurityBasicsStream = cyberSecurityBasics.AddStream(cyberSecurityBasicsLecture);
-            Stream functionalAnalysisStream = functionalAnalysis.AddStream(oop);
+            Stream cyberSecurityBasicsStream =
+                _educationService.AddStream(cyberSecurityBasics, cyberSecurityBasicsLecture);
+            Stream functionalAnalysisStream = _educationService.AddStream(functionalAnalysis, oop);
 
-            Group m3200 = informationSystems.GroupService.AddGroup("M3200");
-            Student mishaKutuzov = informationSystems.GroupService.AddStudent(m3200, "Mikhail Kutuzov");
-            Student valeraShevchenko = informationSystems.GroupService.AddStudent(m3200, "Valera Shevchenko");
-            Student Bibletoon = informationSystems.GroupService.AddStudent(m3200, "Bibletoon");
+            Group m3200 = _groupService.AddGroup("M3200");
+            Student mishaKutuzov = _groupService.AddStudent(m3200, "Mikhail Kutuzov");
+            Student valeraShevchenko = _groupService.AddStudent(m3200, "Valera Shevchenko");
+            Student Bibletoon = _groupService.AddStudent(m3200, "Bibletoon");
 
-            cyberSecurityBasicsStream.Group.AddStudent(mishaKutuzov);
-            cyberSecurityBasicsStream.Group.AddStudent(valeraShevchenko);
+            _groupService.AddStudent(cyberSecurityBasicsStream.Group, mishaKutuzov);
+            _groupService.AddStudent(cyberSecurityBasicsStream.Group, valeraShevchenko);
 
             List<Student> studentsFreeFromCyberSecurity = _isuService.GetStudentsFreeFromElectiveModules(m3200);
 

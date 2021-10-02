@@ -7,7 +7,7 @@ namespace IsuExtra.Services
 {
     public class IsuService
     {
-        private List<MegaFaculty> _megaFaculties;
+        private readonly List<MegaFaculty> _megaFaculties;
 
         public IsuService()
         {
@@ -23,28 +23,33 @@ namespace IsuExtra.Services
             return megaFaculty;
         }
 
-        public EducationalProgram AddEducationalProgram(MegaFaculty megaFaculty, string name)
-        {
-            var educationalProgram = new EducationalProgram(name);
-            megaFaculty.AddEducationalProgram(educationalProgram);
-            return educationalProgram;
-        }
-
         public List<Stream> FindStreamsByCourseNumber(int courseNumber)
         {
             var courseStudents = new List<Student>();
-            foreach (List<Student> found in MegaFaculties.SelectMany(megaFaculty =>
-                megaFaculty.EducationalPrograms.Select(educationalProgram =>
-                    educationalProgram.GroupService.FindStudents(courseNumber))))
+            foreach (MegaFaculty megaFaculty in MegaFaculties)
             {
-                courseStudents.AddRange(found);
+                foreach (EducationalProgram educationalProgram in megaFaculty.EducationalPrograms)
+                {
+                    foreach (Group group in educationalProgram.Groups)
+                    {
+                        if (group.Course == courseNumber)
+                            courseStudents.AddRange(group.Students);
+                    }
+                }
             }
 
-            return (from megaFaculty in MegaFaculties
-                from stream in megaFaculty.EducationService.ElectiveModule.Streams
-                from student in stream.Group.Students
-                where courseStudents.Contains(student)
-                select stream).ToList();
+            var foundStreams = new List<Stream>();
+            foreach (MegaFaculty megaFaculty in MegaFaculties)
+            {
+                foreach (Stream stream in megaFaculty.ElectiveModule.Streams)
+                {
+                    foundStreams.AddRange(from student in stream.Group.Students
+                        where courseStudents.Contains(student)
+                        select stream);
+                }
+            }
+
+            return foundStreams;
         }
 
         public List<Student> GetStudentsFromElectiveModule(ElectiveModule electiveModule)
@@ -54,14 +59,15 @@ namespace IsuExtra.Services
 
         public List<Student> GetStudentsFreeFromElectiveModules(Group group)
         {
-            var busyStudents = new List<Student>();
-            foreach (List<Student> found in MegaFaculties.Select(megaFaculty =>
-                GetStudentsFromElectiveModule(megaFaculty.EducationService.ElectiveModule)))
-            {
-                busyStudents.AddRange(found);
-            }
+            IEnumerable<Student> busyStudents = MegaFaculties.SelectMany(megaFaculty =>
+                GetStudentsFromElectiveModule(megaFaculty.ElectiveModule));
 
             return group.Students.Where(student => !busyStudents.Contains(student)).ToList();
+        }
+
+        public void AddGroupToEducationalProgram(EducationalProgram educationalProgram, Group group)
+        {
+            educationalProgram.AddGroup(group);
         }
     }
 }

@@ -16,17 +16,14 @@ namespace IsuExtra.Entities
         public Lesson Lesson { get; }
         public Group Group { get; }
 
-        public void AddStudent(Group group, Student student)
+        public void AddStudent(Schedule schedule, Student student)
         {
-            var groupLessons = group.Schedule.Lessons.ToList();
+            var groupLessons = schedule.Lessons.ToList();
             var maxDiff = new TimeSpan(1, 30, 0);
-            foreach (Lesson lesson in from lesson in groupLessons
-                let interval = Lesson.BeginTime - lesson.BeginTime
-                where interval < maxDiff
-                select lesson)
+            foreach (Lesson lesson in groupLessons.Where(lesson => lesson.BeginTime - Lesson.BeginTime < maxDiff))
             {
                 throw new IsuException(
-                    $"There is Intersection of {Lesson.Name} that starts at {Lesson.BeginTime} and {lesson.Name} that starts at {lesson.BeginTime}");
+                    $"There is an intersection of {Lesson.Name} that starts at {Lesson.BeginTime} and {lesson} that starts at {lesson.BeginTime}");
             }
 
             Group.AddStudent(student);

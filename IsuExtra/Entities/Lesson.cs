@@ -1,6 +1,7 @@
 ﻿using System;
+using Isu.Entities;
 
-namespace Isu.Entities
+namespace IsuExtra.Entities
 {
     public class Lesson
     {

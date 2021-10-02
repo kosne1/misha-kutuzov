@@ -1,16 +1,24 @@
-﻿using Isu.Services;
+﻿using System.Collections.Generic;
+using Isu.Entities;
 
 namespace IsuExtra.Entities
 {
     public class EducationalProgram
     {
+        private readonly List<Group> _groups;
+
         public EducationalProgram(string name)
         {
-            GroupService = new GroupService();
+            _groups = new List<Group>();
             Name = name;
         }
 
-        public GroupService GroupService { get; }
+        public IReadOnlyCollection<Group> Groups => _groups;
         public string Name { get; }
+
+        public void AddGroup(Group group)
+        {
+            _groups.Add(group);
+        }
     }
 }
