@@ -2,9 +2,9 @@
 
 namespace Isu.Entities
 {
-    public class Student : Person
+    public class Teacher : Person
     {
-        public Student(string name, int id)
+        public Teacher(string name, int id)
             : base(name, id)
         {
         }

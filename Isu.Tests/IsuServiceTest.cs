@@ -1,4 +1,6 @@
+using System.Linq;
 using Isu.Entities;
+using Isu.Models;
 using Isu.Services;
 using Isu.Tools;
 using NUnit.Framework;
@@ -12,7 +14,7 @@ namespace Isu.Tests
         [SetUp]
         public void Setup()
         {
-            _isuService = new IsuService();
+            _isuService = new GroupService();
         }
 
         [Test]
@@ -20,9 +22,8 @@ namespace Isu.Tests
         {
             Group group = _isuService.AddGroup("M3200");
             Student student = _isuService.AddStudent(group, "Misha");
-            
-            Assert.Contains(student, group.Students);
-            Assert.AreEqual(student.GroupName, group.Name);
+
+            Assert.Contains(student, group.Students.ToList());
         }
 
         [Test]
@@ -38,15 +39,6 @@ namespace Isu.Tests
         }
 
         [Test]
-        public void CreateGroupWithInvalidName_ThrowException()
-        {
-            Assert.Catch<IsuException>(() =>
-            {
-                Group group = _isuService.AddGroup("Y322222");
-            });
-        }
-
-        [Test]
         public void TransferStudentToAnotherGroup_GroupChanged()
         {
             Group group = _isuService.AddGroup("M3200");
@@ -54,8 +46,8 @@ namespace Isu.Tests
 
             Student student = _isuService.AddStudent(group, "Misha");
             _isuService.ChangeStudentGroup(student, newGroup);
-            
-            Assert.AreEqual(newGroup.Name, student.GroupName);
+
+            Assert.Contains(student, newGroup.Students.ToList());
         }
     }
 }

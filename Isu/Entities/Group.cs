@@ -7,25 +7,26 @@ namespace Isu.Entities
     public class Group
     {
         private const int MaxStudentsNumber = 25;
+        private readonly List<Student> _students;
 
         public Group(string name)
         {
-            if (!IsNameValid(name)) throw new IsuException($"{name} is invalid for the group!");
+            if (IsNameValid(name)) throw new IsuException("Group name can't be empty!");
             Name = name;
-            Course = name[2];
-            Students = new List<Student>();
+            Course = (int)char.GetNumericValue(name[2]);
+            _students = new List<Student>();
         }
 
-        public List<Student> Students { get; }
+        public IReadOnlyCollection<Student> Students => _students;
         public string Name { get; }
         public int Course { get; }
 
         public void AddStudent(Student student)
         {
-            if (Students.Count > MaxStudentsNumber)
+            if (Students.Count == MaxStudentsNumber)
                 throw new IsuException($"Can't fit {student.Name} in {Name}");
 
-            Students.Add(student);
+            _students.Add(student);
         }
 
         public Student FindStudent(string name)
@@ -42,9 +43,14 @@ namespace Isu.Entities
             return found;
         }
 
+        public void RemoveStudent(Student student)
+        {
+            _students.Remove(student);
+        }
+
         private static bool IsNameValid(string name)
         {
-            return name[0] == 'M' && name[1] == '3' && name[2] >= '1' && name[2] <= '4' && name.Length < 6;
+            return string.IsNullOrEmpty(name);
         }
     }
 }
