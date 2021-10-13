@@ -1,0 +1,28 @@
+﻿@startuml
+
+package Backups{
+
+class Backup
+class RestorePoint
+class BackupJob
+class SingleStorage
+class SplitStorage
+class Storage
+class Repository
+interface IStorageAlgorithm
+class JobObject
+interface IRepository
+
+Backup o-- RestorePoint
+BackupJob o-- IStorageAlgorithm
+BackupJob o-- Backup
+BackupJob o-- JobObject
+RestorePoint o-- Storage
+IStorageAlgorithm <|.. SingleStorage
+IStorageAlgorithm <|.. SplitStorage
+IRepository <|.. Repository
+BackupJob o-- Repository
+
+}
+
+@enduml
