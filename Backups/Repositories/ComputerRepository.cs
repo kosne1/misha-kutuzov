@@ -4,37 +4,49 @@ namespace Backups.Repositories
 {
     public class ComputerRepository : IRepository
     {
-        private readonly string _repositoryName;
+        private readonly DirectoryInfo _repositoryDir;
 
         public ComputerRepository(string name)
         {
-            const string dirName = @"D:\backups";
-            CreateDirectory(dirName);
+            var backupsRoot = new DirectoryInfo(@"D:\backups");
+            if (!backupsRoot.Exists)
+            {
+                backupsRoot.Create();
+            }
 
-            _repositoryName = $@"D:\backups\{name}";
-            CreateDirectory(_repositoryName);
+            var backupDir = new DirectoryInfo($@"D:\backups\{name}");
+            if (!backupDir.Exists)
+            {
+                backupDir.Create();
+            }
+
+            _repositoryDir = backupDir;
         }
 
-        public string CreateRestorePointDirectory(int restorePointNumber)
+        public ComputerRepository(DirectoryInfo directoryInfo)
         {
-            string restorePointDir = _repositoryName + $@"\{restorePointNumber.ToString()}";
-            CreateDirectory(restorePointDir);
+            if (!directoryInfo.Exists)
+            {
+                directoryInfo.Create();
+            }
+
+            _repositoryDir = directoryInfo;
+        }
+
+        public DirectoryInfo CreateRestorePointDirectory(int restorePointNumber)
+        {
+            var restorePointDir = new DirectoryInfo(_repositoryDir.FullName + $@"\{restorePointNumber.ToString()}");
+            if (!restorePointDir.Exists)
+            {
+                restorePointDir.Create();
+            }
+
             return restorePointDir;
         }
 
         public int GetAmountOfCreatedRestorePoints()
         {
-            var dirInfo = new DirectoryInfo(_repositoryName);
-            return dirInfo.GetDirectories().Length;
-        }
-
-        private void CreateDirectory(string dirName)
-        {
-            var dirInfo = new DirectoryInfo(dirName);
-            if (!dirInfo.Exists)
-            {
-                dirInfo.Create();
-            }
+            return _repositoryDir.GetDirectories().Length;
         }
     }
 }

@@ -1,8 +1,10 @@
-﻿namespace Backups.Repositories
+﻿using System.IO;
+
+namespace Backups.Repositories
 {
     public interface IRepository
     {
-        public string CreateRestorePointDirectory(int restorePointNumber);
+        public DirectoryInfo CreateRestorePointDirectory(int restorePointNumber);
         public int GetAmountOfCreatedRestorePoints();
     }
 }

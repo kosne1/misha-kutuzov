@@ -22,6 +22,16 @@ namespace Backups.Entities
             _jobObjects = new List<JobObject>();
         }
 
+        public BackupJob(string name, DirectoryInfo directoryInfo)
+        {
+            if (!IsNameValid(name)) throw new BackupsException("Can't create Backup Job with empty name");
+
+            Name = name;
+            _repository = new ComputerRepository(directoryInfo);
+            Backup = new Backup();
+            _jobObjects = new List<JobObject>();
+        }
+
         public int RestorePointsCounter { get; private set; }
 
         public string Name { get; }
@@ -39,8 +49,7 @@ namespace Backups.Entities
                 JobObject foundJobObject = _jobObjects.Find(j => j.FilePath == filePath);
                 if (foundJobObject != null) continue;
 
-                string filename = Path.GetFileNameWithoutExtension(filePath);
-                var jobObject = new JobObject(filePath, filename);
+                var jobObject = new JobObject(filePath);
                 _jobObjects.Add(jobObject);
             }
         }
@@ -49,7 +58,7 @@ namespace Backups.Entities
         {
             var restorePoint = new RestorePoint();
             RestorePointsCounter = _repository.GetAmountOfCreatedRestorePoints();
-            string restorePointDir = _repository.CreateRestorePointDirectory(++RestorePointsCounter);
+            DirectoryInfo restorePointDir = _repository.CreateRestorePointDirectory(++RestorePointsCounter);
 
             List<Storage> storages = _storageAlgorithm.Store(_jobObjects, restorePointDir);
 

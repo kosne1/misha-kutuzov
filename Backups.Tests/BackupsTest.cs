@@ -34,8 +34,26 @@ namespace Backups.Tests
 
             int actualStoragesCount = Directory.GetFiles(path, "*.*", SearchOption.AllDirectories).Length;
             int storagesCount = backupJob.Backup.RestorePoints.Sum(restorePoint => restorePoint.Storages.Count);
-            
+
             Assert.AreEqual(actualStoragesCount, storagesCount);
+        }
+
+        [Test]
+        public void CreateBackupJobAddTwoFiles_CheckThatFilesAndDirectoriesWereCreated()
+        {
+            const string backupDirPath = @"D:\backups\Test2SingleStorage";
+            var dirInfo = new DirectoryInfo(backupDirPath);
+            
+            const string backupJobName = "Test2SingleStorage";
+            var backupJob = new BackupJob(backupJobName, dirInfo);
+            IStorageAlgorithm singleStorage = new SingleStorage();
+            backupJob.SetStorageAlgorithm(singleStorage);
+
+            const string firstFilePath = @"C:\Users\misha\Documents\Test2\c.txt";
+            const string secondFilePath = @"C:\Users\misha\Documents\Test2\d.txt";
+
+            backupJob.AddFiles(firstFilePath, secondFilePath);
+            backupJob.CreateRestorePoint();
         }
     }
 }
