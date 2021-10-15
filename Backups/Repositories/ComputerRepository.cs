@@ -1,5 +1,4 @@
 ﻿using System.IO;
-using Backups.Tools;
 
 namespace Backups.Repositories
 {
@@ -9,9 +8,11 @@ namespace Backups.Repositories
 
         public ComputerRepository(string name)
         {
-            CreateBackupsRootDirectory();
+            const string dirName = @"D:\backups";
+            CreateDirectory(dirName);
 
             _repositoryName = $@"D:\backups\{name}";
+            CreateDirectory(_repositoryName);
         }
 
         public string CreateRestorePointDirectory(int restorePointNumber)
@@ -21,10 +22,10 @@ namespace Backups.Repositories
             return restorePointDir;
         }
 
-        private void CreateBackupsRootDirectory()
+        public int GetAmountOfCreatedRestorePoints()
         {
-            const string dirName = @"D:\backups";
-            CreateDirectory(dirName);
+            var dirInfo = new DirectoryInfo(_repositoryName);
+            return dirInfo.GetDirectories().Length;
         }
 
         private void CreateDirectory(string dirName)

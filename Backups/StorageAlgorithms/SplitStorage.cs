@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.IO.Compression;
 using Backups.Entities;
 
@@ -12,7 +13,9 @@ namespace Backups.StorageAlgorithms
 
             foreach (JobObject jobObject in jobObjects)
             {
-                string archivePath = restorePointDir + $@"\{jobObject.FileName}";
+                if (!File.Exists(jobObject.FilePath)) continue;
+
+                string archivePath = restorePointDir + $@"\{jobObject.FileName}.zip";
 
                 using ZipArchive zipArchive = ZipFile.Open(archivePath, ZipArchiveMode.Create);
 

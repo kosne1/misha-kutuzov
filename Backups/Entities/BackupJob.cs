@@ -18,12 +18,14 @@ namespace Backups.Entities
 
             Name = name;
             _repository = new ComputerRepository(Name);
+            Backup = new Backup();
             _jobObjects = new List<JobObject>();
         }
 
-        public int RestorePointsCounter { get; private set; } = 0;
+        public int RestorePointsCounter { get; private set; }
 
         public string Name { get; }
+        public Backup Backup { get; }
 
         public void SetStorageAlgorithm(IStorageAlgorithm storageAlgorithm)
         {
@@ -37,7 +39,7 @@ namespace Backups.Entities
                 JobObject foundJobObject = _jobObjects.Find(j => j.FilePath == filePath);
                 if (foundJobObject != null) continue;
 
-                string filename = Path.GetFileName(filePath);
+                string filename = Path.GetFileNameWithoutExtension(filePath);
                 var jobObject = new JobObject(filePath, filename);
                 _jobObjects.Add(jobObject);
             }
@@ -46,6 +48,7 @@ namespace Backups.Entities
         public void CreateRestorePoint()
         {
             var restorePoint = new RestorePoint();
+            RestorePointsCounter = _repository.GetAmountOfCreatedRestorePoints();
             string restorePointDir = _repository.CreateRestorePointDirectory(++RestorePointsCounter);
 
             List<Storage> storages = _storageAlgorithm.Store(_jobObjects, restorePointDir);
@@ -54,6 +57,8 @@ namespace Backups.Entities
             {
                 restorePoint.AddStorage(storage);
             }
+
+            Backup.AddRestorePoint(restorePoint);
         }
 
         private bool IsNameValid(string name)
