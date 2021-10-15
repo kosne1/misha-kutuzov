@@ -43,7 +43,7 @@ namespace Backups.Tests
         {
             const string backupDirPath = @"D:\backups\Test2SingleStorage";
             var dirInfo = new DirectoryInfo(backupDirPath);
-            
+
             const string backupJobName = "Test2SingleStorage";
             var backupJob = new BackupJob(backupJobName, dirInfo);
             IStorageAlgorithm singleStorage = new SingleStorage();
@@ -54,6 +54,11 @@ namespace Backups.Tests
 
             backupJob.AddFiles(firstFilePath, secondFilePath);
             backupJob.CreateRestorePoint();
+
+            Assert.IsTrue(dirInfo.Exists);
+
+            int dirs = dirInfo.GetDirectories().Length;
+            Assert.AreEqual(backupJob.RestorePointsCounter, dirs);
         }
     }
 }
