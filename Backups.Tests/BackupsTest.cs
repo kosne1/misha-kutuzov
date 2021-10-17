@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Linq;
 using Backups.Entities;
+using Backups.Repositories;
 using Backups.StorageAlgorithms;
 using NUnit.Framework;
 
@@ -11,10 +12,13 @@ namespace Backups.Tests
         [Test]
         public void CreateBackupJobAddTwoFilesDeleteOne_InBackupTwoRestorePointsThreeStorages()
         {
-            const string backupJobName = "Test1SplitStorage";
-            var backupJob = new BackupJob(backupJobName);
+            var backupJob = new BackupJob();
             IStorageAlgorithm splitStorage = new SplitStorage();
-            backupJob.SetStorageAlgorithm(splitStorage);
+
+            const string backupJobName = "Test1SplitStorage";
+            IRepository repository = new ComputerRepository(backupJobName);
+            backupJob.StorageAlgorithm = splitStorage;
+            backupJob.Repository = repository;
 
             const string firstFilePath = @"C:\Users\misha\Documents\Test1\a.txt";
             const string secondFilePath = @"C:\Users\misha\Documents\Test1\b.txt";
@@ -41,13 +45,15 @@ namespace Backups.Tests
         [Test]
         public void CreateBackupJobAddTwoFiles_CheckThatFilesAndDirectoriesWereCreated()
         {
+            var backupJob = new BackupJob();
+
+            IStorageAlgorithm singleStorage = new SingleStorage();
+            backupJob.StorageAlgorithm = singleStorage;
+            
             const string backupDirPath = @"D:\backups\Test2SingleStorage";
             var dirInfo = new DirectoryInfo(backupDirPath);
-
-            const string backupJobName = "Test2SingleStorage";
-            var backupJob = new BackupJob(backupJobName, dirInfo);
-            IStorageAlgorithm singleStorage = new SingleStorage();
-            backupJob.SetStorageAlgorithm(singleStorage);
+            IRepository repository = new ComputerRepository(dirInfo);
+            backupJob.Repository = repository;
 
             const string firstFilePath = @"C:\Users\misha\Documents\Test2\c.txt";
             const string secondFilePath = @"C:\Users\misha\Documents\Test2\d.txt";

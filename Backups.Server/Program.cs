@@ -1,7 +1,7 @@
 ﻿using System;
-using System.IO;
-using System.Net;
-using System.Net.Sockets;
+using Backups.Entities;
+using Backups.Repositories;
+using Backups.StorageAlgorithms;
 
 namespace Backups.Server
 {
@@ -10,55 +10,31 @@ namespace Backups.Server
         static void Main(string[] args)
         {
             // Listen on port 1234    
-            var tcpListener = new TcpListener(IPAddress.Any, 1234);
-            tcpListener.Start();
+            var backupTcpServer = new BackupTcpServer(1234);
 
-            Console.WriteLine("Server started");
+            string backupJobName = backupTcpServer.ReceiveBackupName();
+
+            var backupJob = new BackupJob();
+            IRepository repository = new ServerRepository(backupJobName);
+            backupJob.Repository = repository;
+            IStorageAlgorithm storageAlgorithm = new SplitStorage();
+            backupJob.StorageAlgorithm = storageAlgorithm;
+
+            int amount = backupTcpServer.ReceiveAmountOfFiles();
+
+            int counter = 0;
             while (true)
             {
-                //Infinite loop to connect to new clients  
-                // Accept a TcpClient    
-                TcpClient tcpClient = tcpListener.AcceptTcpClient();
+                string file = backupTcpServer.ReceiveFile();
 
-                Console.WriteLine("Connected to client");
+                backupJob.AddFiles(file);
 
-                var reader = new StreamReader(tcpClient.GetStream());
+                counter++;
 
-                // The first message from the client is the file size    
-                string cmdFileSize = reader.ReadLine();
-
-                // The first message from the client is the filename    
-                string cmdFileName = reader.ReadLine();
-
-                int length = Convert.ToInt32(cmdFileSize);
-                byte[] buffer = new byte[length];
-                int received = 0;
-                int size = 1024;
-
-                // Read bytes from the client using the length sent from the client    
-                while (received < length)
-                {
-                    int remaining = length - received;
-                    if (remaining < size)
-                    {
-                        size = remaining;
-                    }
-
-                    int read = tcpClient.GetStream().Read(buffer, received, size);
-                    received += read;
-                }
-
-                
-                // Save the file using the filename sent by the client    
-                using (var fStream = new FileStream(Path.GetFileName(cmdFileName), FileMode.Create))
-                {
-                    fStream.Write(buffer, 0, buffer.Length);
-                    fStream.Flush();
-                    fStream.Close();
-                }
-
-                Console.WriteLine("File received and saved in " + Environment.CurrentDirectory);
+                if (counter == amount) break;
             }
+
+            backupJob.CreateRestorePoint();
         }
     }
 }
