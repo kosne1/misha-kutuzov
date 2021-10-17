@@ -9,7 +9,7 @@ namespace Backups.Tests
 {
     public class BackupsTest
     {
-        [Test]
+        /*[Test]
         public void CreateBackupJobAddTwoFilesDeleteOne_InBackupTwoRestorePointsThreeStorages()
         {
             var backupJob = new BackupJob();
@@ -65,6 +65,6 @@ namespace Backups.Tests
 
             int dirs = dirInfo.GetDirectories().Length;
             Assert.AreEqual(backupJob.RestorePointsCounter, dirs);
-        }
+        }*/
     }
 }
