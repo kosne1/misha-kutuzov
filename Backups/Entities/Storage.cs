@@ -1,13 +1,14 @@
-﻿using System.IO.Compression;
+﻿using System.IO;
 
 namespace Backups.Entities
 {
     public class Storage
     {
-        private ZipArchive _zipArchive;
-        public Storage(ZipArchive zipArchive)
+        public Storage(FileInfo fileInfo)
         {
-            _zipArchive = zipArchive;
+            FileInfo = fileInfo;
         }
+
+        public FileInfo FileInfo { get; }
     }
 }

@@ -65,7 +65,7 @@ namespace Backups.Server
             return Convert.ToInt32(filesAmount);
         }
 
-        public string ReceiveBackupName()
+        public string ReceiveBackupDirectory()
         {
             _tcpClient = _tcpListener.AcceptTcpClient();
 

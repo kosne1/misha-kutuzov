@@ -1,51 +1,49 @@
 ﻿using System.Collections.Generic;
-using System.IO;
+using System.Linq;
+using Backups.Archivers;
 using Backups.Repositories;
-using Backups.StorageAlgorithms;
 
 namespace Backups.Entities
 {
     public class BackupJob
     {
         private readonly List<JobObject> _jobObjects;
+        private readonly List<RestorePoint> _restorePoints;
 
         public BackupJob()
         {
-            Backup = new Backup();
             _jobObjects = new List<JobObject>();
+            _restorePoints = new List<RestorePoint>();
         }
 
-        public int RestorePointsCounter { get; private set; }
-        public Backup Backup { get; }
-        public IStorageAlgorithm StorageAlgorithm { get; set; }
+        public IReadOnlyCollection<RestorePoint> RestorePoints => _restorePoints;
         public IRepository Repository { get; set; }
+        public IArchiver Archiver { get; set; }
 
-        public void AddFiles(params string[] filesPaths)
+        public void AddJobObject(JobObject jobObject)
         {
-            foreach (string filePath in filesPaths)
-            {
-                JobObject foundJobObject = _jobObjects.Find(j => j.FilePath == filePath);
-                if (foundJobObject != null) continue;
+            if (!_jobObjects.Contains(jobObject)) _jobObjects.Add(jobObject);
+        }
 
-                var jobObject = new JobObject(filePath);
-                _jobObjects.Add(jobObject);
-            }
+        public void DeleteJobObject(JobObject jobObject)
+        {
+            if (_jobObjects.Contains(jobObject)) _jobObjects.Remove(jobObject);
         }
 
         public void CreateRestorePoint()
         {
             var restorePoint = new RestorePoint();
-            RestorePointsCounter = Repository.GetAmountOfCreatedRestorePoints();
-            DirectoryInfo restorePointDir = Repository.CreateRestorePointDirectory(++RestorePointsCounter);
 
-            List<Storage> storages = StorageAlgorithm.Store(_jobObjects, restorePointDir);
+            List<Storage> storages = Archiver.Archive(_jobObjects, Repository.DirectoryInfo);
+
+            Repository.SaveStorages(storages, _restorePoints.Count);
 
             foreach (Storage storage in storages)
             {
                 restorePoint.AddStorage(storage);
             }
 
-            Backup.AddRestorePoint(restorePoint);
+            _restorePoints.Add(restorePoint);
         }
     }
 }

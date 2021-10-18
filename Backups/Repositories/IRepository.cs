@@ -1,10 +1,12 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
+using Backups.Entities;
 
 namespace Backups.Repositories
 {
     public interface IRepository
     {
-        public DirectoryInfo CreateRestorePointDirectory(int restorePointNumber);
-        public int GetAmountOfCreatedRestorePoints();
+        public DirectoryInfo DirectoryInfo { get; }
+        public void SaveStorages(List<Storage> storages, int restorePointNumber);
     }
 }

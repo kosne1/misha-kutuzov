@@ -6,6 +6,6 @@ namespace Backups.StorageAlgorithms
 {
     public interface IStorageAlgorithm
     {
-        public List<Storage> Store(List<JobObject> jobObjects, DirectoryInfo restorePointDir);
+        public List<Storage> Store(List<JobObject> jobObjects, DirectoryInfo directoryInfo);
     }
 }

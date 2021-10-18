@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Backups.Entities;
 
 namespace Backups.Client
 {
@@ -9,24 +10,24 @@ namespace Backups.Client
         {
             var backupTcpClient = new BackupTcpClient(1234);
 
-            const string backupName = "TestServer";
+            const string backupDirPath = @"D:\Backups\Test3Server";
 
-            const string firstFilePath = @"C:\Users\misha\Documents\Test2\c.txt";
-            const string secondFilePath = @"C:\Users\misha\Documents\Test2\d.txt";
-            var filePaths = new List<string>
+            var firstFile = new JobObject(@"C:\Users\misha\Documents\Test2\c.txt");
+            var secondFile = new JobObject(@"C:\Users\misha\Documents\Test2\d.txt");
+            var filePaths = new List<JobObject>
             {
-                firstFilePath,
-                secondFilePath
+                firstFile,
+                secondFile
             };
 
-            backupTcpClient.SendBackupJobName(backupName);
+            backupTcpClient.SendBackupDirectory(backupDirPath);
             backupTcpClient.SendAmountOfFiles(filePaths.Count);
 
-            foreach (string filePath in filePaths)
+            foreach (JobObject jobObject in filePaths)
             {
                 try
                 {
-                    backupTcpClient.SendFileToServer(filePath);
+                    backupTcpClient.SendFileToServer(jobObject);
                 }
                 catch (Exception e)
                 {

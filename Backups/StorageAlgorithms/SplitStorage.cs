@@ -7,7 +7,7 @@ namespace Backups.StorageAlgorithms
 {
     public class SplitStorage : IStorageAlgorithm
     {
-        public List<Storage> Store(List<JobObject> jobObjects, DirectoryInfo restorePointDir)
+        public List<Storage> Store(List<JobObject> jobObjects, DirectoryInfo directoryInfo)
         {
             var storages = new List<Storage>();
 
@@ -16,7 +16,7 @@ namespace Backups.StorageAlgorithms
                 if (!File.Exists(jobObject.FilePath)) continue;
 
                 string filename = Path.GetFileNameWithoutExtension(jobObject.FilePath);
-                string archivePath = restorePointDir.FullName + $@"\{filename}.zip";
+                string archivePath = Path.Join(directoryInfo.FullName, $@"\{filename}.zip");
 
                 using ZipArchive zipArchive = ZipFile.Open(archivePath, ZipArchiveMode.Create);
 
@@ -26,7 +26,7 @@ namespace Backups.StorageAlgorithms
 
                 zipArchive.CreateEntryFromFile(pathFileToAdd, nameFileToAdd);
 
-                var storage = new Storage(zipArchive);
+                var storage = new Storage(new FileInfo(archivePath));
                 storages.Add(storage);
             }
 

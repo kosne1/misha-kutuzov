@@ -1,5 +1,7 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using Backups.Archivers;
 using Backups.Entities;
 using Backups.Repositories;
 using Backups.StorageAlgorithms;
@@ -13,31 +15,39 @@ namespace Backups.Tests
         public void CreateBackupJobAddTwoFilesDeleteOne_InBackupTwoRestorePointsThreeStorages()
         {
             var backupJob = new BackupJob();
-            IStorageAlgorithm splitStorage = new SplitStorage();
 
-            const string backupJobName = "Test1SplitStorage";
-            IRepository repository = new ComputerRepository(backupJobName);
-            backupJob.StorageAlgorithm = splitStorage;
-            backupJob.Repository = repository;
+            const string backupPath = @"D:\Backups\Test1SplitStorage";
+            var backupDir = new DirectoryInfo(backupPath);
 
-            const string firstFilePath = @"C:\Users\misha\Documents\Test1\a.txt";
-            const string secondFilePath = @"C:\Users\misha\Documents\Test1\b.txt";
+            backupJob.Repository = new LocalRepository(backupDir);
+            backupJob.Archiver = new BackupZipArchiver(new SplitStorage());
 
-            backupJob.AddFiles(firstFilePath, secondFilePath);
+            var firstFile = new JobObject(@"C:\Users\misha\Documents\Test1\a.txt");
+            var secondFile = new JobObject(@"C:\Users\misha\Documents\Test1\b.txt");
+
+            var jobObjects = new List<JobObject>
+            {
+                firstFile,
+                secondFile
+            };
+
+            foreach (JobObject job in jobObjects)
+            {
+                backupJob.AddJobObject(job);
+            }
             backupJob.CreateRestorePoint();
 
-            string path = $@"D:\backups\{backupJobName}";
-            int dirs = Directory.GetDirectories(path).Length;
-            Assert.AreEqual(backupJob.RestorePointsCounter, dirs);
+            int dirs = Directory.GetDirectories(backupPath).Length;
+            Assert.AreEqual(backupJob.RestorePoints.Count, dirs);
 
-            File.Delete(firstFilePath);
+            backupJob.DeleteJobObject(firstFile);
             backupJob.CreateRestorePoint();
 
-            dirs = Directory.GetDirectories(path).Length;
-            Assert.AreEqual(backupJob.RestorePointsCounter, dirs);
+            dirs = Directory.GetDirectories(backupPath).Length;
+            Assert.AreEqual(backupJob.RestorePoints.Count, dirs);
 
-            int actualStoragesCount = Directory.GetFiles(path, "*.*", SearchOption.AllDirectories).Length;
-            int storagesCount = backupJob.Backup.RestorePoints.Sum(restorePoint => restorePoint.Storages.Count);
+            int actualStoragesCount = Directory.GetFiles(backupPath, "*.*", SearchOption.AllDirectories).Length;
+            int storagesCount = backupJob.RestorePoints.Sum(restorePoint => restorePoint.Storages.Count);
 
             Assert.AreEqual(actualStoragesCount, storagesCount);
         }
@@ -47,24 +57,31 @@ namespace Backups.Tests
         {
             var backupJob = new BackupJob();
 
-            IStorageAlgorithm singleStorage = new SingleStorage();
-            backupJob.StorageAlgorithm = singleStorage;
-            
-            const string backupDirPath = @"D:\backups\Test2SingleStorage";
+            backupJob.Archiver = new BackupZipArchiver(new SingleStorage());
+
+            const string backupDirPath = @"D:\Backups\Test2SingleStorage";
             var dirInfo = new DirectoryInfo(backupDirPath);
-            IRepository repository = new ComputerRepository(dirInfo);
-            backupJob.Repository = repository;
+            backupJob.Repository = new LocalRepository(dirInfo);
 
-            const string firstFilePath = @"C:\Users\misha\Documents\Test2\c.txt";
-            const string secondFilePath = @"C:\Users\misha\Documents\Test2\d.txt";
+            var firstFile = new JobObject(@"C:\Users\misha\Documents\Test2\c.txt");
+            var secondFile = new JobObject(@"C:\Users\misha\Documents\Test2\d.txt");
 
-            backupJob.AddFiles(firstFilePath, secondFilePath);
+            var jobObjects = new List<JobObject>
+            {
+                firstFile,
+                secondFile
+            };
+
+            foreach (JobObject job in jobObjects)
+            {
+                backupJob.AddJobObject(job);
+            }
             backupJob.CreateRestorePoint();
 
             Assert.IsTrue(dirInfo.Exists);
 
             int dirs = dirInfo.GetDirectories().Length;
-            Assert.AreEqual(backupJob.RestorePointsCounter, dirs);
+            Assert.AreEqual(backupJob.RestorePoints.Count, dirs);
         }*/
     }
 }

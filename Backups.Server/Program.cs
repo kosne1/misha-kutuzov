@@ -1,4 +1,5 @@
-﻿using System;
+﻿using System.IO;
+using Backups.Archivers;
 using Backups.Entities;
 using Backups.Repositories;
 using Backups.StorageAlgorithms;
@@ -12,13 +13,14 @@ namespace Backups.Server
             // Listen on port 1234    
             var backupTcpServer = new BackupTcpServer(1234);
 
-            string backupJobName = backupTcpServer.ReceiveBackupName();
+            string backupDirPath = backupTcpServer.ReceiveBackupDirectory();
 
             var backupJob = new BackupJob();
-            IRepository repository = new ServerRepository(backupJobName);
-            backupJob.Repository = repository;
-            IStorageAlgorithm storageAlgorithm = new SplitStorage();
-            backupJob.StorageAlgorithm = storageAlgorithm;
+
+            backupJob.Archiver = new BackupZipArchiver(new SplitStorage());
+
+            var dirInfo = new DirectoryInfo(backupDirPath);
+            backupJob.Repository = new LocalRepository(dirInfo);
 
             int amount = backupTcpServer.ReceiveAmountOfFiles();
 
@@ -27,7 +29,7 @@ namespace Backups.Server
             {
                 string file = backupTcpServer.ReceiveFile();
 
-                backupJob.AddFiles(file);
+                backupJob.AddJobObject(new JobObject(file));
 
                 counter++;
 

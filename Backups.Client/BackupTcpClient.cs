@@ -1,6 +1,6 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Net.Sockets;
+using Backups.Entities;
 
 namespace Backups.Client
 {
@@ -13,19 +13,19 @@ namespace Backups.Client
             _port = port;
         }
 
-        public void SendFileToServer(string filePath)
+        public void SendFileToServer(JobObject jobObject)
         {
             using var tcpClient = new TcpClient("127.0.0.1", _port);
             var sWriter = new StreamWriter(tcpClient.GetStream());
 
-            byte[] bytes = File.ReadAllBytes(filePath);
+            byte[] bytes = File.ReadAllBytes(jobObject.FilePath);
 
             sWriter.WriteLine(bytes.Length.ToString());
             sWriter.Flush();
 
-            sWriter.WriteLine(filePath);
+            sWriter.WriteLine(jobObject.FilePath);
             sWriter.Flush();
-            tcpClient.Client.SendFile(filePath);
+            tcpClient.Client.SendFile(jobObject.FilePath);
         }
 
         public void SendAmountOfFiles(int amount)
@@ -37,7 +37,7 @@ namespace Backups.Client
             sWriter.Flush();
         }
         
-        public void SendBackupJobName(string name)
+        public void SendBackupDirectory(string name)
         {
             using var tcpClient = new TcpClient("127.0.0.1", _port);
             var sWriter = new StreamWriter(tcpClient.GetStream());
