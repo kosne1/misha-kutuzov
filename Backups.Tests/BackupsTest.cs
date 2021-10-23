@@ -11,7 +11,8 @@ namespace Backups.Tests
 {
     public class BackupsTest
     {
-        /*[Test]
+        [Test]
+        [Ignore("No trash for computer")]
         public void CreateBackupJobAddTwoFilesDeleteOne_InBackupTwoRestorePointsThreeStorages()
         {
             var backupJob = new BackupJob();
@@ -35,6 +36,7 @@ namespace Backups.Tests
             {
                 backupJob.AddJobObject(job);
             }
+
             backupJob.CreateRestorePoint();
 
             int dirs = Directory.GetDirectories(backupPath).Length;
@@ -53,6 +55,7 @@ namespace Backups.Tests
         }
 
         [Test]
+        [Ignore("No trash for computer")]
         public void CreateBackupJobAddTwoFiles_CheckThatFilesAndDirectoriesWereCreated()
         {
             var backupJob = new BackupJob();
@@ -76,12 +79,13 @@ namespace Backups.Tests
             {
                 backupJob.AddJobObject(job);
             }
+
             backupJob.CreateRestorePoint();
 
             Assert.IsTrue(dirInfo.Exists);
 
             int dirs = dirInfo.GetDirectories().Length;
             Assert.AreEqual(backupJob.RestorePoints.Count, dirs);
-        }*/
+        }
     }
 }

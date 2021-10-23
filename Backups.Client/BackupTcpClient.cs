@@ -4,19 +4,20 @@ using Backups.Entities;
 
 namespace Backups.Client
 {
-    public class BackupTcpClient
+    public class BackupTcpClient : System.IDisposable
     {
         private readonly int _port;
+        private TcpClient _tcpClient;
 
-        public BackupTcpClient(int port)
+        public BackupTcpClient(string hostname, int port)
         {
             _port = port;
+            _tcpClient = new TcpClient(hostname, port);
         }
 
         public void SendFileToServer(JobObject jobObject)
         {
-            using var tcpClient = new TcpClient("127.0.0.1", _port);
-            var sWriter = new StreamWriter(tcpClient.GetStream());
+            var sWriter = new StreamWriter(_tcpClient.GetStream());
 
             byte[] bytes = File.ReadAllBytes(jobObject.FilePath);
 
@@ -25,13 +26,12 @@ namespace Backups.Client
 
             sWriter.WriteLine(jobObject.FilePath);
             sWriter.Flush();
-            tcpClient.Client.SendFile(jobObject.FilePath);
+            _tcpClient.Client.SendFile(jobObject.FilePath);
         }
 
         public void SendAmountOfFiles(int amount)
         {
-            using var tcpClient = new TcpClient("127.0.0.1", _port);
-            var sWriter = new StreamWriter(tcpClient.GetStream());
+            var sWriter = new StreamWriter(_tcpClient.GetStream());
             
             sWriter.WriteLine(amount.ToString());
             sWriter.Flush();
@@ -39,11 +39,15 @@ namespace Backups.Client
         
         public void SendBackupDirectory(string name)
         {
-            using var tcpClient = new TcpClient("127.0.0.1", _port);
-            var sWriter = new StreamWriter(tcpClient.GetStream());
+            var sWriter = new StreamWriter(_tcpClient.GetStream());
             
             sWriter.WriteLine(name);
             sWriter.Flush();
+        }
+
+        public void Dispose()
+        {
+            _tcpClient.Dispose();
         }
     }
 }

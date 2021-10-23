@@ -8,7 +8,7 @@ namespace Backups.Client
     {
         static void Main(string[] args)
         {
-            var backupTcpClient = new BackupTcpClient(1234);
+            var backupTcpClient = new BackupTcpClient("127.0.0.1", 1234);
 
             const string backupDirPath = @"D:\Backups\Test3Server";
 
