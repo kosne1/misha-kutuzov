@@ -1,0 +1,109 @@
+﻿@startuml
+
+package Backups{
+
+class Backup{
+- readonly List<RestorePoint> _restorePoints
++ Backup()
++ IReadOnlyCollection<RestorePoint> RestorePoints => _restorePoints
++ void AddRestorePoint(RestorePoint restorePoint)
+}
+
+class RestorePoint{
+- readonly List<Storage> _storages
++ RestorePoint()
++ IReadOnlyCollection<Storage> Storages => _storages
++ void AddStorage(Storage storage)
+}
+
+class BackupJob{
+- readonly List<JobObject> _jobObjects
++ BackupJob()
++ int RestorePointsCounter { get; private set; }
++ Backup Backup { get; }
++ IStorageAlgorithm StorageAlgorithm { get; set; }
++ IRepository Repository { get; set; }
++ void AddFiles(params string[] filesPaths)
++ void CreateRestorePoint()
+}
+
+class SingleStorage{
++ List<Storage> Store(List<JobObject> jobObjects, DirectoryInfo restorePointDir)
+}
+
+class SplitStorage{
++ List<Storage> Store(List<JobObject> jobObjects, DirectoryInfo restorePointDir)
+}
+
+class Storage{
+- ZipArchive _zipArchive
++ Storage(ZipArchive zipArchive)
+}
+
+class ComputerRepository{
+- readonly DirectoryInfo _repositoryDir
++ ComputerRepository(string name)
++ ComputerRepository(DirectoryInfo directoryInfo)
++ DirectoryInfo CreateRestorePointDirectory(int restorePointNumber)
++ int GetAmountOfCreatedRestorePoints()
+}
+
+interface IStorageAlgorithm{
++ List<Storage> Store(List<JobObject> jobObjects, DirectoryInfo restorePointDir)
+}
+
+class JobObject{
++ JobObject(string filePath)
++ string FilePath { get; }
+}
+
+interface IRepository{
++ DirectoryInfo CreateRestorePointDirectory(int restorePointNumber)
++ int GetAmountOfCreatedRestorePoints()
+}
+
+Backup o-- RestorePoint
+BackupJob o-- IStorageAlgorithm
+BackupJob o-- Backup
+BackupJob o-- JobObject
+RestorePoint o-- Storage
+IStorageAlgorithm <|.. SingleStorage
+IStorageAlgorithm <|.. SplitStorage
+IRepository <|.. ComputerRepository
+BackupJob o-- ComputerRepository
+
+}
+
+package Backups.Server{
+class BackupTcpServer{
+- TcpListener _tcpListener;
+- TcpClient _tcpClient;
++ BackupsTcpServer(int port)
++ void ReceiveFile()
++ void ReceiveAmountOfFiles()
++ void ReceiveBackupName()
+}
+
+class ServerRepository{
+- readonly DirectoryInfo _repositoryDir;
++ ServerRepository(string name)
++ DirectoryInfo CreateRestorePointDirectory(int restorePointNumber)
++ int GetAmountOfCreatedRestorePoints()
+}
+IRepository <|.. ServerRepository
+}
+
+package Backups.Client{
+class BackupTcpClient{
+- int _port;
++ BackupTcpClient(int port)
++ void SendFileToServer(string filepath)
++ void SendAmountOfFiles(int amount)
++ void SendBackupJobName(string name)
+}
+}
+
+Backups.Client --+ Backups.Server
+Backups.Server --+ Backups
+
+@enduml
