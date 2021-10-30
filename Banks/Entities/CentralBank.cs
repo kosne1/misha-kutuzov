@@ -20,7 +20,7 @@ namespace Banks.Entities
             return bank;
         }
 
-        public void ChargeCashBalance()
+        public void ChargeAccountBalance()
         {
             foreach (Bank bank in _banks)
             {
