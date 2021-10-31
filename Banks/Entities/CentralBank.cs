@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace Banks.Entities
@@ -20,14 +21,15 @@ namespace Banks.Entities
             return bank;
         }
 
-        public void ChargeAccountBalance()
+        public void ChargeAccountBalance(TimeSpan timeSpan)
         {
             foreach (Bank bank in _banks)
             {
+                bank.ChargeAccountBalance(timeSpan);
             }
         }
 
-        public void ChargeCommission()
+        public void DeductCommission()
         {
             foreach (Bank bank in _banks)
             {

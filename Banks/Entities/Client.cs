@@ -2,23 +2,20 @@ namespace Banks.Entities
 {
     public class Client
     {
-        public Client(string name, string address, string passport)
+        public Client(string name, string address = null, string passport = null)
         {
             Name = name;
-            if (!IsInfoValid(address)) Suspicious = true;
             Address = address;
-            if (!IsInfoValid(passport)) Suspicious = true;
             Passport = passport;
         }
 
         public string Name { get; }
         public string Address { get; }
         public string Passport { get; }
-        public bool Suspicious { get; } = false;
 
-        private bool IsInfoValid(string info)
+        public bool IsSuspicious()
         {
-            return !string.IsNullOrEmpty(info);
+            return string.IsNullOrEmpty(Address) || string.IsNullOrEmpty(Passport);
         }
     }
 }

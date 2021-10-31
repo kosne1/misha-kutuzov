@@ -1,51 +1,61 @@
+using System;
+using System.Collections.Generic;
 using Banks.Tools;
 
 namespace Banks.BankAccounts
 {
     public abstract class BankAccount
     {
-        private readonly int _id;
-
-        protected BankAccount(double money, int id, double interestOnTheBalance = 0, double commission = 0)
+        protected BankAccount(
+            double money,
+            int id,
+            TimeSpan accountOpeningTime,
+            TimeSpan accountClosingTime,
+            double interestOnTheBalancePercent = 0,
+            double commission = 0)
         {
             if (!IsMoneyValid(money)) throw new BankException("Money on bank account can't be negative");
             Money = money;
-            _id = id;
-            InterestOnTheBalance = interestOnTheBalance;
+            Id = id;
+            AccountOpeningTime = accountOpeningTime;
+            AccountClosingTime = accountClosingTime;
+            InterestOnTheBalancePercent = interestOnTheBalancePercent;
             Commission = commission;
         }
 
-        public double Money { get; private set; }
+        public int Id { get; }
+        public double Money { get; protected set; }
+        public double Commission { get; }
+        public double InterestOnTheBalancePercent { get; protected set; }
         public double InterestOnTheBalance { get; protected set; }
-        public double Commission { get; protected set; }
+        public bool Suspicious { get; set; }
+        public TimeSpan AccountOpeningTime { get; }
+        public TimeSpan AccountClosingTime { get; }
+        public Dictionary<int, double> Percents { get; set; }
 
-        public void AddMoney(double newMoney)
+        public abstract void AddMoney(double newMoney);
+
+        public abstract void WithdrawMoney(double withdrawMoney, TimeSpan currentTime);
+
+        public abstract void TransferMoney(double transferMoney, BankAccount bankAccount, TimeSpan currentTime);
+
+        public void ChargeAccountBalance(TimeSpan currentTime)
         {
-            if (!IsMoneyValid(newMoney))
-                throw new BankException("You can't add negative amount of money on bank account");
-            Money += newMoney;
+            TimeSpan interval = currentTime - AccountOpeningTime;
+            int months = interval.Days / 28;
+            Money += months * InterestOnTheBalancePercent * Money;
+            interval -= TimeSpan.FromDays(28 * months);
+            InterestOnTheBalance = interval.Days * Money * InterestOnTheBalancePercent;
         }
 
-        public void WithdrawMoney(double withdrawMoney)
+        public void DeductCommission(TimeSpan currentTime)
         {
-            if (!IsMoneyValid(withdrawMoney))
-                throw new BankException("You can't withdraw negative amount of money from bank account");
-            if (withdrawMoney > Money)
-                throw new BankException($"You can't withdraw {withdrawMoney} from Bank {_id} with {Money} balance");
-            Money -= withdrawMoney;
+            TimeSpan interval = currentTime - AccountOpeningTime;
+            int months = interval.Days / 28;
+            Money -= months * Commission;
         }
 
-        public void TransferMoney(double transferMoney, BankAccount bankAccount)
-        {
-            if (!IsMoneyValid(transferMoney))
-                throw new BankException("You can't add negative amount of money on bank account");
-            if (transferMoney > Money)
-                throw new BankException($"You can't transfer {transferMoney} from Bank {_id} with {Money} balance");
-            Money -= transferMoney;
-            bankAccount.AddMoney(transferMoney);
-        }
-
-        private bool IsMoneyValid(double money)
+        protected bool IsMoneyValid(double money)
         {
             return money >= 0;
         }
