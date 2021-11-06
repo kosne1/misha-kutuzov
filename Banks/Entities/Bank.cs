@@ -8,12 +8,17 @@ namespace Banks.Entities
     {
         private readonly Dictionary<Client, BankAccount> _clients;
 
-        public Bank()
+        public Bank(int id, double percent, double commission, double moneyLimitForSuspiciousClients)
         {
+            Id = id;
+            Percent = percent;
+            Commission = commission;
+            MoneyLimitForSuspiciousClients = moneyLimitForSuspiciousClients;
             _clients = new Dictionary<Client, BankAccount>();
         }
 
         public IReadOnlyDictionary<Client, BankAccount> Clients => _clients;
+        public int Id { get; }
 
         public double Percent { get; }
         public double Commission { get; }
@@ -30,7 +35,7 @@ namespace Banks.Entities
             bankAccount.Percents = percents;
         }
 
-        public void ChargeAccountBalance(TimeSpan timeSpan)
+        public void ChargeAccountBalance(DateTime timeSpan)
         {
             foreach (BankAccount bankAccount in _clients.Values)
             {
@@ -38,7 +43,7 @@ namespace Banks.Entities
             }
         }
 
-        public void DeductCommission(TimeSpan timeSpan)
+        public void DeductCommission(DateTime timeSpan)
         {
             foreach (BankAccount bankAccount in _clients.Values)
             {

@@ -13,15 +13,16 @@ namespace Banks.Entities
         }
 
         public IReadOnlyCollection<Bank> Banks => _banks;
+        public int BankCounter { get; private set; } = 0;
 
-        public Bank CreateBank()
+        public Bank CreateBank(double percent, double commission, double moneyLimitForSuspiciousClients)
         {
-            var bank = new Bank();
+            var bank = new Bank(BankCounter++, percent, commission, moneyLimitForSuspiciousClients);
             _banks.Add(bank);
             return bank;
         }
 
-        public void ChargeAccountBalance(TimeSpan timeSpan)
+        public void ChargeAccountBalance(DateTime timeSpan)
         {
             foreach (Bank bank in _banks)
             {
