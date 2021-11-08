@@ -1,7 +1,7 @@
 ﻿using Banks.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace Banks.ORM
+namespace Banks.Db
 {
     public class ApplicationContext : DbContext
     {
