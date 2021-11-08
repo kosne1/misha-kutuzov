@@ -12,15 +12,13 @@ namespace Banks.BankAccounts
     {
         protected BankAccount(
             double money,
-            int id,
-            TimeSpan accountOpeningTime,
-            TimeSpan accountClosingTime,
+            DateTime accountOpeningTime,
+            DateTime accountClosingTime,
             double interestOnTheBalancePercent = 0,
             double commission = 0)
         {
             if (!IsMoneyValid(money)) throw new BankException("Money on bank account can't be negative");
             Money = money;
-            Id = id;
             AccountOpeningTime = accountOpeningTime;
             AccountClosingTime = accountClosingTime;
             InterestOnTheBalancePercent = interestOnTheBalancePercent;
@@ -31,23 +29,22 @@ namespace Banks.BankAccounts
         public event CreditLimitChangedHandler CreditLimitChanged;
         public bool Suspicious { get; set; }
         public Dictionary<int, double> Percents { get; set; }
-        protected int Id { get; }
         protected double Money { get; set; }
         protected List<Transaction> Transactions { get; }
-        protected TimeSpan AccountClosingTime { get; }
+        protected DateTime AccountClosingTime { get; }
         private double CreditLimit { get; set; }
         private double Commission { get; }
         private double InterestOnTheBalancePercent { get; set; }
         private double InterestOnTheBalance { get; set; }
-        private TimeSpan AccountOpeningTime { get; }
+        private DateTime AccountOpeningTime { get; }
 
         public abstract void AddMoney(double newMoney);
 
-        public abstract void WithdrawMoney(double withdrawMoney, TimeSpan currentTime);
+        public abstract void WithdrawMoney(double withdrawMoney, DateTime currentTime);
 
-        public abstract void TransferMoney(double transferMoney, BankAccount bankAccount, TimeSpan currentTime);
+        public abstract void TransferMoney(double transferMoney, BankAccount bankAccount, DateTime currentTime);
 
-        public void ChargeAccountBalance(TimeSpan currentTime)
+        public void ChargeAccountBalance(DateTime currentTime)
         {
             TimeSpan interval = currentTime - AccountOpeningTime;
             int months = interval.Days / 28;
@@ -56,7 +53,7 @@ namespace Banks.BankAccounts
             InterestOnTheBalance = interval.Days * Money * InterestOnTheBalancePercent;
         }
 
-        public void DeductCommission(TimeSpan currentTime)
+        public void DeductCommission(DateTime currentTime)
         {
             TimeSpan interval = currentTime - AccountOpeningTime;
             int months = interval.Days / 28;
