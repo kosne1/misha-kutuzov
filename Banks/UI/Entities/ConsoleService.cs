@@ -16,21 +16,19 @@ namespace Banks.UI.Entities
             _inputService = new InputService();
         }
 
-        public void Run(CentralBank centralBank, List<Client> clients)
+        public void Run(ApplicationContext db, CentralBank centralBank, List<Client> clients)
         {
             while (true)
             {
-                bool shouldQuit = MakeAction(centralBank, clients);
+                bool shouldQuit = MakeAction(db, centralBank, clients);
                 if (shouldQuit)
                     return;
             }
         }
 
-        private bool MakeAction(CentralBank centralBank, List<Client> clients)
+        private bool MakeAction(ApplicationContext db, CentralBank centralBank, List<Client> clients)
         {
             string action = _inputService.GetAction();
-
-            using var db = new ApplicationContext();
             switch (action)
             {
                 case "Add Client":

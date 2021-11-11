@@ -16,5 +16,18 @@ namespace Banks.Entities
         public BankAccount NewBankAccount { get; }
         public string Ev { get; }
         public double Money { get; }
+
+        public void Cancel()
+        {
+            if (Ev == "w")
+            {
+                BankAccount.AddMoney(Money);
+            }
+            else
+            {
+                BankAccount.AddMoney(Money);
+                NewBankAccount.RemoveMoney(Money);
+            }
+        }
     }
 }

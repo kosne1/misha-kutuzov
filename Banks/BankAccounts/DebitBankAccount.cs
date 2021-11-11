@@ -1,4 +1,5 @@
 using System;
+using Banks.Entities;
 using Banks.Tools;
 
 namespace Banks.BankAccounts
@@ -28,6 +29,7 @@ namespace Banks.BankAccounts
             if (withdrawMoney > Money)
                 throw new BankException($"You can't withdraw {withdrawMoney} with {Money} balance");
             Money -= withdrawMoney;
+            Transactions.Add(new Transaction("w", withdrawMoney, this));
         }
 
         public override void TransferMoney(double transferMoney, BankAccount bankAccount, DateTime currentTime)
@@ -38,6 +40,7 @@ namespace Banks.BankAccounts
                 throw new BankException($"You can't transfer {transferMoney} with {Money} balance");
             Money -= transferMoney;
             bankAccount.AddMoney(transferMoney);
+            Transactions.Add(new Transaction("t", transferMoney, this, bankAccount));
         }
     }
 }

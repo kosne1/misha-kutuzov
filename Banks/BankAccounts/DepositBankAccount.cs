@@ -40,7 +40,7 @@ namespace Banks.BankAccounts
                 throw new BankException($"You can't transfer {transferMoney} with {Money} balance");
             Money -= transferMoney;
             bankAccount.AddMoney(transferMoney);
-            Transactions.Add(new Transaction("w", transferMoney, this, bankAccount));
+            Transactions.Add(new Transaction("t", transferMoney, this, bankAccount));
         }
     }
 }

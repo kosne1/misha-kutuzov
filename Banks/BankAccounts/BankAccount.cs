@@ -63,16 +63,7 @@ namespace Banks.BankAccounts
         public void CancelTransaction()
         {
             Transaction transaction = Transactions.Last();
-            if (transaction.Ev == "w")
-            {
-                transaction.BankAccount.AddMoney(transaction.Money);
-            }
-            else
-            {
-                transaction.BankAccount.AddMoney(transaction.Money);
-                transaction.NewBankAccount.RemoveMoney(transaction.Money);
-            }
-
+            transaction.Cancel();
             Transactions.Remove(transaction);
         }
 
@@ -82,14 +73,14 @@ namespace Banks.BankAccounts
             CreditLimitChanged?.Invoke(this, limit);
         }
 
+        public void RemoveMoney(double money)
+        {
+            Money -= money;
+        }
+
         protected bool IsMoneyValid(double money)
         {
             return money >= 0;
-        }
-
-        private void RemoveMoney(double money)
-        {
-            Money -= money;
         }
     }
 }

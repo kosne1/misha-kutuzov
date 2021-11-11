@@ -5,17 +5,13 @@ namespace Banks.Db
 {
     public class ApplicationContext : DbContext
     {
-        public ApplicationContext()
+        public ApplicationContext(DbContextOptions dbContextOptions)
+            : base(dbContextOptions)
         {
             Database.EnsureCreated();
         }
 
         public DbSet<Bank> Banks { get; set; }
         public DbSet<Client> Clients { get; set; }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=helloappdb;Trusted_Connection=True;");
-        }
     }
 }
