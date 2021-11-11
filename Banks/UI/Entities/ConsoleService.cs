@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Banks.BankAccounts;
 using Banks.Db;
 using Banks.Entities;
@@ -10,6 +11,7 @@ namespace Banks.UI.Entities
     public class ConsoleService
     {
         private readonly InputService _inputService;
+        private int _clientsCounter;
 
         public ConsoleService()
         {
@@ -40,7 +42,7 @@ namespace Banks.UI.Entities
                     db.Banks.Add(bank);
                     break;
                 case "Register Bank Account":
-                    BankAccount bankAccount = GetBankAccount();
+                    CreateBankAccount(centralBank, clients);
                     break;
                 case "Quit":
                     return true;
@@ -55,19 +57,22 @@ namespace Banks.UI.Entities
             string name = _inputService.GetString("Name");
             string address = _inputService.GetString("Address");
             string passport = _inputService.GetString("Passport");
-            return new Client(name, address, passport);
+            return new Client(_clientsCounter++, name, address, passport);
         }
 
         private Bank GetBank(CentralBank centralBank)
         {
+            string name = _inputService.GetString("Name");
             double percent = _inputService.GetDouble("percent");
             double commission = _inputService.GetDouble("Commission");
             double moneyLimit = _inputService.GetDouble("Money Limit For Suspicious Operations");
-            return centralBank.CreateBank(percent, commission, moneyLimit);
+            return centralBank.CreateBank(name, percent, commission, moneyLimit);
         }
 
-        private BankAccount GetBankAccount()
+        private void CreateBankAccount(CentralBank centralBank, List<Client> clients)
         {
+            int bankId = _inputService.GetBankId(centralBank);
+            Bank bank = centralBank.Banks.FirstOrDefault(b => b.Id == bankId);
             string name = _inputService.GetBankAccountType();
             double money = _inputService.GetDouble("Money");
             BankAccount bankAccount = null;
@@ -85,25 +90,9 @@ namespace Banks.UI.Entities
                     break;
             }
 
-            return bankAccount;
-        }
-
-        private int GetNewPrice()
-        {
-            int newPrice = _inputService.GetInt("New Price");
-            return newPrice;
-        }
-
-        private int GetPrice()
-        {
-            int price = _inputService.GetInt("Price");
-            return price;
-        }
-
-        private int GetAmount()
-        {
-            int amount = _inputService.GetInt("Amount");
-            return amount;
+            int clientId = _inputService.GetClientId(clients);
+            Client client = clients.FirstOrDefault(c => c.Id == clientId);
+            bank?.AddBankAccount(client, bankAccount);
         }
     }
 }

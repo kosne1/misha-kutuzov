@@ -2,13 +2,15 @@ namespace Banks.Entities
 {
     public class Client
     {
-        public Client(string name, string address = null, string passport = null)
+        public Client(int id, string name, string address = null, string passport = null)
         {
+            Id = id;
             Name = name;
             Address = address;
             Passport = passport;
         }
 
+        public int Id { get; }
         public string Name { get; }
         public string Address { get; }
         public string Passport { get; }
