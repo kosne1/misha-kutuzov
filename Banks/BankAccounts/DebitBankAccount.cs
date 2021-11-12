@@ -1,4 +1,5 @@
 using System;
+using Banks.BankAccountCreator;
 using Banks.Entities;
 using Banks.Tools;
 
@@ -9,9 +10,8 @@ namespace Banks.BankAccounts
         public DebitBankAccount(
             double money,
             DateTime accountOpeningTime,
-            DateTime accountClosingTime,
-            double interestOnTheBalancePercent)
-            : base(money, accountOpeningTime, accountClosingTime, interestOnTheBalancePercent)
+            DateTime accountClosingTime)
+            : base(money, accountOpeningTime, accountClosingTime)
         {
         }
 

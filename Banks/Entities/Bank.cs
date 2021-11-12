@@ -40,7 +40,7 @@ namespace Banks.Entities
         {
             foreach (BankAccount bankAccount in _clients.Values)
             {
-                bankAccount.ChargeAccountBalance(currentTime);
+                bankAccount.ChargeAccountBalance(Percent, currentTime);
             }
         }
 

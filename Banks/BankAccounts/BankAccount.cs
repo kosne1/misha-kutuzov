@@ -14,14 +14,12 @@ namespace Banks.BankAccounts
             double money,
             DateTime accountOpeningTime,
             DateTime accountClosingTime,
-            double interestOnTheBalancePercent = 0,
             double commission = 0)
         {
             if (!IsMoneyValid(money)) throw new BankException("Money on bank account can't be negative");
             Money = money;
             AccountOpeningTime = accountOpeningTime;
             AccountClosingTime = accountClosingTime;
-            InterestOnTheBalancePercent = interestOnTheBalancePercent;
             Commission = commission;
             Transactions = new List<Transaction>();
         }
@@ -34,7 +32,6 @@ namespace Banks.BankAccounts
         protected DateTime AccountClosingTime { get; }
         private double CreditLimit { get; set; }
         private double Commission { get; }
-        private double InterestOnTheBalancePercent { get; set; }
         private double InterestOnTheBalance { get; set; }
         private DateTime AccountOpeningTime { get; }
 
@@ -44,13 +41,13 @@ namespace Banks.BankAccounts
 
         public abstract void TransferMoney(double transferMoney, BankAccount bankAccount, DateTime currentTime);
 
-        public void ChargeAccountBalance(DateTime currentTime)
+        public void ChargeAccountBalance(double interestOnTheBalancePercent, DateTime currentTime)
         {
             TimeSpan interval = currentTime - AccountOpeningTime;
             int months = interval.Days / 28;
-            Money += months * InterestOnTheBalancePercent * Money;
+            Money += months * interestOnTheBalancePercent * Money;
             interval -= TimeSpan.FromDays(28 * months);
-            InterestOnTheBalance = interval.Days * Money * InterestOnTheBalancePercent;
+            InterestOnTheBalance = interval.Days * Money * interestOnTheBalancePercent;
         }
 
         public void DeductCommission(DateTime currentTime)

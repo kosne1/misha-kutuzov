@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Banks.BankAccountCreator;
 using Banks.BankAccounts;
 using Banks.Db;
 using Banks.Entities;
@@ -79,14 +80,16 @@ namespace Banks.UI.Entities
             switch (name)
             {
                 case "Credit":
-                    bankAccount = new CreditBankAccount(money, DateTime.Now, DateTime.Now.AddYears(1));
+                    var creditAccountCreator = new CreditAccountCreator();
+                    bankAccount = creditAccountCreator.CreateAccount(money, DateTime.Now, DateTime.Now.AddYears(1));
                     break;
                 case "Debit":
-                    double interest = _inputService.GetDouble("Interest on the Balance");
-                    bankAccount = new DebitBankAccount(money, DateTime.Now, DateTime.Now.AddYears(1), interest);
+                    var debitAccountCreator = new DebitAccountCreator();
+                    bankAccount = debitAccountCreator.CreateAccount(money, DateTime.Now, DateTime.Now.AddYears(1));
                     break;
                 case "Deposit":
-                    bankAccount = new DepositBankAccount(money, DateTime.Now, DateTime.Now.AddYears(1));
+                    var depositAccountCreator = new DepositAccountCreator();
+                    bankAccount = depositAccountCreator.CreateAccount(money, DateTime.Now, DateTime.Now.AddYears(1));
                     break;
             }
 
