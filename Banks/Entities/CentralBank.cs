@@ -4,7 +4,7 @@ namespace Banks.Entities
 {
     public class CentralBank
     {
-        private readonly List<Bank> _banks = new();
+        private readonly List<Bank> _banks = new List<Bank>();
         private int _bankCounter;
 
         public IReadOnlyCollection<Bank> Banks => _banks;

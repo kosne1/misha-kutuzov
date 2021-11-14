@@ -8,21 +8,23 @@ namespace Banks.BankAccounts
 {
     public abstract class BankAccount
     {
-        protected bool _isSuspicious;
-        protected double _money;
-        protected DateTime _closingTime;
-        protected List<ITransaction> _transactions = new();
-        protected double _moneyLimit;
-        protected int _id;
-        protected double _interestOnTheBalance;
-        protected double _interestCash;
+        private List<ITransaction> _transactions = new List<ITransaction>();
 
         public BankAccount(int id, double money, DateTime closingTime)
         {
-            _id = id;
-            _money = money;
-            _closingTime = closingTime;
+            Id = id;
+            Money = money;
+            ClosingTime = closingTime;
         }
+
+        public bool IsSuspicious { get; private set; }
+        public double Money { get; protected set; }
+        public DateTime ClosingTime { get; }
+        public IReadOnlyCollection<ITransaction> Transactions => _transactions;
+        public double MoneyLimit { get; private set; }
+        public int Id { get; }
+        public double InterestOnTheBalance { get; protected set; }
+        public double InterestCash { get; protected set; }
 
         // transactions
         public abstract void TopUpMoney(double money, DateTime curTime);
@@ -37,32 +39,32 @@ namespace Banks.BankAccounts
 
         public void RemoveMoneyFromTransactionCancellation(double money)
         {
-            _money -= money;
+            Money -= money;
         }
 
         public void AddMoneyFromTransactionCancellation(double money)
         {
-            _money += money;
+            Money += money;
         }
 
         public void CheckForSuspicion(Client client)
         {
-            _isSuspicious = client.IsSuspicious();
+            IsSuspicious = client.IsSuspicious();
         }
 
         public void ChangeMoneyLimit(double moneyLimit)
         {
-            _moneyLimit = moneyLimit;
+            MoneyLimit = moneyLimit;
         }
 
         public void DeductBankCommission(double commission)
         {
-            _money -= commission;
+            Money -= commission;
         }
 
         public void ChargeInterest()
         {
-            _money += _interestCash;
+            Money += InterestCash;
         }
     }
 }

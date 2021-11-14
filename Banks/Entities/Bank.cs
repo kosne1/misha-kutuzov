@@ -9,9 +9,9 @@ namespace Banks.Entities
 {
     public class Bank : ISubject
     {
-        private List<IObserver> _observers = new();
+        private List<IObserver> _observers = new List<IObserver>();
         private IOutput _output;
-        private Dictionary<Client, List<BankAccount>> _clients = new();
+        private Dictionary<Client, List<BankAccount>> _clients = new Dictionary<Client, List<BankAccount>>();
         private double _moneyLimitForSuspiciousAccounts;
 
         public Bank(string name, int id, double commission, double moneyLimitForSuspiciousAccounts)

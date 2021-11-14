@@ -14,44 +14,44 @@ namespace Banks.BankAccounts
         public override void TopUpMoney(double money, DateTime curTime)
         {
             if (money < 0) throw new BankException("You can't top up negative amount of money");
-            if (_isSuspicious && money > _moneyLimit)
+            if (IsSuspicious && money > MoneyLimit)
             {
                 throw new BankException(
-                    $"You can't top up this amount of money {money}, because account {_id} is suspicious");
+                    $"You can't top up this amount of money {money}, because account {Id} is suspicious");
             }
 
-            _money += money;
-            _interestCash += _money * _interestOnTheBalance;
+            Money += money;
+            InterestCash += Money * InterestOnTheBalance;
             AddTransaction(new TopUpTransaction(money, this, curTime));
         }
 
         public override void WithdrawMoney(double money, DateTime curTime)
         {
             if (money < 0) throw new BankException("You can't withdraw negative amount of money");
-            if (money > _money) throw new BankException("You can't withdraw money, because you are low on balance");
-            if (_isSuspicious && money > _moneyLimit)
+            if (money > Money) throw new BankException("You can't withdraw money, because you are low on balance");
+            if (IsSuspicious && money > MoneyLimit)
             {
                 throw new BankException(
-                    $"You can't withdraw this amount of money {money}, because account {_id} is suspicious");
+                    $"You can't withdraw this amount of money {money}, because account {Id} is suspicious");
             }
 
-            _money -= money;
-            _interestCash += _money * _interestOnTheBalance;
+            Money -= money;
+            InterestCash += Money * InterestOnTheBalance;
             AddTransaction(new WithdrawTransaction(money, this, curTime));
         }
 
         public override void TransferMoney(double money, BankAccount newBankAccount, DateTime curTime)
         {
             if (money < 0) throw new BankException("You can't transfer negative amount of money");
-            if (money > _money) throw new BankException("You can't transfer money, because you are low on balance");
-            if (_isSuspicious && money > _moneyLimit)
+            if (money > Money) throw new BankException("You can't transfer money, because you are low on balance");
+            if (IsSuspicious && money > MoneyLimit)
             {
                 throw new BankException(
-                    $"You can't transfer this amount of money {money}, because account {_id} is suspicious");
+                    $"You can't transfer this amount of money {money}, because account {Id} is suspicious");
             }
 
-            _money -= money;
-            _interestCash += _money * _interestOnTheBalance;
+            Money -= money;
+            InterestCash += Money * InterestOnTheBalance;
             AddTransaction(new TransferTransaction(money, this, newBankAccount, curTime));
         }
     }
