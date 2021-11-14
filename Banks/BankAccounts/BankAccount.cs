@@ -1,89 +1,69 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using Banks.Entities;
+using Banks.ClientBuilder;
 using Banks.Tools;
 using Banks.Transactions;
 
 namespace Banks.BankAccounts
 {
-    public delegate void CreditLimitChangedHandler(BankAccount bankAccount, double creditLimit);
-
     public abstract class BankAccount
     {
-        protected BankAccount(
-            double money,
-            DateTime accountOpeningTime,
-            DateTime accountClosingTime,
-            double commission = 0)
+        protected bool _isSuspicious;
+        protected double _money;
+        protected DateTime _openingTime;
+        protected DateTime _closingTime;
+        protected List<ITransaction> _transactions = new();
+        protected double _moneyLimit;
+        protected int _id;
+
+        public BankAccount(int id, double money, DateTime openingTime, DateTime closingTime)
         {
-            if (!IsMoneyValid(money)) throw new BankException("Money on bank account can't be negative");
-            Money = money;
-            AccountOpeningTime = accountOpeningTime;
-            AccountClosingTime = accountClosingTime;
-            Commission = commission;
-            Transactions = new List<ITransaction>();
+            _id = id;
+            _money = money;
+            _openingTime = openingTime;
+            _closingTime = closingTime;
         }
 
-        public event CreditLimitChangedHandler CreditLimitChanged;
-        public bool Suspicious { get; set; }
-        public Dictionary<int, double> Percents { get; set; }
-        protected double Money { get; set; }
-        protected List<ITransaction> Transactions { get; }
-        protected DateTime AccountClosingTime { get; }
-        private double CreditLimit { get; set; }
-        private double Commission { get; }
-        private double InterestOnTheBalance { get; set; }
-        private DateTime AccountOpeningTime { get; }
-
-        public abstract void TopUpMoney(double newMoney);
-
-        public abstract void WithdrawMoney(double withdrawMoney, DateTime currentTime);
-
-        public abstract void TransferMoney(double transferMoney, BankAccount bankAccount, DateTime currentTime);
-
-        public void ChargeAccountBalance(double interestOnTheBalancePercent, DateTime currentTime)
+        // transactions
+        public void TopUpMoney(double money, DateTime curTime)
         {
-            TimeSpan interval = currentTime - AccountOpeningTime;
-            int months = interval.Days / 28;
-            Money += months * interestOnTheBalancePercent * Money;
-            interval -= TimeSpan.FromDays(28 * months);
-            InterestOnTheBalance = interval.Days * Money * interestOnTheBalancePercent;
+            if (money < 0) throw new BankException("You can't top up negative amount of money");
+            if (_isSuspicious && money > _moneyLimit)
+            {
+                throw new BankException(
+                    $"You can't top up this amount of money {money}, because account {_id} is suspicious");
+            }
+
+            _money += money;
+            AddTransaction(new TopUpTransaction(money, this, curTime));
         }
 
-        public void DeductCommission(DateTime currentTime)
-        {
-            TimeSpan interval = currentTime - AccountOpeningTime;
-            int months = interval.Days / 28;
-            Money -= months * Commission;
-        }
+        public abstract void WithdrawMoney(double money, DateTime curTime);
+        public abstract void TransferMoney(double money, BankAccount newBankAccount, DateTime curTime);
 
-        public void CancelTransaction()
+        public void AddTransaction(ITransaction transaction)
         {
-            ITransaction transaction = Transactions.Last();
-            transaction.Cancel();
-            Transactions.Remove(transaction);
-        }
-
-        public void ChangeCreditLimit(double limit)
-        {
-            CreditLimit = limit;
-            CreditLimitChanged?.Invoke(this, limit);
+            _transactions.Add(transaction);
         }
 
         public void RemoveMoneyFromTransactionCancellation(double money)
         {
-            Money -= money;
+            _money -= money;
         }
 
         public void AddMoneyFromTransactionCancellation(double money)
         {
-            Money += money;
+            _money += money;
         }
 
-        protected bool IsMoneyValid(double money)
+        public void CheckForSuspicion(Client client)
         {
-            return money >= 0;
+            _isSuspicious = client.IsSuspicious();
+        }
+
+        public void SetMoneyLimit(double moneyLimit)
+        {
+            _moneyLimit = moneyLimit;
         }
     }
 }

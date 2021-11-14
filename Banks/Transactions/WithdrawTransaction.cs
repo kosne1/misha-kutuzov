@@ -1,4 +1,5 @@
-﻿using Banks.BankAccounts;
+﻿using System;
+using Banks.BankAccounts;
 
 namespace Banks.Transactions
 {
@@ -6,11 +7,13 @@ namespace Banks.Transactions
     {
         private readonly double _money;
         private readonly BankAccount _bankAccount;
+        private readonly DateTime _transactionTime;
 
-        public WithdrawTransaction(double money, BankAccount bankAccount)
+        public WithdrawTransaction(double money, BankAccount bankAccount, DateTime transactionTime)
         {
             _money = money;
             _bankAccount = bankAccount;
+            _transactionTime = transactionTime;
         }
 
         public void Cancel()

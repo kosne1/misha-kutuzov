@@ -1,5 +1,6 @@
 namespace Banks.ClientBuilder
 {
+    // This is an account in bank, not a real person!!!
     public class Client
     {
         public string Name { get; set; }

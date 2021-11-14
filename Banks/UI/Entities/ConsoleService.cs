@@ -65,10 +65,9 @@ namespace Banks.UI.Entities
         private Bank GetBank(CentralBank centralBank)
         {
             string name = _inputService.GetString("Name");
-            double percent = _inputService.GetDouble("percent");
             double commission = _inputService.GetDouble("Commission");
             double moneyLimit = _inputService.GetDouble("Money Limit For Suspicious Operations");
-            return centralBank.CreateBank(name, percent, commission, moneyLimit);
+            return centralBank.CreateBank(name, commission, moneyLimit);
         }
 
         private void CreateBankAccount(CentralBank centralBank, List<Client> clients)

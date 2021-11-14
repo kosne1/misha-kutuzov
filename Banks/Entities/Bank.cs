@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Banks.BankAccounts;
 using Banks.ClientBuilder;
@@ -7,50 +6,40 @@ namespace Banks.Entities
 {
     public class Bank
     {
-        private readonly Dictionary<Client, BankAccount> _clients;
+        private readonly Dictionary<Client, List<BankAccount>> _clients = new();
+        private double _moneyLimitForSuspiciousAccounts;
 
-        public Bank(string name, int id, double percent, double commission, double moneyLimitForSuspiciousClients)
+        public Bank(string name, int id, double commission, double moneyLimitForSuspiciousAccounts)
         {
             Name = name;
             Id = id;
-            Percent = percent;
+            _moneyLimitForSuspiciousAccounts = moneyLimitForSuspiciousAccounts;
             Commission = commission;
-            MoneyLimitForSuspiciousClients = moneyLimitForSuspiciousClients;
-            _clients = new Dictionary<Client, BankAccount>();
         }
 
-        public IReadOnlyDictionary<Client, BankAccount> Clients => _clients;
+        public IReadOnlyDictionary<Client, List<BankAccount>> Clients => _clients;
         public int Id { get; }
         public string Name { get; }
-        public double Percent { get; }
         public double Commission { get; }
-        public double MoneyLimitForSuspiciousClients { get; }
 
         public void AddBankAccount(Client client, BankAccount bankAccount)
         {
-            bankAccount.Suspicious = client.IsSuspicious();
-            _clients.Add(client, bankAccount);
-        }
-
-        public void SetPercentsForBankAccount(BankAccount bankAccount, Dictionary<int, double> percents)
-        {
-            bankAccount.Percents = percents;
-        }
-
-        public void ChargeAccountBalance(DateTime currentTime)
-        {
-            foreach (BankAccount bankAccount in _clients.Values)
+            if (_clients[client] == null)
             {
-                bankAccount.ChargeAccountBalance(Percent, currentTime);
+                _clients.Add(client, new List<BankAccount>());
             }
+
+            _clients[client].Add(bankAccount);
         }
 
-        public void DeductCommission(DateTime currentTime)
+        public void SetDepositPercents(DepositAccount depositAccount, Dictionary<double, double> percents)
         {
-            foreach (BankAccount bankAccount in _clients.Values)
-            {
-                bankAccount.DeductCommission(currentTime);
-            }
+            depositAccount.SetPercents(percents);
+        }
+
+        public void SetMoneyLimits(BankAccount bankAccount)
+        {
+            bankAccount.SetMoneyLimit(_moneyLimitForSuspiciousAccounts);
         }
     }
 }
