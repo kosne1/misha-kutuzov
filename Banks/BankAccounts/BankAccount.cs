@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Banks.Entities;
 using Banks.Tools;
+using Banks.Transactions;
 
 namespace Banks.BankAccounts
 {
@@ -21,21 +22,21 @@ namespace Banks.BankAccounts
             AccountOpeningTime = accountOpeningTime;
             AccountClosingTime = accountClosingTime;
             Commission = commission;
-            Transactions = new List<Transaction>();
+            Transactions = new List<ITransaction>();
         }
 
         public event CreditLimitChangedHandler CreditLimitChanged;
         public bool Suspicious { get; set; }
         public Dictionary<int, double> Percents { get; set; }
         protected double Money { get; set; }
-        protected List<Transaction> Transactions { get; }
+        protected List<ITransaction> Transactions { get; }
         protected DateTime AccountClosingTime { get; }
         private double CreditLimit { get; set; }
         private double Commission { get; }
         private double InterestOnTheBalance { get; set; }
         private DateTime AccountOpeningTime { get; }
 
-        public abstract void AddMoney(double newMoney);
+        public abstract void TopUpMoney(double newMoney);
 
         public abstract void WithdrawMoney(double withdrawMoney, DateTime currentTime);
 
@@ -59,7 +60,7 @@ namespace Banks.BankAccounts
 
         public void CancelTransaction()
         {
-            Transaction transaction = Transactions.Last();
+            ITransaction transaction = Transactions.Last();
             transaction.Cancel();
             Transactions.Remove(transaction);
         }
@@ -70,9 +71,14 @@ namespace Banks.BankAccounts
             CreditLimitChanged?.Invoke(this, limit);
         }
 
-        public void RemoveMoney(double money)
+        public void RemoveMoneyFromTransactionCancellation(double money)
         {
             Money -= money;
+        }
+
+        public void AddMoneyFromTransactionCancellation(double money)
+        {
+            Money += money;
         }
 
         protected bool IsMoneyValid(double money)

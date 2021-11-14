@@ -2,7 +2,7 @@
 {
     public class ClientBuilder : IBuilder
     {
-        private Client _client = new Client();
+        private Client _client = new ();
 
         public ClientBuilder()
         {

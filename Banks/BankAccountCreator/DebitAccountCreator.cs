@@ -3,12 +3,9 @@ using Banks.BankAccounts;
 
 namespace Banks.BankAccountCreator
 {
-    public class DebitAccountCreator : AccountCreator
+    public class DebitAccountCreator : IAccountCreator
     {
-        public override BankAccount FactoryMethod(
-            double money,
-            DateTime accountOpeningTime,
-            DateTime accountClosingTime)
+        public BankAccount CreateAccount(double money, DateTime accountOpeningTime, DateTime accountClosingTime)
         {
             return new DebitBankAccount(money, accountOpeningTime, accountClosingTime);
         }
