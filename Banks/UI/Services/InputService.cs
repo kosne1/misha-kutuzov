@@ -1,4 +1,8 @@
-﻿using Spectre.Console;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Banks.Entities;
+using Spectre.Console;
 
 namespace Banks.UI.Services
 {
@@ -48,6 +52,24 @@ namespace Banks.UI.Services
                         "Credit",
                         "Debit",
                         "Deposit"));
+        }
+
+        public int GetBankId(CentralBank centralBank)
+        {
+            string bankInfo = AnsiConsole.Prompt(new SelectionPrompt<string>().Title($"Choose [green]bank[/]!")
+                .PageSize(10)
+                .MoreChoicesText($"[grey](Move up and down to reveal more shops)[/]")
+                .AddChoices(centralBank.Banks.Select(arg => arg.Id + " " + arg.Name)));
+            return Convert.ToInt32(bankInfo.Split(' ')[0]);
+        }
+
+        public int GetClientId(List<Client> clients)
+        {
+            string clientInfo = AnsiConsole.Prompt(new SelectionPrompt<string>().Title($"Choose [green]client[/]!")
+                .PageSize(10)
+                .MoreChoicesText($"[grey](Move up and down to reveal more shops)[/]")
+                .AddChoices(clients.Select(arg => arg.Id + " " + arg.Name)));
+            return Convert.ToInt32(clientInfo.Split(' ')[0]);
         }
     }
 }

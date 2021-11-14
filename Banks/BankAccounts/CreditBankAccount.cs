@@ -1,4 +1,5 @@
 using System;
+using Banks.BankAccountCreator;
 using Banks.Entities;
 using Banks.Tools;
 
@@ -22,8 +23,6 @@ namespace Banks.BankAccounts
         {
             if (!IsMoneyValid(withdrawMoney))
                 throw new BankException("You can't withdraw negative amount of money from bank account");
-            if (withdrawMoney > Money)
-                throw new BankException($"You can't withdraw {withdrawMoney} with {Money} balance");
             Money -= withdrawMoney;
             Transactions.Add(new Transaction("w", withdrawMoney, this));
         }

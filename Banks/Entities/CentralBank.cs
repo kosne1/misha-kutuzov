@@ -15,9 +15,9 @@ namespace Banks.Entities
         public IReadOnlyCollection<Bank> Banks => _banks;
         public int BankCounter { get; private set; } = 0;
 
-        public Bank CreateBank(double percent, double commission, double moneyLimitForSuspiciousClients)
+        public Bank CreateBank(string name, double percent, double commission, double moneyLimitForSuspiciousClients)
         {
-            var bank = new Bank(BankCounter++, percent, commission, moneyLimitForSuspiciousClients);
+            var bank = new Bank(name, BankCounter++, percent, commission, moneyLimitForSuspiciousClients);
             _banks.Add(bank);
             return bank;
         }
@@ -34,6 +34,7 @@ namespace Banks.Entities
         {
             foreach (Bank bank in _banks)
             {
+                bank.DeductCommission(DateTime.Now);
             }
         }
     }
