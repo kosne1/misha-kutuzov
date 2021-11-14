@@ -44,7 +44,8 @@ namespace Banks.UI.Entities
                     db.Banks.Add(bank);
                     break;
                 case "Register Bank Account":
-                    CreateBankAccount(centralBank, clients);
+                    BankAccount bankAccount = CreateBankAccount(centralBank, clients);
+                    db.BankAccounts.Add(bankAccount);
                     break;
                 case "Quit":
                     return true;
@@ -73,7 +74,7 @@ namespace Banks.UI.Entities
             return centralBank.CreateBank(name, commission, moneyLimit);
         }
 
-        private void CreateBankAccount(CentralBank centralBank, List<Client> clients)
+        private BankAccount CreateBankAccount(CentralBank centralBank, List<Client> clients)
         {
             int bankId = _inputService.GetBankId(centralBank);
             Bank bank = centralBank.Banks.FirstOrDefault(b => b.Id == bankId);
@@ -84,21 +85,25 @@ namespace Banks.UI.Entities
             {
                 case "Credit":
                     var creditAccountCreator = new CreditAccountCreator();
-                    bankAccount = creditAccountCreator.CreateAccount(_accountsCounter++, money, DateTime.Now.AddYears(1));
+                    bankAccount =
+                        creditAccountCreator.CreateAccount(_accountsCounter++, money, DateTime.Now.AddYears(1));
                     break;
                 case "Debit":
                     var debitAccountCreator = new DebitAccountCreator();
-                    bankAccount = debitAccountCreator.CreateAccount(_accountsCounter++, money, DateTime.Now.AddYears(1));
+                    bankAccount =
+                        debitAccountCreator.CreateAccount(_accountsCounter++, money, DateTime.Now.AddYears(1));
                     break;
                 case "Deposit":
                     var depositAccountCreator = new DepositAccountCreator();
-                    bankAccount = depositAccountCreator.CreateAccount(_accountsCounter++, money, DateTime.Now.AddYears(1));
+                    bankAccount =
+                        depositAccountCreator.CreateAccount(_accountsCounter++, money, DateTime.Now.AddYears(1));
                     break;
             }
 
             int clientId = _inputService.GetClientId(clients);
             Client client = clients.FirstOrDefault(c => c.Id == clientId);
             bank?.AddBankAccount(client, bankAccount);
+            return bankAccount;
         }
     }
 }

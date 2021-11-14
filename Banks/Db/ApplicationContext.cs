@@ -1,4 +1,5 @@
-﻿using Banks.ClientBuilder;
+﻿using Banks.BankAccounts;
+using Banks.ClientBuilder;
 using Banks.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,5 +15,6 @@ namespace Banks.Db
 
         public DbSet<Bank> Banks { get; set; }
         public DbSet<Client> Clients { get; set; }
+        public DbSet<BankAccount> BankAccounts { get; set; }
     }
 }
