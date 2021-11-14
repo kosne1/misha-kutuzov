@@ -1,17 +1,18 @@
 ﻿namespace Banks.ClientBuilder
 {
-    public class ClientBuilder : IBuilder
+    public class Builder : IBuilder
     {
-        private Client _client = new ();
+        private int _clientsCounter;
+        private Client _client;
 
-        public ClientBuilder()
+        public Builder()
         {
             Reset();
         }
 
         public void Reset()
         {
-            _client = new Client();
+            _client = new Client(_clientsCounter++);
         }
 
         public void SetName(string name)
@@ -29,7 +30,7 @@
             _client.Address = address;
         }
 
-        public Client GetProduct()
+        public Client GetClient()
         {
             Client result = _client;
 

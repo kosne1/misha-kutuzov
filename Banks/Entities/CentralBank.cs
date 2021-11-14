@@ -15,5 +15,21 @@ namespace Banks.Entities
             _banks.Add(bank);
             return bank;
         }
+
+        public void DeductBankCommission()
+        {
+            foreach (Bank bank in _banks)
+            {
+                bank.DeductBankCommission();
+            }
+        }
+
+        public void ChargeInterest()
+        {
+            foreach (Bank bank in _banks)
+            {
+                bank.ChargeInterest();
+            }
+        }
     }
 }

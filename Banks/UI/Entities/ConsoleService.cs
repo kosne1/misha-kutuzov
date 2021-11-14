@@ -13,7 +13,7 @@ namespace Banks.UI.Entities
     public class ConsoleService
     {
         private readonly InputService _inputService;
-        private int _clientsCounter;
+        private int _accountsCounter;
 
         public ConsoleService()
         {
@@ -56,10 +56,13 @@ namespace Banks.UI.Entities
 
         private Client GetClient()
         {
+            var director = new Director();
+            var builder = new Builder();
             string name = _inputService.GetString("Name");
             string address = _inputService.GetString("Address");
             string passport = _inputService.GetString("Passport");
-            return new Client(_clientsCounter++, name, address, passport);
+            director.BuildFullFeaturedClient(name, address, passport);
+            return builder.GetClient();
         }
 
         private Bank GetBank(CentralBank centralBank)
@@ -81,15 +84,15 @@ namespace Banks.UI.Entities
             {
                 case "Credit":
                     var creditAccountCreator = new CreditAccountCreator();
-                    bankAccount = creditAccountCreator.CreateAccount(money, DateTime.Now, DateTime.Now.AddYears(1));
+                    bankAccount = creditAccountCreator.CreateAccount(_accountsCounter++, money, DateTime.Now.AddYears(1));
                     break;
                 case "Debit":
                     var debitAccountCreator = new DebitAccountCreator();
-                    bankAccount = debitAccountCreator.CreateAccount(money, DateTime.Now, DateTime.Now.AddYears(1));
+                    bankAccount = debitAccountCreator.CreateAccount(_accountsCounter++, money, DateTime.Now.AddYears(1));
                     break;
                 case "Deposit":
                     var depositAccountCreator = new DepositAccountCreator();
-                    bankAccount = depositAccountCreator.CreateAccount(money, DateTime.Now, DateTime.Now.AddYears(1));
+                    bankAccount = depositAccountCreator.CreateAccount(_accountsCounter++, money, DateTime.Now.AddYears(1));
                     break;
             }
 

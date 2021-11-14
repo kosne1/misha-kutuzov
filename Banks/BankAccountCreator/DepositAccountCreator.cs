@@ -5,9 +5,9 @@ namespace Banks.BankAccountCreator
 {
     public class DepositAccountCreator : IAccountCreator
     {
-        public BankAccount CreateAccount(int id, double money, DateTime accountOpeningTime, DateTime accountClosingTime)
+        public BankAccount CreateAccount(int id, double money, DateTime accountClosingTime)
         {
-            return new DepositAccount(id, money, accountOpeningTime, accountClosingTime);
+            return new DepositAccount(id, money, accountClosingTime);
         }
     }
 }
