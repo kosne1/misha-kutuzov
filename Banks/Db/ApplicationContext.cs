@@ -1,4 +1,5 @@
-﻿using Banks.Entities;
+﻿using Banks.ClientBuilder;
+using Banks.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Banks.Db
