@@ -5,7 +5,6 @@ using Backups.Entities;
 using Backups.Repositories;
 using Backups.StorageAlgorithms;
 using BackupsExtra.Configurations;
-using BackupsExtra.Entities;
 using NUnit.Framework;
 
 namespace BackupsExtra.Tests
@@ -15,8 +14,7 @@ namespace BackupsExtra.Tests
         [Test]
         public void CreateBackupSystemCreateRestorePointSaveConfiguration_ConfigurationSaved()
         {
-            var backupSystem = new BackupSystem();
-            BackupJob backupJob = backupSystem.AddBackupJob();
+            var backupJob = new BackupJob();
 
             const string backupPath = @"C:\Users\quvi\Documents\Backup";
             var backupDir = new DirectoryInfo(backupPath);
@@ -36,8 +34,8 @@ namespace BackupsExtra.Tests
 
             backupJob.CreateRestorePoint();
 
-            backupSystem.SetConfigurator(new XmlConfigurator());
-            backupSystem.SaveConfigurations();
+            var configurator = new XmlConfigurator();
+            configurator.SaveConfiguration(backupJob);
 
             Assert.IsTrue(File.Exists(Path.Combine(backupPath, "config.xml")));
         }
