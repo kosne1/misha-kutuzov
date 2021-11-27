@@ -1,8 +1,5 @@
-﻿using System;
-
-namespace Backups.Entities
+﻿namespace Backups.Entities
 {
-    [Serializable]
     public class JobObject
     {
         public JobObject(string filePath)

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 
 namespace Backups.Entities
 {
-    [Serializable]
     public class RestorePoint
     {
         private readonly List<Storage> _storages;

@@ -6,7 +6,6 @@ using Backups.Repositories;
 
 namespace Backups.Entities
 {
-    [Serializable]
     public class BackupJob
     {
         private readonly List<JobObject> _jobObjects;
