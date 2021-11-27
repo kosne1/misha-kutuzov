@@ -20,8 +20,8 @@ namespace Backups.Tests
             const string backupPath = @"D:\Backups\Test1SplitStorage";
             var backupDir = new DirectoryInfo(backupPath);
 
-            backupJob.Repository = new LocalRepository(backupDir);
-            backupJob.Archiver = new BackupZipArchiver(new SplitStorage());
+            backupJob.SetRepository(new LocalRepository(backupDir));
+            backupJob.SetArchiver(new BackupZipArchiver(new SplitStorage()));
 
             var firstFile = new JobObject(@"C:\Users\misha\Documents\Test1\a.txt");
             var secondFile = new JobObject(@"C:\Users\misha\Documents\Test1\b.txt");
@@ -60,11 +60,10 @@ namespace Backups.Tests
         {
             var backupJob = new BackupJob();
 
-            backupJob.Archiver = new BackupZipArchiver(new SingleStorage());
-
-            const string backupDirPath = @"D:\Backups\Test2SingleStorage";
-            var dirInfo = new DirectoryInfo(backupDirPath);
-            backupJob.Repository = new LocalRepository(dirInfo);
+            const string backupPath = @"D:\Backups\Test2SingleStorage";
+            var backupDir = new DirectoryInfo(backupPath);
+            backupJob.SetRepository(new LocalRepository(backupDir));
+            backupJob.SetArchiver(new BackupZipArchiver(new SplitStorage()));
 
             var firstFile = new JobObject(@"C:\Users\misha\Documents\Test2\c.txt");
             var secondFile = new JobObject(@"C:\Users\misha\Documents\Test2\d.txt");
@@ -82,9 +81,9 @@ namespace Backups.Tests
 
             backupJob.CreateRestorePoint();
 
-            Assert.IsTrue(dirInfo.Exists);
+            Assert.IsTrue(backupDir.Exists);
 
-            int dirs = dirInfo.GetDirectories().Length;
+            int dirs = backupDir.GetDirectories().Length;
             Assert.AreEqual(backupJob.RestorePoints.Count, dirs);
         }
     }

@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using Backups.Entities;
 
 namespace Backups.Repositories
 {
+    [Serializable]
     public class LocalRepository : IRepository
     {
         public LocalRepository(DirectoryInfo directoryInfo)

@@ -1,7 +1,9 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 
 namespace Backups.Entities
 {
+    [Serializable]
     public class Storage
     {
         public Storage(FileInfo fileInfo)

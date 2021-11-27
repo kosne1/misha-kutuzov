@@ -1,9 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Xml.Serialization;
 using Backups.Archivers;
 using Backups.Repositories;
 
 namespace Backups.Entities
 {
+    [Serializable]
     public class BackupJob
     {
         private readonly List<JobObject> _jobObjects;
@@ -16,8 +19,10 @@ namespace Backups.Entities
         }
 
         public IReadOnlyCollection<RestorePoint> RestorePoints => _restorePoints;
-        public IRepository Repository { get; set; }
-        public IArchiver Archiver { get; set; }
+        [XmlIgnore]
+        public IRepository Repository { get; private set; }
+        [XmlIgnore]
+        public IArchiver Archiver { get; private set; }
 
         public void AddJobObject(JobObject jobObject)
         {
@@ -43,6 +48,16 @@ namespace Backups.Entities
             }
 
             _restorePoints.Add(restorePoint);
+        }
+
+        public void SetRepository(IRepository repository)
+        {
+            Repository = repository;
+        }
+
+        public void SetArchiver(IArchiver archiver)
+        {
+            Archiver = archiver;
         }
     }
 }
