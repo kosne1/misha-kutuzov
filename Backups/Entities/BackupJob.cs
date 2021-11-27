@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Xml.Serialization;
 using Backups.Archivers;
 using Backups.Repositories;
 
@@ -9,6 +8,7 @@ namespace Backups.Entities
     {
         private readonly List<JobObject> _jobObjects;
         private readonly List<RestorePoint> _restorePoints;
+        private IArchiver _archiver;
 
         public BackupJob()
         {
@@ -17,10 +17,8 @@ namespace Backups.Entities
         }
 
         public IReadOnlyCollection<RestorePoint> RestorePoints => _restorePoints;
-        [XmlIgnore]
+        public IReadOnlyCollection<JobObject> JobObjects => _jobObjects;
         public IRepository Repository { get; private set; }
-        [XmlIgnore]
-        public IArchiver Archiver { get; private set; }
 
         public void AddJobObject(JobObject jobObject)
         {
@@ -32,11 +30,11 @@ namespace Backups.Entities
             if (_jobObjects.Contains(jobObject)) _jobObjects.Remove(jobObject);
         }
 
-        public void CreateRestorePoint()
+        public RestorePoint CreateRestorePoint()
         {
             var restorePoint = new RestorePoint();
 
-            List<Storage> storages = Archiver.Archive(_jobObjects, Repository.DirectoryInfo);
+            List<Storage> storages = _archiver.Archive(_jobObjects, Repository.DirectoryInfo);
 
             Repository.SaveStorages(storages, _restorePoints.Count);
 
@@ -46,6 +44,8 @@ namespace Backups.Entities
             }
 
             _restorePoints.Add(restorePoint);
+
+            return restorePoint;
         }
 
         public void SetRepository(IRepository repository)
@@ -55,7 +55,7 @@ namespace Backups.Entities
 
         public void SetArchiver(IArchiver archiver)
         {
-            Archiver = archiver;
+            _archiver = archiver;
         }
     }
 }
