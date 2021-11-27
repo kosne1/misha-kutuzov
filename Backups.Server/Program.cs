@@ -17,10 +17,10 @@ namespace Backups.Server
 
             var backupJob = new BackupJob();
 
-            backupJob.Archiver = new BackupZipArchiver(new SplitStorage());
+            backupJob.SetArchiver(new BackupZipArchiver(new SplitStorage()));
 
             var dirInfo = new DirectoryInfo(backupDirPath);
-            backupJob.Repository = new LocalRepository(dirInfo);
+            backupJob.SetRepository(new LocalRepository(dirInfo));
 
             int amount = backupTcpServer.ReceiveAmountOfFiles();
 
