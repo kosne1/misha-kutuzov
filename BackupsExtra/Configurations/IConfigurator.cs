@@ -3,8 +3,9 @@ using Backups.Entities;
 
 namespace BackupsExtra.Configurations
 {
-    public interface IConfigurationLoader
+    public interface IConfigurator
     {
         public Task<BackupJob> LoadConfiguration(string backupPath);
+        public void SaveConfiguration(BackupJob backupJob);
     }
 }
