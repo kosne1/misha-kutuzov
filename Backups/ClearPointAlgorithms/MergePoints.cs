@@ -5,7 +5,7 @@ using Backups.StorageAlgorithms;
 
 namespace Backups.ClearPointAlgorithms
 {
-    public class MergePoints : IClearPoints
+    public class MergePoints : ICleaner
     {
         public void ClearPoints(List<RestorePoint> allRestorePoints, List<RestorePoint> selectedRestorePoints)
         {

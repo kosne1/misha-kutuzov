@@ -4,7 +4,7 @@ using Backups.Entities;
 
 namespace Backups.PointSelectionAlgorithms
 {
-    public class DateSelector
+    public class DateSelector : Selector
     {
         private readonly DateTime _dateLimit;
 
@@ -13,7 +13,7 @@ namespace Backups.PointSelectionAlgorithms
             _dateLimit = dateLimit;
         }
 
-        public List<RestorePoint> SelectRestorePoints(List<RestorePoint> restorePoints)
+        public override List<RestorePoint> SelectRestorePoints(List<RestorePoint> restorePoints)
         {
             var selectedPoints = new List<RestorePoint>();
             foreach (RestorePoint restorePoint in restorePoints)

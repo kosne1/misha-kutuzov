@@ -3,7 +3,7 @@ using Backups.Entities;
 
 namespace Backups.ClearPointAlgorithms
 {
-    public interface IClearPoints
+    public interface ICleaner
     {
         public void ClearPoints(List<RestorePoint> allRestorePoints, List<RestorePoint> selectedRestorePoints);
     }

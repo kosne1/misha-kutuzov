@@ -24,9 +24,9 @@ namespace Backups.Entities
 
         public List<RestorePoint> RestorePoints => _restorePoints;
         public IReadOnlyCollection<JobObject> JobObjects => _jobObjects;
-        public IRepository Repository { get; private set; }
-        public Selector Selector { get; private set; }
-        public IClearPoints ClearPoints { get; private set; }
+        public IRepository Repository { get; set; }
+        public Selector Selector { get; set; }
+        public ICleaner Cleaner { get; set; }
 
         public void AddJobObject(JobObject jobObject)
         {
@@ -66,7 +66,7 @@ namespace Backups.Entities
         public void ClearOldRestorePoints()
         {
             List<RestorePoint> points = Selector.SelectRestorePoints(_restorePoints);
-            ClearPoints.ClearPoints(_restorePoints, points);
+            Cleaner.ClearPoints(_restorePoints, points);
         }
 
         public void SetRepository(IRepository repository)
@@ -84,11 +84,13 @@ namespace Backups.Entities
         public void SetSelector(Selector selector)
         {
             Selector = selector;
+            _logger.LogInfo($"Restore Points selector was set to {selector}");
         }
 
-        public void SetClearPoints(IClearPoints clearPoints)
+        public void SetCleaner(ICleaner cleaner)
         {
-            ClearPoints = clearPoints;
+            Cleaner = cleaner;
+            _logger.LogInfo($"Restore Points cleaner was set to {cleaner}");
         }
     }
 }
