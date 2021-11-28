@@ -13,10 +13,10 @@ namespace Backups.PointSelectionAlgorithms
             _dateLimit = dateLimit;
         }
 
-        public List<RestorePoint> SelectRestorePoints(BackupJob backupJob)
+        public List<RestorePoint> SelectRestorePoints(List<RestorePoint> restorePoints)
         {
             var selectedPoints = new List<RestorePoint>();
-            foreach (RestorePoint restorePoint in backupJob.RestorePoints)
+            foreach (RestorePoint restorePoint in restorePoints)
             {
                 TimeSpan diff = restorePoint.CreationTime - _dateLimit;
                 if (diff.Seconds > 0)

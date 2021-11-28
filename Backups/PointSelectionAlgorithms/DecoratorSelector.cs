@@ -17,14 +17,9 @@ namespace Backups.PointSelectionAlgorithms
             Selector = selector;
         }
 
-        public override List<RestorePoint> SelectRestorePoints(BackupJob backupJob)
+        public override List<RestorePoint> SelectRestorePoints(List<RestorePoint> restorePoints)
         {
-            if (Selector != null)
-            {
-                return Selector.SelectRestorePoints(backupJob);
-            }
-
-            return null;
+            return Selector?.SelectRestorePoints(restorePoints);
         }
     }
 }

@@ -5,6 +5,6 @@ namespace Backups.ClearPointAlgorithms
 {
     public interface IClearPoints
     {
-        public void ClearPoints(BackupJob backupJob, RestorePoint newRestorePoint);
+        public void ClearPoints(List<RestorePoint> allRestorePoints, List<RestorePoint> selectedRestorePoints);
     }
 }

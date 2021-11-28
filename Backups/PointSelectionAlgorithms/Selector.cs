@@ -5,6 +5,6 @@ namespace Backups.PointSelectionAlgorithms
 {
     public abstract class Selector
     {
-        public abstract List<RestorePoint> SelectRestorePoints(BackupJob backupJob);
+        public abstract List<RestorePoint> SelectRestorePoints(List<RestorePoint> restorePoints);
     }
 }

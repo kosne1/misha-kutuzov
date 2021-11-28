@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Backups.Archivers;
+using Backups.ClearPointAlgorithms;
 using Backups.Logger;
 using Backups.PointSelectionAlgorithms;
 using Backups.Repositories;
@@ -25,6 +26,7 @@ namespace Backups.Entities
         public IReadOnlyCollection<JobObject> JobObjects => _jobObjects;
         public IRepository Repository { get; private set; }
         public Selector Selector { get; private set; }
+        public IClearPoints ClearPoints { get; private set; }
 
         public void AddJobObject(JobObject jobObject)
         {
@@ -40,7 +42,7 @@ namespace Backups.Entities
 
         public RestorePoint CreateRestorePoint(DateTime creationTime)
         {
-            var restorePoint = new RestorePoint(creationTime);
+            var restorePoint = new RestorePoint(creationTime, _archiver.StorageAlgorithm);
 
             List<Storage> storages = _archiver.Archive(_jobObjects, Repository.DirectoryInfo);
 
@@ -61,6 +63,12 @@ namespace Backups.Entities
             return restorePoint;
         }
 
+        public void ClearOldRestorePoints()
+        {
+            List<RestorePoint> points = Selector.SelectRestorePoints(_restorePoints);
+            ClearPoints.ClearPoints(_restorePoints, points);
+        }
+
         public void SetRepository(IRepository repository)
         {
             Repository = repository;
@@ -76,6 +84,11 @@ namespace Backups.Entities
         public void SetSelector(Selector selector)
         {
             Selector = selector;
+        }
+
+        public void SetClearPoints(IClearPoints clearPoints)
+        {
+            ClearPoints = clearPoints;
         }
     }
 }

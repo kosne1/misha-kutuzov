@@ -12,9 +12,9 @@ namespace Backups.PointSelectionAlgorithms
             _limit = limit;
         }
 
-        public override List<RestorePoint> SelectRestorePoints(BackupJob backupJob)
+        public override List<RestorePoint> SelectRestorePoints(List<RestorePoint> restorePoints)
         {
-            return backupJob.RestorePoints.GetRange(0, backupJob.RestorePoints.Count - _limit);
+            return restorePoints.GetRange(0, restorePoints.Count - _limit);
         }
     }
 }

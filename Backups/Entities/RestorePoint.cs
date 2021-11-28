@@ -1,24 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
+using Backups.StorageAlgorithms;
 
 namespace Backups.Entities
 {
     public class RestorePoint
     {
-        private readonly List<Storage> _storages;
-
-        public RestorePoint(DateTime creationTime)
+        public RestorePoint(DateTime creationTime, IStorageAlgorithm storageAlgorithm)
         {
-            _storages = new List<Storage>();
+            Storages = new List<Storage>();
             CreationTime = creationTime;
+            StorageAlgorithm = storageAlgorithm;
         }
 
-        public IReadOnlyCollection<Storage> Storages => _storages;
+        public IStorageAlgorithm StorageAlgorithm { get; }
+        public List<Storage> Storages { get; set; }
         public DateTime CreationTime { get; }
 
         public void AddStorage(Storage storage)
         {
-            _storages.Add(storage);
+            Storages.Add(storage);
         }
     }
 }
