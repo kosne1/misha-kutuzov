@@ -2,6 +2,7 @@
 using System.IO;
 using Backups.Archivers;
 using Backups.Entities;
+using Backups.Logger;
 using Backups.Repositories;
 using Backups.StorageAlgorithms;
 using BackupsExtra.Configurations;
@@ -14,7 +15,7 @@ namespace BackupsExtra.Tests
         [Test]
         public void CreateBackupSystemCreateRestorePointSaveConfiguration_ConfigurationSaved()
         {
-            var backupJob = new BackupJob();
+            var backupJob = new BackupJob(new ConsoleLogger());
 
             const string backupPath = @"C:\Users\quvi\Documents\Backup";
             var backupDir = new DirectoryInfo(backupPath);

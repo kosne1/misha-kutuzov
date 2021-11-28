@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Backups.Entities;
+using Backups.Logger;
 
 namespace BackupsExtra.Entities
 {
@@ -14,9 +15,9 @@ namespace BackupsExtra.Entities
 
         public IReadOnlyCollection<BackupJob> BackupJobs => _backupJobs;
 
-        public BackupJob AddBackupJob()
+        public BackupJob AddBackupJob(ILogger logger)
         {
-            var backupJob = new BackupJob();
+            var backupJob = new BackupJob(logger);
             _backupJobs.Add(backupJob);
             return backupJob;
         }

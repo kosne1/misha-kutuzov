@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using Backups.Archivers;
 using Backups.Entities;
+using Backups.Logger;
 using Backups.Repositories;
 using Backups.StorageAlgorithms;
 using NUnit.Framework;
@@ -15,7 +16,7 @@ namespace Backups.Tests
         [Ignore("No trash for computer")]
         public void CreateBackupJobAddTwoFilesDeleteOne_InBackupTwoRestorePointsThreeStorages()
         {
-            var backupJob = new BackupJob();
+            var backupJob = new BackupJob(new ConsoleLogger());
 
             const string backupPath = @"D:\Backups\Test1SplitStorage";
             var backupDir = new DirectoryInfo(backupPath);
@@ -58,7 +59,7 @@ namespace Backups.Tests
         [Ignore("No trash for computer")]
         public void CreateBackupJobAddTwoFiles_CheckThatFilesAndDirectoriesWereCreated()
         {
-            var backupJob = new BackupJob();
+            var backupJob = new BackupJob(new ConsoleLogger());
 
             const string backupPath = @"D:\Backups\Test2SingleStorage";
             var backupDir = new DirectoryInfo(backupPath);

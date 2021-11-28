@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using Backups.Archivers;
 using Backups.Entities;
+using Backups.Logger;
 using Backups.Repositories;
 using Backups.StorageAlgorithms;
 
@@ -15,7 +16,7 @@ namespace Backups.Server
 
             string backupDirPath = backupTcpServer.ReceiveBackupDirectory();
 
-            var backupJob = new BackupJob();
+            var backupJob = new BackupJob(new ConsoleLogger());
 
             backupJob.SetArchiver(new BackupZipArchiver(new SplitStorage()));
 
