@@ -5,7 +5,7 @@ namespace BackupsExtra.RestoreMethods
 {
     public class ZipDifferentLocationRestore : IRestore
     {
-        public void Restore(RestorePoint restorePoint, string path)
+        public void Restore(BackupJob backupJob, RestorePoint restorePoint, string path)
         {
             foreach (Storage storage in restorePoint.Storages)
             {
