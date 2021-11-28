@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Backups.Archivers;
 using Backups.Logger;
 using Backups.Repositories;
@@ -19,7 +20,7 @@ namespace Backups.Entities
             _logger = logger;
         }
 
-        public IReadOnlyCollection<RestorePoint> RestorePoints => _restorePoints;
+        public List<RestorePoint> RestorePoints => _restorePoints;
         public IReadOnlyCollection<JobObject> JobObjects => _jobObjects;
         public IRepository Repository { get; private set; }
 
@@ -35,9 +36,9 @@ namespace Backups.Entities
             _logger.LogInfo($"Removed job object {jobObject.FilePath.FullName}");
         }
 
-        public RestorePoint CreateRestorePoint()
+        public RestorePoint CreateRestorePoint(DateTime creationTime)
         {
-            var restorePoint = new RestorePoint();
+            var restorePoint = new RestorePoint(creationTime);
 
             List<Storage> storages = _archiver.Archive(_jobObjects, Repository.DirectoryInfo);
 
