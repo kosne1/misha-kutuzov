@@ -12,7 +12,7 @@ namespace Backups.PointSelectionAlgorithms
 
         public override List<RestorePoint> SelectRestorePoints(BackupJob backupJob)
         {
-            List<RestorePoint> points = _selector.SelectRestorePoints(backupJob);
+            List<RestorePoint> points = Selector.SelectRestorePoints(backupJob);
 
             List<RestorePoint> anotherPoints = base.SelectRestorePoints(backupJob);
 

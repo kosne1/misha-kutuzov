@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using Backups.Archivers;
 using Backups.Entities;
 using Backups.Logger;
@@ -37,7 +38,7 @@ namespace Backups.Server
                 if (counter == amount) break;
             }
 
-            backupJob.CreateRestorePoint();
+            backupJob.CreateRestorePoint(DateTime.Now);
         }
     }
 }

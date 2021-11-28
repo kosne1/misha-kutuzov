@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Backups.Archivers;
@@ -38,13 +39,13 @@ namespace Backups.Tests
                 backupJob.AddJobObject(job);
             }
 
-            backupJob.CreateRestorePoint();
+            backupJob.CreateRestorePoint(DateTime.Now);
 
             int dirs = Directory.GetDirectories(backupPath).Length;
             Assert.AreEqual(backupJob.RestorePoints.Count, dirs);
 
             backupJob.DeleteJobObject(firstFile);
-            backupJob.CreateRestorePoint();
+            backupJob.CreateRestorePoint(DateTime.Now);
 
             dirs = Directory.GetDirectories(backupPath).Length;
             Assert.AreEqual(backupJob.RestorePoints.Count, dirs);
@@ -80,7 +81,7 @@ namespace Backups.Tests
                 backupJob.AddJobObject(job);
             }
 
-            backupJob.CreateRestorePoint();
+            backupJob.CreateRestorePoint(DateTime.Now);
 
             Assert.IsTrue(backupDir.Exists);
 

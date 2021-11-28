@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using Backups.Archivers;
 using Backups.Entities;
@@ -34,7 +35,7 @@ namespace BackupsExtra.Tests
                 backupJob.AddJobObject(job);
             }
 
-            backupJob.CreateRestorePoint();
+            backupJob.CreateRestorePoint(DateTime.Now);
 
             var configurator = new XmlConfigurator();
             configurator.SaveConfiguration(backupJob);

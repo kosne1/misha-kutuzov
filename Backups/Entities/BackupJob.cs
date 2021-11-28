@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Backups.Archivers;
 using Backups.Logger;
+using Backups.PointSelectionAlgorithms;
 using Backups.Repositories;
 
 namespace Backups.Entities
@@ -23,6 +24,7 @@ namespace Backups.Entities
         public List<RestorePoint> RestorePoints => _restorePoints;
         public IReadOnlyCollection<JobObject> JobObjects => _jobObjects;
         public IRepository Repository { get; private set; }
+        public Selector Selector { get; private set; }
 
         public void AddJobObject(JobObject jobObject)
         {
@@ -69,6 +71,11 @@ namespace Backups.Entities
         {
             _archiver = archiver;
             _logger.LogInfo($"Archiver was set to {archiver}");
+        }
+
+        public void SetSelector(Selector selector)
+        {
+            Selector = selector;
         }
     }
 }
