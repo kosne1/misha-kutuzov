@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Backups.Archivers;
+using Backups.Logger;
 using Backups.Repositories;
 
 namespace Backups.Entities
@@ -8,12 +9,14 @@ namespace Backups.Entities
     {
         private readonly List<JobObject> _jobObjects;
         private readonly List<RestorePoint> _restorePoints;
+        private readonly ILogger _logger;
         private IArchiver _archiver;
 
-        public BackupJob()
+        public BackupJob(ILogger logger)
         {
             _jobObjects = new List<JobObject>();
             _restorePoints = new List<RestorePoint>();
+            _logger = logger;
         }
 
         public IReadOnlyCollection<RestorePoint> RestorePoints => _restorePoints;
@@ -23,11 +26,13 @@ namespace Backups.Entities
         public void AddJobObject(JobObject jobObject)
         {
             if (!_jobObjects.Contains(jobObject)) _jobObjects.Add(jobObject);
+            _logger.LogInfo($"Added job object {jobObject.FilePath.FullName}");
         }
 
         public void DeleteJobObject(JobObject jobObject)
         {
             if (_jobObjects.Contains(jobObject)) _jobObjects.Remove(jobObject);
+            _logger.LogInfo($"Removed job object {jobObject.FilePath.FullName}");
         }
 
         public RestorePoint CreateRestorePoint()
@@ -44,6 +49,11 @@ namespace Backups.Entities
             }
 
             _restorePoints.Add(restorePoint);
+            _logger.LogInfo($"Created Restore point");
+            foreach (Storage storage in storages)
+            {
+                _logger.LogInfo($"Created storage at {storage.FileInfo.FullName}");
+            }
 
             return restorePoint;
         }
@@ -51,11 +61,13 @@ namespace Backups.Entities
         public void SetRepository(IRepository repository)
         {
             Repository = repository;
+            _logger.LogInfo($"Repository was set to {repository.DirectoryInfo.FullName}");
         }
 
         public void SetArchiver(IArchiver archiver)
         {
             _archiver = archiver;
+            _logger.LogInfo($"Archiver was set to {archiver}");
         }
     }
 }
