@@ -1,9 +1,9 @@
 ﻿using Backups.Entities;
 
-namespace BackupsExtra.RestoreManagers
+namespace BackupsExtra.RestoreMethods
 {
     public interface IRestore
     {
-        public void Restore(BackupJob backupJob, RestorePoint restorePoint);
+        public void Restore(RestorePoint restorePoint, string path);
     }
 }
