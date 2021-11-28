@@ -13,6 +13,7 @@ namespace BackupsExtra.Tests
     public class BackupsExtraTests
     {
         [Test]
+        [Ignore("No trash for computer")]
         public void CreateBackupSystemCreateRestorePointSaveConfiguration_ConfigurationSaved()
         {
             var backupJob = new BackupJob(new ConsoleLogger());
