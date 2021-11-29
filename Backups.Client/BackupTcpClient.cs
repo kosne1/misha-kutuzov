@@ -19,28 +19,28 @@ namespace Backups.Client
         {
             var sWriter = new StreamWriter(_tcpClient.GetStream());
 
-            byte[] bytes = File.ReadAllBytes(jobObject.FilePath);
+            byte[] bytes = File.ReadAllBytes(jobObject.FilePath.FullName);
 
             sWriter.WriteLine(bytes.Length.ToString());
             sWriter.Flush();
 
             sWriter.WriteLine(jobObject.FilePath);
             sWriter.Flush();
-            _tcpClient.Client.SendFile(jobObject.FilePath);
+            _tcpClient.Client.SendFile(jobObject.FilePath.FullName);
         }
 
         public void SendAmountOfFiles(int amount)
         {
             var sWriter = new StreamWriter(_tcpClient.GetStream());
-            
+
             sWriter.WriteLine(amount.ToString());
             sWriter.Flush();
         }
-        
+
         public void SendBackupDirectory(string name)
         {
             var sWriter = new StreamWriter(_tcpClient.GetStream());
-            
+
             sWriter.WriteLine(name);
             sWriter.Flush();
         }

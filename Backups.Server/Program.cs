@@ -1,6 +1,8 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using Backups.Archivers;
 using Backups.Entities;
+using Backups.Logger;
 using Backups.Repositories;
 using Backups.StorageAlgorithms;
 
@@ -15,12 +17,12 @@ namespace Backups.Server
 
             string backupDirPath = backupTcpServer.ReceiveBackupDirectory();
 
-            var backupJob = new BackupJob();
+            var backupJob = new BackupJob(new ConsoleLogger());
 
-            backupJob.Archiver = new BackupZipArchiver(new SplitStorage());
+            backupJob.SetArchiver(new BackupZipArchiver(new SplitStorage()));
 
             var dirInfo = new DirectoryInfo(backupDirPath);
-            backupJob.Repository = new LocalRepository(dirInfo);
+            backupJob.SetRepository(new LocalRepository(dirInfo));
 
             int amount = backupTcpServer.ReceiveAmountOfFiles();
 
@@ -36,7 +38,7 @@ namespace Backups.Server
                 if (counter == amount) break;
             }
 
-            backupJob.CreateRestorePoint();
+            backupJob.CreateRestorePoint(DateTime.Now);
         }
     }
 }

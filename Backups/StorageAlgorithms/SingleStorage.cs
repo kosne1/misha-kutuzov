@@ -14,13 +14,13 @@ namespace Backups.StorageAlgorithms
 
             string archivePath = Path.Join(directoryInfo.FullName, @"\archive.zip");
 
-            foreach (JobObject jobObject in jobObjects.Where(jobObject => File.Exists(jobObject.FilePath)))
+            foreach (JobObject jobObject in jobObjects.Where(jobObject => jobObject.FilePath.Exists))
             {
                 using ZipArchive zipArchive = ZipFile.Open(archivePath, ZipArchiveMode.Update);
 
-                string pathFileToAdd = jobObject.FilePath;
+                string pathFileToAdd = jobObject.FilePath.FullName;
 
-                string filename = Path.GetFileName(jobObject.FilePath);
+                string filename = jobObject.FilePath.Name;
 
                 zipArchive.CreateEntryFromFile(pathFileToAdd, filename);
             }

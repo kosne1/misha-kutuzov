@@ -1,12 +1,14 @@
-﻿namespace Backups.Entities
+﻿using System.IO;
+
+namespace Backups.Entities
 {
     public class JobObject
     {
-        public JobObject(string filePath)
+        public JobObject(string path)
         {
-            FilePath = filePath;
+            FilePath = new FileInfo(path);
         }
 
-        public string FilePath { get; }
+        public FileInfo FilePath { get; }
     }
 }
