@@ -5,7 +5,7 @@ namespace Backups.PointSelectionAlgorithms
 {
     public class HybridSelector : DecoratorSelector
     {
-        public HybridSelector(Selector selector)
+        public HybridSelector(ISelector selector)
             : base(selector)
         {
         }

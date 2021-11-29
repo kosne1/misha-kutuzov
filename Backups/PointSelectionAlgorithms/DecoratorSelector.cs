@@ -3,21 +3,21 @@ using Backups.Entities;
 
 namespace Backups.PointSelectionAlgorithms
 {
-    public abstract class DecoratorSelector : Selector
+    public abstract class DecoratorSelector : ISelector
     {
-        public DecoratorSelector(Selector selector)
+        public DecoratorSelector(ISelector selector)
         {
             Selector = selector;
         }
 
-        public Selector Selector { get; private set; }
+        public ISelector Selector { get; private set; }
 
-        public void SetSelector(Selector selector)
+        public void SetSelector(ISelector selector)
         {
             Selector = selector;
         }
 
-        public override List<RestorePoint> SelectRestorePoints(List<RestorePoint> restorePoints)
+        public virtual List<RestorePoint> SelectRestorePoints(List<RestorePoint> restorePoints)
         {
             return Selector?.SelectRestorePoints(restorePoints);
         }

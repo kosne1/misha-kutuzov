@@ -3,7 +3,7 @@ using Backups.Entities;
 
 namespace Backups.PointSelectionAlgorithms
 {
-    public class LimitSelector : Selector
+    public class LimitSelector : ISelector
     {
         private readonly int _limit;
 
@@ -12,7 +12,7 @@ namespace Backups.PointSelectionAlgorithms
             _limit = limit;
         }
 
-        public override List<RestorePoint> SelectRestorePoints(List<RestorePoint> restorePoints)
+        public List<RestorePoint> SelectRestorePoints(List<RestorePoint> restorePoints)
         {
             return restorePoints.GetRange(0, restorePoints.Count - _limit);
         }

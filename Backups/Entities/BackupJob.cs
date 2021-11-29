@@ -25,7 +25,7 @@ namespace Backups.Entities
         public List<RestorePoint> RestorePoints => _restorePoints;
         public IReadOnlyCollection<JobObject> JobObjects => _jobObjects;
         public IRepository Repository { get; set; }
-        public Selector Selector { get; set; }
+        public ISelector Selector { get; set; }
         public ICleaner Cleaner { get; set; }
 
         public void AddJobObject(JobObject jobObject)
@@ -81,7 +81,7 @@ namespace Backups.Entities
             _logger.LogInfo($"Archiver was set to {archiver}");
         }
 
-        public void SetSelector(Selector selector)
+        public void SetSelector(ISelector selector)
         {
             Selector = selector;
             _logger.LogInfo($"Restore Points selector was set to {selector}");
