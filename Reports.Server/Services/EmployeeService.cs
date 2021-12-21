@@ -1,4 +1,4 @@
-﻿using Reports.DAL.Entities;
+﻿using Reports.DAL.Models;
 using Reports.Server.Database;
 
 namespace Reports.Server.Services;
@@ -12,21 +12,26 @@ public class EmployeeService : IEmployeeService
         _context = context;
     }
 
-    public async Task<Employee> Create(string name)
+    public IReadOnlyCollection<EmployeeModel> GetAll()
     {
-        var employee = new Employee(Guid.NewGuid(), name);
+        return _context.Employees.ToList();
+    }
+
+    public async Task<EmployeeModel> Create(string name)
+    {
+        var employee = new EmployeeModel(Guid.NewGuid(), name);
         await _context.Employees.AddAsync(employee);
         await _context.SaveChangesAsync();
         return employee;
     }
 
-    public Employee FindByName(string name)
+    public EmployeeModel FindByName(string name)
     {
         var employeeFromDb = _context.Employees.FirstOrDefault(i => i.Name == name);
         return employeeFromDb ?? null;
     }
 
-    public Employee FindById(Guid id)
+    public EmployeeModel FindById(Guid id)
     {
         var employeeFromDb = _context.Employees.FirstOrDefault(i => i.Id == id);
         return employeeFromDb ?? null;
@@ -39,7 +44,7 @@ public class EmployeeService : IEmployeeService
         _context.SaveChangesAsync();
     }
 
-    public Employee Update(Employee entity)
+    public EmployeeModel Update(EmployeeModel entity)
     {
         var employeeFromDb = FindById(entity.Id);
         employeeFromDb.Name = entity.Name;

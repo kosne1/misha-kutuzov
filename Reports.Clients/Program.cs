@@ -1,7 +1,7 @@
 ﻿using System.Net;
 using System.Text;
 using Newtonsoft.Json;
-using Reports.DAL.Entities;
+using Reports.DAL.Models;
 
 internal static class Program
 {
@@ -26,7 +26,7 @@ internal static class Program
         var responseString = readStream.ReadToEnd();
 
         // Десериализация (перевод JSON'a к C# классу)
-        var employee = JsonConvert.DeserializeObject<Employee>(responseString);
+        var employee = JsonConvert.DeserializeObject<EmployeeModel>(responseString);
 
         Console.WriteLine("Created employee:");
         Console.WriteLine($"Id: {employee.Id}");
@@ -49,7 +49,7 @@ internal static class Program
             var responseString = readStream.ReadToEnd();
 
             // Десериализация (перевод JSON'a к C# классу)
-            var employee = JsonConvert.DeserializeObject<Employee>(responseString);
+            var employee = JsonConvert.DeserializeObject<EmployeeModel>(responseString);
 
             Console.WriteLine("Found employee by id:");
             Console.WriteLine($"Id: {employee.Id}");
@@ -77,7 +77,7 @@ internal static class Program
             var responseString = readStream.ReadToEnd();
 
             // Десериализация (перевод JSON'a к C# классу)
-            var employee = JsonConvert.DeserializeObject<Employee>(responseString);
+            var employee = JsonConvert.DeserializeObject<EmployeeModel>(responseString);
 
             Console.WriteLine("Found employee by name:");
             Console.WriteLine($"Id: {employee.Id}");

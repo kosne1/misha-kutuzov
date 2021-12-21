@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Reports.DAL.Entities;
+using Reports.DAL.Models;
+using Reports.DAL.Models.TodoItems;
 
 namespace Reports.Server.Database;
 
@@ -10,11 +11,13 @@ public class ReportsDatabaseContext : DbContext
         Database.EnsureCreated();
     }
 
-    public DbSet<Employee> Employees { get; set; }
+    public DbSet<EmployeeModel> Employees { get; set; }
+    public DbSet<TaskModel> Tasks { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Employee>().ToTable("Employees");
+        modelBuilder.Entity<EmployeeModel>().ToTable("Employees");
+        modelBuilder.Entity<TaskModel>().ToTable("Tasks");
         base.OnModelCreating(modelBuilder);
     }
 }

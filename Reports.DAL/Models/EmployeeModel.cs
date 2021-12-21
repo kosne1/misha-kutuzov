@@ -1,16 +1,16 @@
-﻿namespace Reports.DAL.Entities;
+﻿namespace Reports.DAL.Models;
 
-public class Employee
+public class EmployeeModel
 {
     public Guid Id { get; set; }
 
     public string Name { get; set; }
 
-    public Employee()
+    public EmployeeModel()
     {
     }
 
-    public Employee(Guid id, string name)
+    public EmployeeModel(Guid id, string name)
     {
         if (id == Guid.Empty)
         {

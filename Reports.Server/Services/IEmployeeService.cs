@@ -1,16 +1,17 @@
-﻿using Reports.DAL.Entities;
+﻿using Reports.DAL.Models;
 
 namespace Reports.Server.Services;
 
 public interface IEmployeeService
 {
-    Task<Employee> Create(string name);
+    IReadOnlyCollection<EmployeeModel> GetAll();
+    Task<EmployeeModel> Create(string name);
 
-    Employee FindByName(string name);
+    EmployeeModel FindByName(string name);
 
-    Employee FindById(Guid id);
+    EmployeeModel FindById(Guid id);
 
     void Delete(Guid id);
 
-    Employee Update(Employee entity);
+    EmployeeModel Update(EmployeeModel entity);
 }

@@ -1,43 +1,25 @@
-using System.Net;
+﻿using System.Net;
 using Microsoft.AspNetCore.Mvc;
-using Reports.DAL.Models;
+using Reports.DAL.Models.TodoItems;
 using Reports.Server.Services;
 
 namespace Reports.Server.Controllers;
 
 [ApiController]
-[Route("/employees")]
-public class EmployeeController : ControllerBase
+[Route("/tasks")]
+public class TaskController : ControllerBase
 {
-    private readonly IEmployeeService _service;
+    private readonly ITaskService _service;
 
-    public EmployeeController(IEmployeeService service)
+    public TaskController(ITaskService service)
     {
         _service = service;
     }
 
     [HttpPost]
-    public async Task<EmployeeModel> Create([FromQuery] string name)
+    public async Task<TaskModel> Create([FromQuery] string name)
     {
         return await _service.Create(name);
-    }
-
-    [HttpGet]
-    [Route("name")]
-    public IActionResult FindByName([FromQuery] string name)
-    {
-        if (!string.IsNullOrWhiteSpace(name))
-        {
-            EmployeeModel result = _service.FindByName(name);
-            if (result != null)
-            {
-                return Ok(result);
-            }
-
-            return NotFound();
-        }
-
-        return StatusCode((int) HttpStatusCode.BadRequest);
     }
 
     [HttpGet]
@@ -46,7 +28,7 @@ public class EmployeeController : ControllerBase
     {
         if (id != Guid.Empty)
         {
-            EmployeeModel result = _service.FindById(id);
+            TaskModel result = _service.FindById(id);
             if (result != null)
             {
                 return Ok(result);
@@ -72,7 +54,7 @@ public class EmployeeController : ControllerBase
     }
 
     [HttpPut]
-    public EmployeeModel Update([FromQuery] EmployeeModel entity)
+    public TaskModel Update([FromQuery] TaskModel entity)
     {
         return _service.Update(entity);
     }
