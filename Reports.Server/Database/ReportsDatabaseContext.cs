@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Reports.DAL.Models;
-using Reports.DAL.Models.TodoItems;
+using Reports.DAL.Models.Tasks;
 
 namespace Reports.Server.Database;
 

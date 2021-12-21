@@ -1,4 +1,4 @@
-﻿using Reports.DAL.Models.TodoItems;
+﻿using Reports.DAL.Models.Tasks;
 using Reports.Server.Database;
 
 namespace Reports.Server.Services;
@@ -31,6 +31,18 @@ public class TaskService : ITaskService
         return taskFromDb ?? null;
     }
 
+    public TaskModel FindByCreationTime(DateTime creationTime)
+    {
+        var taskFromDb = _context.Tasks.FirstOrDefault(i => i.CreationTime == creationTime);
+        return taskFromDb ?? null;
+    }
+
+    public TaskModel FindByLastModifiedTime(DateTime modificationTime)
+    {
+        var taskFromDb = _context.Tasks.FirstOrDefault(i => i.LastModified == modificationTime);
+        return taskFromDb ?? null;
+    }
+
     public void Delete(Guid id)
     {
         var taskFromDb = FindById(id);
@@ -38,12 +50,20 @@ public class TaskService : ITaskService
         _context.SaveChangesAsync();
     }
 
-    public TaskModel Update(TaskModel entity)
+    public TaskModel UpdateCondition(Guid id, TaskCondition newCondition)
     {
-        var taskFromDb = FindById(entity.Id);
-        taskFromDb.Name = entity.Name;
-        taskFromDb.Comments = entity.Comments;
-        taskFromDb.Condition = entity.Condition;
+        var taskFromDb = FindById(id);
+        taskFromDb.Condition = newCondition;
+        taskFromDb.LastModified = DateTime.Now;
+        _context.SaveChangesAsync();
+        return taskFromDb;
+    }
+
+    public TaskModel AddComment(Guid id, string comment)
+    {
+        var taskFromDb = FindById(id);
+        taskFromDb.Comments.Add(comment);
+        taskFromDb.LastModified = DateTime.Now;
         _context.SaveChangesAsync();
         return taskFromDb;
     }

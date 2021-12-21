@@ -1,4 +1,4 @@
-﻿using Reports.DAL.Models.TodoItems;
+﻿using Reports.DAL.Models.Tasks;
 
 namespace Reports.Server.Services;
 
@@ -8,8 +8,10 @@ public interface ITaskService
     Task<TaskModel> Create(string name);
 
     TaskModel FindById(Guid id);
-
+    TaskModel FindByCreationTime(DateTime creationTime);
+    TaskModel FindByLastModifiedTime(DateTime modificationTime);
     void Delete(Guid id);
 
-    TaskModel Update(TaskModel entity);
+    TaskModel UpdateCondition(Guid id, TaskCondition newCondition);
+    TaskModel AddComment(Guid id, string comment);
 }

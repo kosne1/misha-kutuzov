@@ -1,6 +1,6 @@
 ﻿using System.Net;
 using Microsoft.AspNetCore.Mvc;
-using Reports.DAL.Models.TodoItems;
+using Reports.DAL.Models.Tasks;
 using Reports.Server.Services;
 
 namespace Reports.Server.Controllers;
@@ -47,6 +47,32 @@ public class TaskController : ControllerBase
         return Ok(_service.GetAll());
     }
 
+    [HttpGet]
+    [Route("creationTime")]
+    public IActionResult FindByCreationTime([FromQuery] DateTime creationTime)
+    {
+        TaskModel result = _service.FindByCreationTime(creationTime);
+        if (result != null)
+        {
+            return Ok(result);
+        }
+
+        return NotFound();
+    }
+
+    [HttpGet]
+    [Route("modificationTime")]
+    public IActionResult FindByModificationTime([FromQuery] DateTime modificationTime)
+    {
+        TaskModel result = _service.FindByCreationTime(modificationTime);
+        if (result != null)
+        {
+            return Ok(result);
+        }
+
+        return NotFound();
+    }
+
     [HttpDelete]
     public void Delete([FromQuery] Guid id)
     {
@@ -54,8 +80,16 @@ public class TaskController : ControllerBase
     }
 
     [HttpPut]
-    public TaskModel Update([FromQuery] TaskModel entity)
+    [Route("condition")]
+    public TaskModel UpdateCondition([FromQuery] Guid id, [FromQuery] TaskCondition newCondition)
     {
-        return _service.Update(entity);
+        return _service.UpdateCondition(id, newCondition);
+    }
+
+    [HttpPut]
+    [Route("comment")]
+    public TaskModel AddComment([FromQuery] Guid id, [FromQuery] string comment)
+    {
+        return _service.AddComment(id, comment);
     }
 }

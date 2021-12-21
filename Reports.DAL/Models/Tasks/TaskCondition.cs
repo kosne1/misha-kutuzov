@@ -1,4 +1,4 @@
-﻿namespace Reports.DAL.Models.TodoItems;
+﻿namespace Reports.DAL.Models.Tasks;
 
 public enum TaskCondition
 {
