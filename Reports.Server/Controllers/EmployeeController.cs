@@ -36,7 +36,7 @@ public class EmployeeController : ControllerBase
             return NotFound();
         }
 
-        if (id == Guid.Empty) return StatusCode((int) HttpStatusCode.BadRequest);
+        if (id != Guid.Empty)
         {
             Employee result = _service.FindById(id);
             if (result != null)
@@ -46,5 +46,19 @@ public class EmployeeController : ControllerBase
 
             return NotFound();
         }
+
+        return StatusCode((int) HttpStatusCode.BadRequest);
+    }
+
+    [HttpDelete]
+    public void Delete([FromQuery] Guid id)
+    {
+        _service.Delete(id);
+    }
+
+    [HttpPut]
+    public Employee Update([FromQuery] Employee entity)
+    {
+        return _service.Update(entity);
     }
 }

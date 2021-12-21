@@ -2,11 +2,11 @@
 
 public class Employee
 {
-    public Guid Id { get; private init; }
+    public Guid Id { get; set; }
 
-    public string Name { get; private init; }
+    public string Name { get; set; }
 
-    private Employee()
+    public Employee()
     {
     }
 

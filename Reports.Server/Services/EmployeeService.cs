@@ -15,39 +15,35 @@ public class EmployeeService : IEmployeeService
     public async Task<Employee> Create(string name)
     {
         var employee = new Employee(Guid.NewGuid(), name);
-        var employeeFromDb = await _context.Employees.AddAsync(employee);
+        await _context.Employees.AddAsync(employee);
         await _context.SaveChangesAsync();
         return employee;
     }
 
     public Employee FindByName(string name)
     {
-        if (name.Equals("Aboba", StringComparison.InvariantCultureIgnoreCase))
-        {
-            return new Employee(Guid.NewGuid(), name);
-        }
-
-        return null;
+        var employeeFromDb = _context.Employees.FirstOrDefault(i => i.Name == name);
+        return employeeFromDb ?? null;
     }
 
     public Employee FindById(Guid id)
     {
-        Guid fakeGuid = Guid.Parse("ac8ac3ce-f738-4cd6-b131-1aa0e16eaadc");
-        if (id == fakeGuid)
-        {
-            return new Employee(fakeGuid, "Abobus");
-        }
-
-        return null;
+        var employeeFromDb = _context.Employees.FirstOrDefault(i => i.Id == id);
+        return employeeFromDb ?? null;
     }
 
     public void Delete(Guid id)
     {
-        throw new NotImplementedException();
+        var employeeFromDb = FindById(id);
+        _context.Employees.Remove(employeeFromDb);
+        _context.SaveChangesAsync();
     }
 
     public Employee Update(Employee entity)
     {
-        throw new NotImplementedException();
+        var employeeFromDb = FindById(entity.Id);
+        employeeFromDb.Name = entity.Name;
+        _context.SaveChangesAsync();
+        return employeeFromDb;
     }
 }

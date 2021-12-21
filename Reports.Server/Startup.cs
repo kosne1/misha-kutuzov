@@ -34,6 +34,7 @@ public class Startup
         {
             opt.UseSqlServer(Configuration.GetConnectionString("MyServer"));
         });
+        
         services.AddScoped<IEmployeeService, EmployeeService>();
     }
 
