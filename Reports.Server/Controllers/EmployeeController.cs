@@ -17,9 +17,9 @@ public class EmployeeController : ControllerBase
     }
 
     [HttpPost]
-    public Employee Create([FromQuery] string name)
+    public async Task<Employee> Create([FromQuery] string name)
     {
-        return _service.Create(name);
+        return await _service.Create(name);
     }
 
     [HttpGet]

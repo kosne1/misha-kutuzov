@@ -1,12 +1,23 @@
 ﻿using Reports.DAL.Entities;
+using Reports.Server.Database;
 
 namespace Reports.Server.Services;
 
 public class EmployeeService : IEmployeeService
 {
-    public Employee Create(string name)
+    private readonly ReportsDatabaseContext _context;
+
+    public EmployeeService(ReportsDatabaseContext context)
     {
-        return new Employee(Guid.NewGuid(), name);
+        _context = context;
+    }
+
+    public async Task<Employee> Create(string name)
+    {
+        var employee = new Employee(Guid.NewGuid(), name);
+        var employeeFromDb = await _context.Employees.AddAsync(employee);
+        await _context.SaveChangesAsync();
+        return employee;
     }
 
     public Employee FindByName(string name)

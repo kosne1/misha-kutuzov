@@ -1,5 +1,7 @@
-﻿using Microsoft.OpenApi.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
+using Reports.Server.Database;
 using Reports.Server.Services;
 
 namespace Reports.Server;
@@ -28,6 +30,10 @@ public class Startup
             c.SwaggerDoc("v1", new OpenApiInfo {Title = "Reports.Server", Version = "v1"});
         });
 
+        services.AddDbContext<ReportsDatabaseContext>(opt =>
+        {
+            opt.UseSqlServer(Configuration.GetConnectionString("MyServer"));
+        });
         services.AddScoped<IEmployeeService, EmployeeService>();
     }
 

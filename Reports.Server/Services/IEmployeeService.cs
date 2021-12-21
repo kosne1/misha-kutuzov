@@ -4,7 +4,7 @@ namespace Reports.Server.Services;
 
 public interface IEmployeeService
 {
-    Employee Create(string name);
+    Task<Employee> Create(string name);
 
     Employee FindByName(string name);
 
