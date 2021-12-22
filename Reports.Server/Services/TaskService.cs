@@ -17,9 +17,10 @@ public class TaskService : ITaskService
         return _context.Tasks.ToList();
     }
 
-    public async Task<TaskModel> Create(string name)
+    public async Task<TaskModel> Create(string description)
     {
-        var task = new TaskModel(Guid.NewGuid(), name);
+        var task = new TaskModel(Guid.NewGuid(), description);
+        task.LastModified = DateTime.Now;
         await _context.Tasks.AddAsync(task);
         await _context.SaveChangesAsync();
         return task;
@@ -43,6 +44,12 @@ public class TaskService : ITaskService
         return taskFromDb ?? null;
     }
 
+    public IReadOnlyCollection<TaskModel> GetEmployeeTasks(Guid employeeId)
+    {
+        var employeeFromDb = _context.Employees.FirstOrDefault(i => i.Id == employeeId);
+        return employeeFromDb.Tasks;
+    }
+
     public void Delete(Guid id)
     {
         var taskFromDb = FindById(id);
@@ -59,11 +66,32 @@ public class TaskService : ITaskService
         return taskFromDb;
     }
 
+    public TaskModel UpdateDescription(Guid id, string description)
+    {
+        var taskFromDb = FindById(id);
+        taskFromDb.Description = description;
+        taskFromDb.LastModified = DateTime.Now;
+        _context.SaveChangesAsync();
+        return taskFromDb;
+    }
+
     public TaskModel AddComment(Guid id, string comment)
     {
         var taskFromDb = FindById(id);
         taskFromDb.Comments.Add(comment);
         taskFromDb.LastModified = DateTime.Now;
+        _context.SaveChangesAsync();
+        return taskFromDb;
+    }
+
+    public TaskModel SetEmployee(Guid taskId, Guid employeeId)
+    {
+        var taskFromDb = FindById(taskId);
+        var employeeFromDb = _context.Employees.FirstOrDefault(i => i.Id == employeeId);
+
+        taskFromDb.EmployeeId = employeeFromDb.Id;
+        taskFromDb.LastModified = DateTime.Now;
+        employeeFromDb.Tasks.Add(taskFromDb);
         _context.SaveChangesAsync();
         return taskFromDb;
     }

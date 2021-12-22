@@ -17,9 +17,9 @@ public class TaskController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<TaskModel> Create([FromQuery] string name)
+    public async Task<TaskModel> Create([FromQuery] string description)
     {
-        return await _service.Create(name);
+        return await _service.Create(description);
     }
 
     [HttpGet]
@@ -64,7 +64,7 @@ public class TaskController : ControllerBase
     [Route("modificationTime")]
     public IActionResult FindByModificationTime([FromQuery] DateTime modificationTime)
     {
-        TaskModel result = _service.FindByCreationTime(modificationTime);
+        TaskModel result = _service.FindByLastModifiedTime(modificationTime);
         if (result != null)
         {
             return Ok(result);
@@ -72,11 +72,25 @@ public class TaskController : ControllerBase
 
         return NotFound();
     }
+    
+    [HttpGet]
+    [Route("employee")]
+    public IActionResult GetEmployeeTasks([FromQuery] Guid employeeId)
+    {
+        return Ok(_service.GetEmployeeTasks(employeeId));
+    }
 
     [HttpDelete]
     public void Delete([FromQuery] Guid id)
     {
         _service.Delete(id);
+    }
+    
+    [HttpPut]
+    [Route("description")]
+    public TaskModel UpdateDescription([FromQuery] Guid id, [FromQuery] string description)
+    {
+        return _service.UpdateDescription(id, description);
     }
 
     [HttpPut]
@@ -91,5 +105,12 @@ public class TaskController : ControllerBase
     public TaskModel AddComment([FromQuery] Guid id, [FromQuery] string comment)
     {
         return _service.AddComment(id, comment);
+    }
+    
+    [HttpPut]
+    [Route("employee")]
+    public TaskModel SetEmployee([FromQuery] Guid taskId, [FromQuery] Guid employeeId)
+    {
+        return _service.SetEmployee(taskId, employeeId);
     }
 }

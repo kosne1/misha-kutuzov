@@ -4,7 +4,7 @@ public class TaskModel
 {
     public Guid Id { get; }
 
-    public string Name { get; set; }
+    public string Description { get; set; }
 
     public TaskCondition Condition { get; set; } = TaskCondition.Open;
 
@@ -13,23 +13,25 @@ public class TaskModel
     public DateTime CreationTime { get; set; } = DateTime.Now;
     public DateTime LastModified { get; set; }
 
+    public Guid EmployeeId { get; set; }
+
     public TaskModel()
     {
     }
 
-    public TaskModel(Guid id, string name)
+    public TaskModel(Guid id, string description)
     {
         if (id == Guid.Empty)
         {
             throw new ArgumentNullException(nameof(id), "Id is invalid");
         }
 
-        if (string.IsNullOrWhiteSpace(name))
+        if (string.IsNullOrWhiteSpace(description))
         {
-            throw new ArgumentNullException(nameof(name), "Name is invalid");
+            throw new ArgumentNullException(nameof(description), "Name is invalid");
         }
 
         Id = id;
-        Name = name;
+        Description = description;
     }
 }

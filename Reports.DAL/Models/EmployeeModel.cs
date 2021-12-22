@@ -1,10 +1,13 @@
-﻿namespace Reports.DAL.Models;
+﻿using Reports.DAL.Models.Tasks;
+
+namespace Reports.DAL.Models;
 
 public class EmployeeModel
 {
     public Guid Id { get; set; }
 
     public string Name { get; set; }
+    public List<TaskModel> Tasks { get; set; } = new List<TaskModel>();
 
     public EmployeeModel()
     {
