@@ -37,6 +37,7 @@ public class Startup
 
         services.AddScoped<IEmployeeService, EmployeeService>();
         services.AddScoped<ITaskService, TaskService>();
+        services.AddScoped<IWeeklyService, WeeklyService>();
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
