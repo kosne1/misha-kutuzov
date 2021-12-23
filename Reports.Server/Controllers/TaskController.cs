@@ -17,9 +17,9 @@ public class TaskController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<TaskModel> Create([FromQuery] string description)
+    public async Task<TaskModel> Create([FromQuery] string description, [FromQuery] Guid employeeId)
     {
-        return await _service.Create(description);
+        return await _service.Create(description, employeeId);
     }
 
     [HttpGet]
@@ -72,7 +72,7 @@ public class TaskController : ControllerBase
 
         return NotFound();
     }
-    
+
     [HttpGet]
     [Route("employee")]
     public IActionResult GetEmployeeTasks([FromQuery] Guid employeeId)
@@ -80,12 +80,19 @@ public class TaskController : ControllerBase
         return Ok(_service.GetEmployeeTasks(employeeId));
     }
 
+    [HttpGet]
+    [Route("wasModifiedByEmployee")]
+    public IActionResult GetTasksModifiedByEmployee([FromQuery] Guid employeeId)
+    {
+        return Ok(_service.GetTasksModifiedByEmployee(employeeId));
+    }
+
     [HttpDelete]
     public void Delete([FromQuery] Guid id)
     {
         _service.Delete(id);
     }
-    
+
     [HttpPut]
     [Route("description")]
     public TaskModel UpdateDescription([FromQuery] Guid id, [FromQuery] string description)
@@ -106,7 +113,7 @@ public class TaskController : ControllerBase
     {
         return _service.AddComment(id, comment);
     }
-    
+
     [HttpPut]
     [Route("employee")]
     public TaskModel SetEmployee([FromQuery] Guid taskId, [FromQuery] Guid employeeId)

@@ -17,9 +17,9 @@ public class TaskService : ITaskService
         return _context.Tasks.ToList();
     }
 
-    public async Task<TaskModel> Create(string description)
+    public async Task<TaskModel> Create(string description, Guid employeeId)
     {
-        var task = new TaskModel(Guid.NewGuid(), description);
+        var task = new TaskModel(Guid.NewGuid(), description, employeeId);
         task.LastModified = DateTime.Now;
         await _context.Tasks.AddAsync(task);
         await _context.SaveChangesAsync();
@@ -50,10 +50,20 @@ public class TaskService : ITaskService
         return employeeFromDb.Tasks;
     }
 
+    public IReadOnlyCollection<TaskModel> GetTasksModifiedByEmployee(Guid employeeId)
+    {
+        var employeeFromDb = _context.Employees.FirstOrDefault(i => i.Id == employeeId);
+        var tasks = GetAll();
+
+        return tasks.Where(task => task.WasModifiedBy.Contains(employeeId)).ToList();
+    }
+
     public void Delete(Guid id)
     {
         var taskFromDb = FindById(id);
+        var employeeFromDb = _context.Employees.FirstOrDefault(i => i.Id == taskFromDb.EmployeeId);
         _context.Tasks.Remove(taskFromDb);
+        employeeFromDb.Tasks.Remove(taskFromDb);
         _context.SaveChangesAsync();
     }
 
@@ -62,6 +72,7 @@ public class TaskService : ITaskService
         var taskFromDb = FindById(id);
         taskFromDb.Condition = newCondition;
         taskFromDb.LastModified = DateTime.Now;
+        taskFromDb.WasModifiedBy.Add(taskFromDb.EmployeeId);
         _context.SaveChangesAsync();
         return taskFromDb;
     }
@@ -71,6 +82,7 @@ public class TaskService : ITaskService
         var taskFromDb = FindById(id);
         taskFromDb.Description = description;
         taskFromDb.LastModified = DateTime.Now;
+        taskFromDb.WasModifiedBy.Add(taskFromDb.EmployeeId);
         _context.SaveChangesAsync();
         return taskFromDb;
     }
@@ -80,6 +92,7 @@ public class TaskService : ITaskService
         var taskFromDb = FindById(id);
         taskFromDb.Comments.Add(comment);
         taskFromDb.LastModified = DateTime.Now;
+        taskFromDb.WasModifiedBy.Add(taskFromDb.EmployeeId);
         _context.SaveChangesAsync();
         return taskFromDb;
     }

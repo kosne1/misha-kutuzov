@@ -12,14 +12,14 @@ public class TaskModel
 
     public DateTime CreationTime { get; set; } = DateTime.Now;
     public DateTime LastModified { get; set; }
-
+    public SortedSet<Guid> WasModifiedBy { get; set; } = new SortedSet<Guid>();
     public Guid EmployeeId { get; set; }
 
     public TaskModel()
     {
     }
 
-    public TaskModel(Guid id, string description)
+    public TaskModel(Guid id, string description, Guid employeeId)
     {
         if (id == Guid.Empty)
         {
@@ -31,7 +31,13 @@ public class TaskModel
             throw new ArgumentNullException(nameof(description), "Name is invalid");
         }
 
+        if (employeeId == Guid.Empty)
+        {
+            throw new ArgumentNullException(nameof(employeeId), "Id is invalid");
+        }
+
         Id = id;
         Description = description;
+        EmployeeId = employeeId;
     }
 }
