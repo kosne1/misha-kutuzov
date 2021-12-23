@@ -1,11 +1,12 @@
 ﻿using Reports.DAL.Models;
+using Reports.DAL.Models.Employees;
 using Reports.Server.Database;
 
 namespace Reports.Server.Services;
 
 public class EmployeeService : IEmployeeService
 {
-    private readonly ReportsDatabaseContext _context;
+    protected readonly ReportsDatabaseContext _context;
 
     public EmployeeService(ReportsDatabaseContext context)
     {

@@ -1,4 +1,5 @@
 ﻿using Reports.DAL.Models;
+using Reports.DAL.Models.Employees;
 
 namespace Reports.Server.Services;
 

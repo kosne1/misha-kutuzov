@@ -25,6 +25,13 @@ public class WeeklyService : IWeeklyService
         return _context.Weeklies.ToList();
     }
 
+    public IReadOnlyCollection<Weekly> GetSubordinatesWeeklies(Guid supervisorId)
+    {
+        var supervisorFromDb = _context.Supervisors.FirstOrDefault(i => i.Id == supervisorId);
+
+        return supervisorFromDb.Subordinates.Select(subordinate => subordinate.Weekly).ToList();
+    }
+
     public Weekly AddTask(Guid weeklyId, Guid taskId)
     {
         var weeklyFromDb = _context.Weeklies.FirstOrDefault(i => i.Id == weeklyId);

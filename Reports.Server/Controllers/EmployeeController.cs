@@ -1,6 +1,7 @@
 using System.Net;
 using Microsoft.AspNetCore.Mvc;
 using Reports.DAL.Models;
+using Reports.DAL.Models.Employees;
 using Reports.Server.Services;
 
 namespace Reports.Server.Controllers;

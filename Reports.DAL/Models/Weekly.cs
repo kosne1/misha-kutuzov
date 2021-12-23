@@ -1,13 +1,14 @@
-﻿using Reports.DAL.Models.Tasks;
+﻿using Reports.DAL.Models.Employees;
+using Reports.DAL.Models.Tasks;
 
 namespace Reports.DAL.Models;
 
 public class Weekly
 {
     public Guid Id { get; set; }
-    public bool Condition { get; set; } = false;
+    public bool Condition { get; set; }
     public string Description { get; set; }
-    public List<TaskModel> Tasks { get; set; } = new List<TaskModel>();
+    public List<TaskModel> Tasks { get; set; } = new();
 
     public Weekly()
     {

@@ -2,6 +2,7 @@
 using System.Text;
 using Newtonsoft.Json;
 using Reports.DAL.Models;
+using Reports.DAL.Models.Employees;
 
 internal static class Program
 {
