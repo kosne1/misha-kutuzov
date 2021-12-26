@@ -29,13 +29,13 @@ public class EmployeeService : IEmployeeService
     public EmployeeModel FindByName(string name)
     {
         var employeeFromDb = _context.Employees.FirstOrDefault(i => i.Name == name);
-        return employeeFromDb ?? null;
+        return employeeFromDb;
     }
 
     public EmployeeModel FindById(Guid id)
     {
         var employeeFromDb = _context.Employees.FirstOrDefault(i => i.Id == id);
-        return employeeFromDb ?? null;
+        return employeeFromDb;
     }
 
     public void Delete(Guid id)

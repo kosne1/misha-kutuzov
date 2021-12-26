@@ -29,19 +29,19 @@ public class TaskService : ITaskService
     public TaskModel FindById(Guid id)
     {
         var taskFromDb = _context.Tasks.FirstOrDefault(i => i.Id == id);
-        return taskFromDb ?? null;
+        return taskFromDb;
     }
 
     public TaskModel FindByCreationTime(DateTime creationTime)
     {
         var taskFromDb = _context.Tasks.FirstOrDefault(i => i.CreationTime == creationTime);
-        return taskFromDb ?? null;
+        return taskFromDb;
     }
 
     public TaskModel FindByLastModifiedTime(DateTime modificationTime)
     {
         var taskFromDb = _context.Tasks.FirstOrDefault(i => i.LastModified == modificationTime);
-        return taskFromDb ?? null;
+        return taskFromDb;
     }
 
     public IReadOnlyCollection<TaskModel> GetEmployeeTasks(Guid employeeId)
