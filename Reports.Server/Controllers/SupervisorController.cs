@@ -15,15 +15,13 @@ public class SupervisorController : EmployeeController
         _service = service;
     }
 
-    [HttpGet]
-    [Route("subordinatesTasks")]
+    [HttpGet("subordinatesTasks")]
     public IActionResult GetAll(Guid id)
     {
         return Ok(_service.GetSubordinatesTasks(id));
     }
     
-    [HttpPut]
-    [Route("subordinate")]
+    [HttpPut("subordinate")]
     public EmployeeModel AddSubordinate([FromQuery] Guid supervisorId, [FromQuery] Guid employeeId)
     {
         return _service.AddSubordinate(supervisorId, employeeId);

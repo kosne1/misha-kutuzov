@@ -21,36 +21,31 @@ public class WeeklyController : ControllerBase
         return await _service.Create(description);
     }
 
-    [HttpGet]
-    [Route("all")]
+    [HttpGet("all")]
     public IActionResult GetAll()
     {
         return Ok(_service.GetAll());
     }
 
-    [HttpGet]
-    [Route("subordinatesWeeklies")]
+    [HttpGet("subordinatesWeeklies")]
     public IActionResult GetSubordinatesWeeklies([FromQuery] Guid supervisorId)
     {
         return Ok(_service.GetSubordinatesWeeklies(supervisorId));
     }
 
-    [HttpPut]
-    [Route("task")]
+    [HttpPut("task")]
     public Weekly AddTask([FromQuery] Guid weeklyId, [FromQuery] Guid taskId)
     {
         return _service.AddTask(weeklyId, taskId);
     }
 
-    [HttpPut]
-    [Route("description")]
+    [HttpPut("description")]
     public Weekly UpdateDescription([FromQuery] Guid id, [FromQuery] string description)
     {
         return _service.UpdateDescription(id, description);
     }
 
-    [HttpPut]
-    [Route("condition")]
+    [HttpPut("condition")]
     public Weekly UpdateCondition([FromQuery] Guid id, [FromQuery] bool condition)
     {
         return _service.UpdateCondition(id, condition);

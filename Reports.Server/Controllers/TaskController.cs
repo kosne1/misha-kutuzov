@@ -22,8 +22,7 @@ public class TaskController : ControllerBase
         return await _service.Create(description, employeeId);
     }
 
-    [HttpGet]
-    [Route("id")]
+    [HttpGet("id")]
     public IActionResult FindById([FromQuery] Guid id)
     {
         if (id != Guid.Empty)
@@ -40,15 +39,13 @@ public class TaskController : ControllerBase
         return StatusCode((int) HttpStatusCode.BadRequest);
     }
 
-    [HttpGet]
-    [Route("all")]
+    [HttpGet("all")]
     public IActionResult GetAll()
     {
         return Ok(_service.GetAll());
     }
 
-    [HttpGet]
-    [Route("creationTime")]
+    [HttpGet("creationTime")]
     public IActionResult FindByCreationTime([FromQuery] DateTime creationTime)
     {
         TaskModel result = _service.FindByCreationTime(creationTime);
@@ -60,8 +57,7 @@ public class TaskController : ControllerBase
         return NotFound();
     }
 
-    [HttpGet]
-    [Route("modificationTime")]
+    [HttpGet("modificationTime")]
     public IActionResult FindByModificationTime([FromQuery] DateTime modificationTime)
     {
         TaskModel result = _service.FindByLastModifiedTime(modificationTime);
@@ -73,15 +69,13 @@ public class TaskController : ControllerBase
         return NotFound();
     }
 
-    [HttpGet]
-    [Route("employee")]
+    [HttpGet("employee")]
     public IActionResult GetEmployeeTasks([FromQuery] Guid employeeId)
     {
         return Ok(_service.GetEmployeeTasks(employeeId));
     }
 
-    [HttpGet]
-    [Route("wasModifiedByEmployee")]
+    [HttpGet("wasModifiedByEmployee")]
     public IActionResult GetTasksModifiedByEmployee([FromQuery] Guid employeeId)
     {
         return Ok(_service.GetTasksModifiedByEmployee(employeeId));
@@ -93,29 +87,25 @@ public class TaskController : ControllerBase
         _service.Delete(id);
     }
 
-    [HttpPut]
-    [Route("description")]
+    [HttpPut("description")]
     public TaskModel UpdateDescription([FromQuery] Guid id, [FromQuery] string description)
     {
         return _service.UpdateDescription(id, description);
     }
 
-    [HttpPut]
-    [Route("condition")]
+    [HttpPut("condition")]
     public TaskModel UpdateCondition([FromQuery] Guid id, [FromQuery] TaskCondition newCondition)
     {
         return _service.UpdateCondition(id, newCondition);
     }
 
-    [HttpPut]
-    [Route("comment")]
+    [HttpPut("comment")]
     public TaskModel AddComment([FromQuery] Guid id, [FromQuery] string comment)
     {
         return _service.AddComment(id, comment);
     }
 
-    [HttpPut]
-    [Route("employee")]
+    [HttpPut("employee")]
     public TaskModel SetEmployee([FromQuery] Guid taskId, [FromQuery] Guid employeeId)
     {
         return _service.SetEmployee(taskId, employeeId);

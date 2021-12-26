@@ -1,6 +1,5 @@
 using System.Net;
 using Microsoft.AspNetCore.Mvc;
-using Reports.DAL.Models;
 using Reports.DAL.Models.Employees;
 using Reports.Server.Services;
 
@@ -23,8 +22,7 @@ public class EmployeeController : ControllerBase
         return await _service.Create(name);
     }
 
-    [HttpGet]
-    [Route("name")]
+    [HttpGet("name")]
     public IActionResult FindByName([FromQuery] string name)
     {
         if (!string.IsNullOrWhiteSpace(name))
@@ -41,8 +39,7 @@ public class EmployeeController : ControllerBase
         return StatusCode((int) HttpStatusCode.BadRequest);
     }
 
-    [HttpGet]
-    [Route("id")]
+    [HttpGet("id")]
     public IActionResult FindById([FromQuery] Guid id)
     {
         if (id != Guid.Empty)
@@ -59,8 +56,7 @@ public class EmployeeController : ControllerBase
         return StatusCode((int) HttpStatusCode.BadRequest);
     }
 
-    [HttpGet]
-    [Route("all")]
+    [HttpGet("all")]
     public IActionResult GetAll()
     {
         return Ok(_service.GetAll());
