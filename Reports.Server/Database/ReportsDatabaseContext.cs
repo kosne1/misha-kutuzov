@@ -14,7 +14,6 @@ public class ReportsDatabaseContext : DbContext
 
     public DbSet<EmployeeModel> Employees { get; set; }
     public DbSet<SupervisorModel> Supervisors { get; set; }
-    public DbSet<TeamLeadModel> TeamLeaders { get; set; }
     public DbSet<TaskModel> Tasks { get; set; }
     public DbSet<Weekly> Weeklies { get; set; }
 
@@ -22,7 +21,6 @@ public class ReportsDatabaseContext : DbContext
     {
         modelBuilder.Entity<EmployeeModel>().ToTable("Employees");
         modelBuilder.Entity<SupervisorModel>().ToTable("Supervisors");
-        modelBuilder.Entity<TeamLeadModel>().ToTable("Teamleaders");
         modelBuilder.Entity<TaskModel>().ToTable("Tasks");
         modelBuilder.Entity<Weekly>().ToTable("Weeklies");
         base.OnModelCreating(modelBuilder);

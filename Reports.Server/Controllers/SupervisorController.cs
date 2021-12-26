@@ -8,7 +8,7 @@ namespace Reports.Server.Controllers;
 [Route("/supervisors")]
 public class SupervisorController : EmployeeController
 {
-    private SupervisorService _service;
+    private readonly SupervisorService _service;
     
     public SupervisorController(SupervisorService service) : base(service)
     {
