@@ -25,35 +25,27 @@ public class EmployeeController : ControllerBase
     [HttpGet("name")]
     public IActionResult FindByName([FromQuery] string name)
     {
-        if (!string.IsNullOrWhiteSpace(name))
+        if (string.IsNullOrWhiteSpace(name)) return BadRequest();
+        EmployeeModel result = _service.FindByName(name);
+        if (result != null)
         {
-            EmployeeModel result = _service.FindByName(name);
-            if (result != null)
-            {
-                return Ok(result);
-            }
-
-            return NotFound();
+            return Ok(result);
         }
 
-        return StatusCode((int) HttpStatusCode.BadRequest);
+        return NotFound();
     }
 
     [HttpGet("id")]
     public IActionResult FindById([FromQuery] Guid id)
     {
-        if (id != Guid.Empty)
+        if (id == Guid.Empty) return BadRequest();
+        EmployeeModel result = _service.FindById(id);
+        if (result != null)
         {
-            EmployeeModel result = _service.FindById(id);
-            if (result != null)
-            {
-                return Ok(result);
-            }
-
-            return NotFound();
+            return Ok(result);
         }
 
-        return StatusCode((int) HttpStatusCode.BadRequest);
+        return NotFound();
     }
 
     [HttpGet("all")]

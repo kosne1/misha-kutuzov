@@ -61,9 +61,7 @@ public class TaskService : ITaskService
     public void Delete(Guid id)
     {
         var taskFromDb = FindById(id);
-        var employeeFromDb = _context.Employees.FirstOrDefault(i => i.Id == taskFromDb.EmployeeId);
         _context.Tasks.Remove(taskFromDb);
-        employeeFromDb.Tasks.Remove(taskFromDb);
         _context.SaveChangesAsync();
     }
 

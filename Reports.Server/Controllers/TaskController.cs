@@ -1,5 +1,4 @@
-﻿using System.Net;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Reports.DAL.Models.Tasks;
 using Reports.Server.Services;
 
@@ -25,18 +24,15 @@ public class TaskController : ControllerBase
     [HttpGet("id")]
     public IActionResult FindById([FromQuery] Guid id)
     {
-        if (id != Guid.Empty)
+        if (id == Guid.Empty) return BadRequest();
+        TaskModel result = _service.FindById(id);
+        if (result != null)
         {
-            TaskModel result = _service.FindById(id);
-            if (result != null)
-            {
-                return Ok(result);
-            }
-
-            return NotFound();
+            return Ok(result);
         }
 
-        return StatusCode((int) HttpStatusCode.BadRequest);
+        return NotFound();
+
     }
 
     [HttpGet("all")]
