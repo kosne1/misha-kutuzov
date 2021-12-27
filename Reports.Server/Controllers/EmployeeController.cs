@@ -1,4 +1,3 @@
-using System.Net;
 using Microsoft.AspNetCore.Mvc;
 using Reports.DAL.Models.Employees;
 using Reports.Server.Services;
