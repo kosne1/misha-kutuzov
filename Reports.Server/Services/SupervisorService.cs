@@ -10,6 +10,14 @@ public class SupervisorService : EmployeeService
     {
     }
 
+    public async Task<SupervisorModel> CreateSupervisor(string name)
+    {
+        var supervisor = new SupervisorModel(Guid.NewGuid(), name);
+        await _context.Employees.AddAsync(supervisor);
+        await _context.SaveChangesAsync();
+        return supervisor;
+    }
+
     public IReadOnlyCollection<TaskModel> GetSubordinatesTasks(Guid id)
     {
         var supervisorFromDb = _context.Supervisors.FirstOrDefault(i => i.Id == id);

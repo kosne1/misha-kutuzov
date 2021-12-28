@@ -6,74 +6,30 @@ namespace Reports.Server.Controllers;
 
 [ApiController]
 [Route("/supervisors")]
-public class SupervisorController : ControllerBase
+public class SupervisorController : UserController
 {
-    private readonly SupervisorService _service;
+    private readonly SupervisorService _supervisorService;
 
-    public SupervisorController(SupervisorService service)
+    public SupervisorController(SupervisorService supervisorService) : base(supervisorService)
     {
-        _service = service;
+        _supervisorService = supervisorService;
     }
-    
+
     [HttpPost]
-    public async Task<EmployeeModel> Create([FromQuery] string name)
+    public async Task<SupervisorModel> CreateSupervisor([FromQuery] string name)
     {
-        return await _service.Create(name);
-    }
-
-    [HttpGet("name")]
-    public IActionResult FindByName([FromQuery] string name)
-    {
-        if (string.IsNullOrWhiteSpace(name)) return BadRequest();
-        EmployeeModel result = _service.FindByName(name);
-        if (result != null)
-        {
-            return Ok(result);
-        }
-
-        return NotFound();
-    }
-
-    [HttpGet("id")]
-    public IActionResult FindById([FromQuery] Guid id)
-    {
-        if (id == Guid.Empty) return BadRequest();
-        EmployeeModel result = _service.FindById(id);
-        if (result != null)
-        {
-            return Ok(result);
-        }
-
-        return NotFound();
-    }
-
-    [HttpGet("all")]
-    public IActionResult GetAll()
-    {
-        return Ok(_service.GetAll());
-    }
-
-    [HttpDelete]
-    public void Delete([FromQuery] Guid id)
-    {
-        _service.Delete(id);
-    }
-
-    [HttpPut]
-    public EmployeeModel Update([FromQuery] EmployeeModel entity)
-    {
-        return _service.Update(entity);
+        return await _supervisorService.CreateSupervisor(name);
     }
 
     [HttpGet("subordinatesTasks")]
-    public IActionResult GetAll(Guid id)
+    public IActionResult GetSubordinatesTasks(Guid id)
     {
-        return Ok(_service.GetSubordinatesTasks(id));
+        return Ok(_supervisorService.GetSubordinatesTasks(id));
     }
 
     [HttpPut("subordinate")]
     public EmployeeModel AddSubordinate([FromQuery] Guid supervisorId, [FromQuery] Guid employeeId)
     {
-        return _service.AddSubordinate(supervisorId, employeeId);
+        return _supervisorService.AddSubordinate(supervisorId, employeeId);
     }
 }
